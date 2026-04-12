@@ -1,12 +1,14 @@
 # Community Board (v1) Implementation Plan
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> **SUPERSEDED** — This plan was written for a single Next.js PWA architecture. The architecture has since been revised to a monorepo with separate web (Next.js) and mobile (Expo) apps. See `docs/superpowers/specs/2026-04-12-architecture-design.md` for the current architecture. A new implementation plan will be generated from that spec.
+
+> The task-by-task details below are kept for reference (Supabase schema, RLS policies, auth flow, etc. are still largely valid), but the project scaffolding, routing, and deployment sections are outdated.
 
 **Goal:** Build the MVP community board — a multi-tenant platform where small French communes can post announcements, events, and community messages, with mairie admin moderation.
 
-**Architecture:** Next.js App Router with Supabase for auth, database, storage, and realtime. Multi-tenant via commune_id on all tables. PWA-enabled for push notifications. Row Level Security (RLS) on all Supabase tables to enforce tenant isolation and role-based access.
+**Architecture (outdated):** ~~Next.js App Router with Supabase for auth, database, storage, and realtime. Multi-tenant via commune_id on all tables. PWA-enabled for push notifications.~~ See architecture spec for current approach.
 
-**Tech Stack:** Next.js 14+ (App Router), TypeScript, Supabase (Postgres + Auth + Realtime + Storage), Tailwind CSS, shadcn/ui, Vercel
+**Tech Stack (outdated):** ~~Next.js 14+ (App Router), TypeScript, Supabase (Postgres + Auth + Realtime + Storage), Tailwind CSS, shadcn/ui, Vercel~~ See architecture spec for current stack.
 
 ---
 

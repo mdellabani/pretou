@@ -1,7 +1,7 @@
 # Rural Community Platform — Design Document
 
 **Date:** 2026-04-12
-**Status:** Draft v2 (revised after competitive analysis)
+**Status:** Draft v3 (revised architecture — monorepo with web + mobile apps)
 
 ## Vision
 
@@ -31,12 +31,31 @@ Unlike existing solutions (PanneauPocket, IntraMuros) that focus on top-down mun
 
 ## Tech Stack
 
-- **Frontend:** Next.js (React)
+- **Web app:** Next.js 15 (App Router, SSR, Tailwind CSS, shadcn/ui) — commune website + admin panel
+- **Mobile app:** Expo (React Native, Expo Router) — resident app + field admin
+- **Shared package:** TypeScript types, Supabase queries, Zod validation, constants
 - **Backend:** Supabase (Postgres + Auth + Realtime + Storage + Edge Functions)
-- **Deployment:** Vercel
 - **Geo:** PostGIS extension on Supabase Postgres
+- **Monorepo:** Turborepo + pnpm workspaces
+- **Deployment:** Vercel (web), EAS (mobile builds), Supabase Cloud
 
 ## Architecture
+
+### Monorepo structure
+
+```
+rural-community-platform/
+├── apps/
+│   ├── web/             ← Next.js (commune website + desktop admin)
+│   └── mobile/          ← Expo (resident app + field admin)
+├── packages/
+│   └── shared/          ← TypeScript: types, queries, validation, constants
+├── supabase/            ← Database schema, RLS policies, Edge Functions
+├── turbo.json
+└── pnpm-workspace.yaml
+```
+
+The web and mobile apps serve different purposes (no code duplication). They share business logic via `packages/shared` and both talk to the same Supabase backend. One write (e.g. admin posts announcement) produces three outputs: mobile push notification, live web feed update, and commune website page (SSR).
 
 ### Multi-tenancy
 
@@ -134,8 +153,8 @@ Revenue diversification through featured listings.
 
 - Not social media (no likes, no algorithm, no DMs, no addiction mechanics)
 - Not a payment processor
-- Not a native app (PWA first — native only if needed later)
 - Not a generic CMS (the website is a mirror of app content, not independently editable)
+- Not a single-codebase-for-all-surfaces project — web and mobile are specialized apps sharing a backend and logic layer
 - No complex matching algorithms — feed + notifications is enough at village scale
 
 ## Launch Strategy
