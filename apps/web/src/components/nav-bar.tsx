@@ -69,6 +69,18 @@ export function NavBar() {
               Fil
             </Link>
             <Link
+              href="/app/evenements"
+              className="text-sm text-white/70 transition-colors hover:text-white"
+            >
+              Événements
+            </Link>
+            <Link
+              href="/app/mon-espace"
+              className="text-sm text-white/70 transition-colors hover:text-white"
+            >
+              Mon espace
+            </Link>
+            <Link
               href="/app/infos-pratiques"
               className="text-sm text-white/70 transition-colors hover:text-white"
             >
