@@ -10,8 +10,24 @@ import {
   View,
 } from "react-native";
 import { useLocalSearchParams } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
+import {
+  Megaphone,
+  Calendar,
+  HeartHandshake,
+  MessageSquare,
+  MapPin,
+  CalendarDays,
+  Pin,
+  Trash2,
+  Send,
+  CheckCircle,
+  HelpCircle,
+  XCircle,
+} from "lucide-react-native";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
+import { useTheme } from "@/lib/theme-context";
 import {
   getPostById,
   getComments,
@@ -49,13 +65,27 @@ type Comment = {
 
 const RSVP_LABELS: Record<string, string> = {
   going: "J'y vais",
-  maybe: "Peut-etre",
+  maybe: "Peut-être",
   not_going: "Pas dispo",
+};
+
+const RSVP_ICONS = {
+  going: CheckCircle,
+  maybe: HelpCircle,
+  not_going: XCircle,
+};
+
+const TYPE_ICONS: Record<string, typeof Megaphone> = {
+  annonce: Megaphone,
+  evenement: Calendar,
+  entraide: HeartHandshake,
+  discussion: MessageSquare,
 };
 
 export default function PostDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { profile, isAdmin } = useAuth();
+  const theme = useTheme();
   const [post, setPost] = useState<PostDetail | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [rsvpCounts, setRsvpCounts] = useState({ going: 0, maybe: 0, not_going: 0 });
@@ -81,7 +111,6 @@ export default function PostDetailScreen() {
     const counts = await getRsvpCounts(supabase, id);
     setRsvpCounts(counts);
 
-    // Get current user's RSVP
     if (profile) {
       const { data } = await supabase
         .from("rsvps")
@@ -155,57 +184,92 @@ export default function PostDetailScreen() {
 
   if (loading || !post) {
     return (
-      <View style={styles.center}>
-        <Text style={styles.loadingText}>Chargement...</Text>
+      <View style={[styles.center, { backgroundColor: theme.background }]}>
+        <Text style={[styles.loadingText, { color: theme.muted }]}>
+          Chargement...
+        </Text>
       </View>
     );
   }
 
-  const typeColor = POST_TYPE_COLORS[post.type as PostType] ?? "#6b7280";
+  const typeColor =
+    POST_TYPE_COLORS[post.type as PostType] ?? "#6b7280";
   const typeLabel = POST_TYPE_LABELS[post.type as PostType] ?? post.type;
+  const TypeIcon = TYPE_ICONS[post.type] ?? MessageSquare;
   const isEvent = post.type === "evenement";
   const createdDate = new Date(post.created_at).toLocaleDateString("fr-FR", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
+  const authorInitial =
+    post.profiles.display_name?.charAt(0)?.toUpperCase() ?? "?";
 
   return (
-    <View style={styles.wrapper}>
-      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-        {/* Header */}
+    <View style={[styles.wrapper, { backgroundColor: theme.background }]}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.content}
+      >
+        {/* Type badge row */}
         <View style={styles.headerRow}>
-          <View style={[styles.badge, { backgroundColor: typeColor }]}>
-            <Text style={styles.badgeText}>{typeLabel}</Text>
+          <View style={[styles.badge, { backgroundColor: typeColor + "18" }]}>
+            <TypeIcon size={12} color={typeColor} />
+            <Text style={[styles.badgeText, { color: typeColor }]}>
+              {typeLabel}
+            </Text>
           </View>
           {post.is_pinned && (
-            <View style={styles.pinnedBadge}>
-              <Text style={styles.pinnedText}>Epingle</Text>
+            <View style={[styles.pinnedBadge, { backgroundColor: theme.pinBg }]}>
+              <Pin size={11} color={theme.primary} />
+              <Text style={[styles.pinnedText, { color: theme.primary }]}>
+                Épinglé
+              </Text>
             </View>
           )}
         </View>
 
+        {/* Title */}
         <Text style={styles.title}>{post.title}</Text>
-        <Text style={styles.meta}>
-          {post.profiles.display_name} - {createdDate}
-        </Text>
+
+        {/* Author row */}
+        <View style={styles.authorRow}>
+          <View style={[styles.authorAvatar, { backgroundColor: typeColor + "28" }]}>
+            <Text style={[styles.authorInitial, { color: typeColor }]}>
+              {authorInitial}
+            </Text>
+          </View>
+          <View>
+            <Text style={styles.authorName}>
+              {post.profiles.display_name}
+            </Text>
+            <Text style={styles.metaDate}>{createdDate}</Text>
+          </View>
+        </View>
 
         {/* Event info */}
         {isEvent && (
-          <View style={styles.eventBox}>
+          <View style={[styles.eventBox, { backgroundColor: theme.pinBg }]}>
             {post.event_date && (
-              <Text style={styles.eventInfo}>
-                Date :{" "}
-                {new Date(post.event_date).toLocaleDateString("fr-FR", {
-                  weekday: "long",
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}
-              </Text>
+              <View style={styles.eventRow}>
+                <CalendarDays size={14} color={theme.primary} />
+                <Text style={[styles.eventInfo, { color: theme.primary }]}>
+                  {new Date(post.event_date).toLocaleDateString("fr-FR", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </Text>
+              </View>
             )}
             {post.event_location && (
-              <Text style={styles.eventInfo}>Lieu : {post.event_location}</Text>
+              <View style={styles.eventRow}>
+                <MapPin size={14} color={theme.primary} />
+                <Text style={[styles.eventInfo, { color: theme.primary }]}>
+                  {post.event_location}
+                </Text>
+              </View>
             )}
           </View>
         )}
@@ -232,33 +296,46 @@ export default function PostDetailScreen() {
           <View style={styles.rsvpSection}>
             <Text style={styles.sectionTitle}>Participez-vous ?</Text>
             <View style={styles.rsvpRow}>
-              {(["going", "maybe", "not_going"] as RsvpStatus[]).map((status) => (
-                <TouchableOpacity
-                  key={status}
-                  style={[
-                    styles.rsvpButton,
-                    userRsvp === status && styles.rsvpButtonActive,
-                  ]}
-                  onPress={() => handleRsvp(status)}
-                >
-                  <Text
-                    style={[
-                      styles.rsvpButtonText,
-                      userRsvp === status && styles.rsvpButtonTextActive,
-                    ]}
-                  >
-                    {RSVP_LABELS[status]}
-                  </Text>
-                  <Text
-                    style={[
-                      styles.rsvpCount,
-                      userRsvp === status && styles.rsvpCountActive,
-                    ]}
-                  >
-                    {rsvpCounts[status]}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+              {(["going", "maybe", "not_going"] as RsvpStatus[]).map(
+                (status) => {
+                  const isActive = userRsvp === status;
+                  const RsvpIcon = RSVP_ICONS[status];
+                  return (
+                    <TouchableOpacity
+                      key={status}
+                      style={[
+                        styles.rsvpButton,
+                        isActive && {
+                          backgroundColor: theme.primary,
+                          borderColor: theme.primary,
+                        },
+                      ]}
+                      onPress={() => handleRsvp(status)}
+                    >
+                      <RsvpIcon
+                        size={16}
+                        color={isActive ? "#FFFFFF" : theme.muted}
+                      />
+                      <Text
+                        style={[
+                          styles.rsvpButtonText,
+                          isActive && styles.rsvpButtonTextActive,
+                        ]}
+                      >
+                        {RSVP_LABELS[status]}
+                      </Text>
+                      <Text
+                        style={[
+                          styles.rsvpCount,
+                          isActive && styles.rsvpCountActive,
+                        ]}
+                      >
+                        {rsvpCounts[status]}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                }
+              )}
             </View>
           </View>
         )}
@@ -268,51 +345,79 @@ export default function PostDetailScreen() {
           <Text style={styles.sectionTitle}>
             Commentaires ({comments.length})
           </Text>
-          {comments.map((comment) => (
-            <View key={comment.id} style={styles.commentCard}>
-              <View style={styles.commentHeader}>
-                <Text style={styles.commentAuthor}>
-                  {comment.profiles.display_name}
-                </Text>
-                <Text style={styles.commentDate}>
-                  {new Date(comment.created_at).toLocaleDateString("fr-FR", {
-                    day: "numeric",
-                    month: "short",
-                  })}
-                </Text>
-                {(comment.author_id === profile?.id || isAdmin) && (
-                  <TouchableOpacity
-                    onPress={() => handleDeleteComment(comment.id)}
-                    style={styles.deleteButton}
+          {comments.map((comment) => {
+            const commentInitial =
+              comment.profiles.display_name?.charAt(0)?.toUpperCase() ?? "?";
+            return (
+              <View key={comment.id} style={styles.commentCard}>
+                <View style={styles.commentHeader}>
+                  <View
+                    style={[
+                      styles.commentAvatar,
+                      { backgroundColor: theme.pinBg },
+                    ]}
                   >
-                    <Text style={styles.deleteText}>Supprimer</Text>
-                  </TouchableOpacity>
-                )}
+                    <Text
+                      style={[
+                        styles.commentAvatarText,
+                        { color: theme.primary },
+                      ]}
+                    >
+                      {commentInitial}
+                    </Text>
+                  </View>
+                  <View style={styles.commentMeta}>
+                    <Text style={styles.commentAuthor}>
+                      {comment.profiles.display_name}
+                    </Text>
+                    <Text style={styles.commentDate}>
+                      {new Date(comment.created_at).toLocaleDateString(
+                        "fr-FR",
+                        { day: "numeric", month: "short" }
+                      )}
+                    </Text>
+                  </View>
+                  {(comment.author_id === profile?.id || isAdmin) && (
+                    <TouchableOpacity
+                      onPress={() => handleDeleteComment(comment.id)}
+                      style={styles.deleteButton}
+                    >
+                      <Trash2 size={14} color="#dc2626" />
+                    </TouchableOpacity>
+                  )}
+                </View>
+                <Text style={styles.commentBody}>{comment.body}</Text>
               </View>
-              <Text style={styles.commentBody}>{comment.body}</Text>
-            </View>
-          ))}
+            );
+          })}
           {comments.length === 0 && (
-            <Text style={styles.noComments}>Aucun commentaire pour le moment.</Text>
+            <Text style={styles.noComments}>
+              Aucun commentaire pour le moment.
+            </Text>
           )}
         </View>
       </ScrollView>
 
-      {/* Comment input */}
+      {/* Comment input bar */}
       <View style={styles.commentInputBar}>
         <TextInput
           style={styles.commentInput}
-          placeholder="Ecrire un commentaire..."
+          placeholder="Écrire un commentaire..."
           value={commentText}
           onChangeText={setCommentText}
           multiline
+          placeholderTextColor="#a1a1aa"
         />
         <TouchableOpacity
-          style={[styles.sendButton, submitting && styles.sendButtonDisabled]}
+          style={[
+            styles.sendButton,
+            { backgroundColor: theme.primary },
+            (submitting || !commentText.trim()) && styles.sendButtonDisabled,
+          ]}
           onPress={handleAddComment}
           disabled={submitting || !commentText.trim()}
         >
-          <Text style={styles.sendButtonText}>Envoyer</Text>
+          <Send size={16} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
     </View>
@@ -320,88 +425,183 @@ export default function PostDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  wrapper: { flex: 1, backgroundColor: "#fff" },
+  wrapper: { flex: 1 },
   container: { flex: 1 },
   content: { padding: 16, paddingBottom: 24 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
-  loadingText: { fontSize: 16, color: "#71717a" },
-  headerRow: { flexDirection: "row", gap: 8, marginBottom: 12 },
-  badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 6 },
-  badgeText: { color: "#fff", fontSize: 12, fontWeight: "600" },
-  pinnedBadge: {
-    paddingHorizontal: 10,
+  loadingText: { fontFamily: "DMSans_400Regular", fontSize: 16 },
+
+  headerRow: { flexDirection: "row", gap: 8, marginBottom: 12, alignItems: "center" },
+  badge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 6,
-    backgroundColor: "#fbbf24",
-  },
-  pinnedText: { color: "#78350f", fontSize: 12, fontWeight: "600" },
-  title: { fontSize: 22, fontWeight: "bold", color: "#18181b", marginBottom: 4 },
-  meta: { fontSize: 13, color: "#a1a1aa", marginBottom: 16 },
-  eventBox: {
-    backgroundColor: "#eff6ff",
     borderRadius: 8,
+  },
+  badgeText: { fontFamily: "DMSans_600SemiBold", fontSize: 11 },
+  pinnedBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  pinnedText: { fontFamily: "DMSans_500Medium", fontSize: 11 },
+
+  title: {
+    fontFamily: "DMSans_600SemiBold",
+    fontSize: 22,
+    color: "#18181b",
+    marginBottom: 12,
+    lineHeight: 30,
+  },
+
+  authorRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    marginBottom: 16,
+  },
+  authorAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  authorInitial: { fontFamily: "DMSans_600SemiBold", fontSize: 14 },
+  authorName: { fontFamily: "DMSans_600SemiBold", fontSize: 13, color: "#18181b" },
+  metaDate: { fontFamily: "DMSans_400Regular", fontSize: 12, color: "#a1a1aa" },
+
+  eventBox: {
+    borderRadius: 10,
     padding: 12,
     marginBottom: 16,
-    gap: 4,
+    gap: 8,
   },
-  eventInfo: { fontSize: 14, color: "#1e40af", fontWeight: "500" },
-  body: { fontSize: 16, color: "#3f3f46", lineHeight: 24, marginBottom: 16 },
+  eventRow: { flexDirection: "row", alignItems: "center", gap: 8 },
+  eventInfo: { fontFamily: "DMSans_500Medium", fontSize: 13 },
+
+  body: {
+    fontFamily: "DMSans_400Regular",
+    fontSize: 15,
+    color: "#3f3f46",
+    lineHeight: 24,
+    marginBottom: 16,
+  },
+
   imageSection: { gap: 12, marginBottom: 16 },
-  postImage: { width: "100%", height: 220, borderRadius: 8 },
+  postImage: { width: "100%", height: 220, borderRadius: 10 },
+
   rsvpSection: { marginBottom: 24 },
-  sectionTitle: { fontSize: 16, fontWeight: "600", color: "#18181b", marginBottom: 10 },
+  sectionTitle: {
+    fontFamily: "DMSans_600SemiBold",
+    fontSize: 15,
+    color: "#18181b",
+    marginBottom: 10,
+  },
   rsvpRow: { flexDirection: "row", gap: 8 },
   rsvpButton: {
     flex: 1,
     borderWidth: 1,
     borderColor: "#e4e4e7",
-    borderRadius: 8,
+    borderRadius: 10,
     padding: 10,
     alignItems: "center",
+    gap: 4,
+    backgroundColor: "#FFFFFF",
   },
-  rsvpButtonActive: { backgroundColor: "#18181b", borderColor: "#18181b" },
-  rsvpButtonText: { fontSize: 13, color: "#52525b", fontWeight: "500" },
-  rsvpButtonTextActive: { color: "#fff" },
-  rsvpCount: { fontSize: 16, fontWeight: "bold", color: "#18181b", marginTop: 2 },
-  rsvpCountActive: { color: "#fff" },
+  rsvpButtonText: {
+    fontFamily: "DMSans_500Medium",
+    fontSize: 12,
+    color: "#52525b",
+  },
+  rsvpButtonTextActive: { color: "#FFFFFF", fontFamily: "DMSans_600SemiBold" },
+  rsvpCount: {
+    fontFamily: "DMSans_600SemiBold",
+    fontSize: 16,
+    color: "#18181b",
+  },
+  rsvpCountActive: { color: "#FFFFFF" },
+
   commentsSection: { marginTop: 8 },
   commentCard: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#f4f4f5",
-    paddingVertical: 10,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 3,
+    elevation: 1,
   },
-  commentHeader: { flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 4 },
-  commentAuthor: { fontSize: 13, fontWeight: "600", color: "#18181b" },
-  commentDate: { fontSize: 12, color: "#a1a1aa" },
-  deleteButton: { marginLeft: "auto" },
-  deleteText: { fontSize: 12, color: "#dc2626" },
-  commentBody: { fontSize: 14, color: "#3f3f46", lineHeight: 20 },
-  noComments: { fontSize: 14, color: "#a1a1aa", paddingVertical: 8 },
+  commentHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 6,
+  },
+  commentAvatar: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  commentAvatarText: { fontFamily: "DMSans_600SemiBold", fontSize: 12 },
+  commentMeta: { flex: 1 },
+  commentAuthor: {
+    fontFamily: "DMSans_600SemiBold",
+    fontSize: 13,
+    color: "#18181b",
+  },
+  commentDate: { fontFamily: "DMSans_400Regular", fontSize: 11, color: "#a1a1aa" },
+  deleteButton: { padding: 4 },
+  commentBody: {
+    fontFamily: "DMSans_400Regular",
+    fontSize: 14,
+    color: "#3f3f46",
+    lineHeight: 20,
+  },
+  noComments: {
+    fontFamily: "DMSans_400Regular",
+    fontSize: 14,
+    color: "#a1a1aa",
+    paddingVertical: 8,
+    textAlign: "center",
+  },
+
   commentInputBar: {
     flexDirection: "row",
     alignItems: "flex-end",
     padding: 12,
     borderTopWidth: 1,
-    borderTopColor: "#e4e4e7",
-    backgroundColor: "#fff",
+    borderTopColor: "#F0E6D8",
+    backgroundColor: "#FFFFFF",
     gap: 8,
   },
   commentInput: {
     flex: 1,
     borderWidth: 1,
     borderColor: "#e4e4e7",
-    borderRadius: 8,
+    borderRadius: 10,
     padding: 10,
+    fontFamily: "DMSans_400Regular",
     fontSize: 14,
     maxHeight: 80,
     backgroundColor: "#fafafa",
+    color: "#18181b",
   },
   sendButton: {
-    backgroundColor: "#18181b",
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  sendButtonDisabled: { opacity: 0.5 },
-  sendButtonText: { color: "#fff", fontSize: 14, fontWeight: "600" },
+  sendButtonDisabled: { opacity: 0.4 },
 });
