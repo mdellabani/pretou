@@ -284,3 +284,127 @@ INSERT INTO rsvps (post_id, user_id, status) VALUES
   ('00000000-0000-0000-0000-000000001006', '00000000-0000-0000-0000-000000000101', 'going'),
   ('00000000-0000-0000-0000-000000001006', '00000000-0000-0000-0000-000000000102', 'maybe'),
   ('00000000-0000-0000-0000-000000001004', '00000000-0000-0000-0000-000000000102', 'going');
+
+-- ================================================
+-- ADDITIONAL POSTS from saintmedard64.fr/actu/
+-- ================================================
+
+-- Fermeture O'Médard Pâques
+INSERT INTO posts (id, commune_id, author_id, type, title, body, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000001011',
+  '00000000-0000-0000-0000-000000000010',
+  '00000000-0000-0000-0000-000000000100',
+  'annonce',
+  'Fermeture du O''Médard pour le week-end de Pâques',
+  'Le café O''Médard sera exceptionnellement fermé ce vendredi 3 avril et dimanche 5 avril pour le week-end de Pâques.
+
+Réouverture normale le vendredi suivant. Bonnes fêtes à tous !',
+  now() - interval '12 days'
+);
+
+-- O'Médard changement de régisseur
+INSERT INTO posts (id, commune_id, author_id, type, title, body, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000001012',
+  '00000000-0000-0000-0000-000000000010',
+  '00000000-0000-0000-0000-000000000100',
+  'annonce',
+  'O''Médard : changement de régisseur',
+  'Après plusieurs années de service au café communal O''Médard, Daniel Labielle prend une retraite bien méritée. Nous le remercions chaleureusement pour son engagement et sa bonne humeur qui ont fait du O''Médard un vrai lieu de vie pour le village.
+
+Un nouveau régisseur prendra ses fonctions prochainement. Les horaires d''ouverture seront communiqués dès que possible.
+
+Merci Daniel !',
+  now() - interval '44 days'
+);
+
+-- Route de Juren fermée
+INSERT INTO posts (id, commune_id, author_id, type, title, body, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000001013',
+  '00000000-0000-0000-0000-000000000010',
+  '00000000-0000-0000-0000-000000000100',
+  'annonce',
+  'Route de Juren fermée — Mercredi 11 février',
+  'Le mercredi 11 février 2026 de 13h à 17h, la route de Juren sera fermée à la circulation pour des travaux d''entretien.
+
+Déviation possible par la route de la crête. Merci de votre compréhension.',
+  now() - interval '63 days'
+);
+
+-- Vœux du maire
+INSERT INTO posts (id, commune_id, author_id, type, title, body, event_date, event_location, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000001014',
+  '00000000-0000-0000-0000-000000000010',
+  '00000000-0000-0000-0000-000000000100',
+  'evenement',
+  'Cérémonie des vœux du maire',
+  'Le maire et le conseil municipal vous convient à la cérémonie des vœux pour la nouvelle année.
+
+Au programme : allocution du maire, bilan de l''année écoulée et projets pour 2026, suivis d''un moment de convivialité autour du verre de l''amitié.
+
+Tous les habitants sont les bienvenus !',
+  '2026-01-17T18:00:00Z',
+  'Salle des fêtes de Saint-Médard',
+  now() - interval '87 days'
+);
+
+-- Intervention Enedis
+INSERT INTO posts (id, commune_id, author_id, type, title, body, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000001015',
+  '00000000-0000-0000-0000-000000000010',
+  '00000000-0000-0000-0000-000000000100',
+  'annonce',
+  'Intervention Enedis — Coupure électrique le 23 décembre',
+  'Enedis interviendra le mardi 23 décembre au matin sur le réseau électrique de la commune.
+
+Rues concernées : chemin du Moulin, route de Juren, chemin de la crête.
+Horaires : 8h30 à 12h30.
+
+Pensez à éteindre vos appareils sensibles avant la coupure.',
+  now() - interval '111 days'
+);
+
+-- Entraide: Garde de poules
+INSERT INTO posts (id, commune_id, author_id, type, title, body, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000001016',
+  '00000000-0000-0000-0000-000000000010',
+  '00000000-0000-0000-0000-000000000102',
+  'entraide',
+  'Qui pourrait garder mes poules pendant les vacances ?',
+  'Bonjour,
+
+Je pars en vacances du 28 avril au 5 mai et je cherche quelqu''un qui pourrait passer donner à manger à mes 4 poules (chemin du Moulin).
+
+C''est très simple : un seau de grain le matin et vérifier qu''elles ont de l''eau. En échange vous pouvez garder les œufs !
+
+Merci d''avance.',
+  now() - interval '3 hours'
+);
+
+-- Discussion: Pétanque
+INSERT INTO posts (id, commune_id, author_id, type, title, body, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000001017',
+  '00000000-0000-0000-0000-000000000010',
+  '00000000-0000-0000-0000-000000000101',
+  'discussion',
+  'Concours de pétanque Saint-Médard Loisirs — Qui participe ?',
+  'Saint-Médard Loisirs organise un concours de pétanque le dimanche 4 mai sur le terrain derrière la salle des fêtes.
+
+Inscription en doublette, 5€ par équipe. Qui est chaud ? On peut monter une équipe ensemble si quelqu''un cherche un partenaire.',
+  now() - interval '8 hours'
+);
+
+-- Additional comments
+INSERT INTO comments (post_id, author_id, body, created_at) VALUES
+  ('00000000-0000-0000-0000-000000001016', '00000000-0000-0000-0000-000000000101', 'Je peux passer le matin avant le boulot, c''est sur ma route. Envoie-moi un message pour les détails !', now() - interval '2 hours');
+
+-- Additional RSVPs
+INSERT INTO rsvps (post_id, user_id, status) VALUES
+  ('00000000-0000-0000-0000-000000001014', '00000000-0000-0000-0000-000000000101', 'going'),
+  ('00000000-0000-0000-0000-000000001014', '00000000-0000-0000-0000-000000000102', 'going');
