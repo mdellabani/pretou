@@ -8,13 +8,16 @@ import {
   View,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { CalendarDays, MapPin } from "lucide-react-native";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
+import { useTheme } from "@/lib/theme-context";
 import { getPostsByType } from "@rural-community-platform/shared";
 import type { Post } from "@rural-community-platform/shared";
 
 export default function EventsScreen() {
   const { profile } = useAuth();
+  const theme = useTheme();
   const router = useRouter();
   const [events, setEvents] = useState<Post[]>([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -24,7 +27,6 @@ export default function EventsScreen() {
     if (!profile?.commune_id) return;
     const { data } = await getPostsByType(supabase, profile.commune_id, "evenement");
     if (data) {
-      // Filter to upcoming events (event_date >= today or no event_date)
       const now = new Date().toISOString();
       const upcoming = (data as Post[]).filter(
         (e) => !e.event_date || e.event_date >= now
@@ -44,18 +46,25 @@ export default function EventsScreen() {
   }
 
   function formatDate(dateStr: string | null) {
-    if (!dateStr) return "Date a definir";
+    if (!dateStr) return "Date à définir";
     return new Date(dateStr).toLocaleDateString("fr-FR", {
       weekday: "long",
       day: "numeric",
       month: "long",
-      year: "numeric",
+    });
+  }
+
+  function formatTime(dateStr: string | null) {
+    if (!dateStr) return "";
+    return new Date(dateStr).toLocaleTimeString("fr-FR", {
+      hour: "2-digit",
+      minute: "2-digit",
     });
   }
 
   if (loading) {
     return (
-      <View style={styles.center}>
+      <View style={[styles.center, { backgroundColor: theme.background }]}>
         <Text style={styles.loadingText}>Chargement...</Text>
       </View>
     );
@@ -65,6 +74,7 @@ export default function EventsScreen() {
     <FlatList
       data={events}
       keyExtractor={(item) => item.id}
+      style={{ backgroundColor: theme.background }}
       contentContainerStyle={events.length === 0 ? styles.emptyContainer : styles.list}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -75,24 +85,48 @@ export default function EventsScreen() {
           onPress={() => router.push(`/post/${item.id}`)}
           activeOpacity={0.7}
         >
-          <View style={styles.dateBadge}>
-            <Text style={styles.dateText}>{formatDate(item.event_date)}</Text>
+          {/* Date + time row */}
+          <View style={[styles.dateRow, { backgroundColor: theme.pinBg }]}>
+            <CalendarDays size={14} color={theme.primary} />
+            <Text style={[styles.dateText, { color: theme.primary }]}>
+              {formatDate(item.event_date)}
+              {item.event_date ? ` · ${formatTime(item.event_date)}` : ""}
+            </Text>
           </View>
+
           <Text style={styles.title}>{item.title}</Text>
+
           {item.event_location && (
-            <Text style={styles.location}>{item.event_location}</Text>
+            <View style={styles.locationRow}>
+              <MapPin size={13} color={theme.muted} />
+              <Text style={[styles.location, { color: theme.primary }]}>
+                {item.event_location}
+              </Text>
+            </View>
           )}
+
           <Text style={styles.body} numberOfLines={2}>
             {item.body}
           </Text>
-          <Text style={styles.author}>
-            {item.profiles?.display_name ?? "Anonyme"}
-          </Text>
+
+          <View style={styles.metaRow}>
+            <Text style={[styles.author, { color: theme.muted }]}>
+              {item.profiles?.display_name ?? "Anonyme"}
+            </Text>
+            {item.rsvps && item.rsvps.filter((r) => r.status === "going").length > 0 && (
+              <Text style={[styles.rsvpCount, { color: theme.primary }]}>
+                {item.rsvps.filter((r) => r.status === "going").length} participant
+                {item.rsvps.filter((r) => r.status === "going").length > 1 ? "s" : ""}
+              </Text>
+            )}
+          </View>
         </TouchableOpacity>
       )}
       ListEmptyComponent={
         <View style={styles.center}>
-          <Text style={styles.emptyText}>Aucun evenement a venir.</Text>
+          <Text style={[styles.emptyText, { color: theme.muted }]}>
+            Aucun événement à venir.
+          </Text>
         </View>
       }
     />
@@ -100,31 +134,71 @@ export default function EventsScreen() {
 }
 
 const styles = StyleSheet.create({
-  list: { paddingVertical: 8 },
+  list: { padding: 16, gap: 12 },
   center: { flex: 1, justifyContent: "center", alignItems: "center", padding: 24 },
   emptyContainer: { flex: 1 },
-  loadingText: { fontSize: 16, color: "#71717a" },
-  emptyText: { fontSize: 16, color: "#71717a", textAlign: "center" },
+  loadingText: { fontFamily: "DMSans_500Medium", fontSize: 16, color: "#a1a1aa" },
+  emptyText: { fontFamily: "DMSans_500Medium", fontSize: 16, textAlign: "center" },
   card: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 14,
     padding: 16,
-    marginHorizontal: 16,
-    marginVertical: 6,
     borderWidth: 1,
-    borderColor: "#e4e4e7",
+    borderColor: "#f0e8da",
+    shadowColor: "#8a7850",
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
   },
-  dateBadge: {
-    backgroundColor: "#eff6ff",
-    borderRadius: 6,
+  dateRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
     paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingVertical: 6,
+    borderRadius: 8,
     alignSelf: "flex-start",
+    marginBottom: 10,
+  },
+  dateText: {
+    fontFamily: "DMSans_600SemiBold",
+    fontSize: 12,
+  },
+  title: {
+    fontFamily: "DMSans_600SemiBold",
+    fontSize: 16,
+    color: "#2E2118",
+    marginBottom: 6,
+  },
+  locationRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
     marginBottom: 8,
   },
-  dateText: { color: "#2563eb", fontSize: 13, fontWeight: "600" },
-  title: { fontSize: 17, fontWeight: "bold", color: "#18181b", marginBottom: 4 },
-  location: { fontSize: 14, color: "#2563eb", marginBottom: 4 },
-  body: { fontSize: 14, color: "#52525b", lineHeight: 20, marginBottom: 8 },
-  author: { fontSize: 12, color: "#a1a1aa" },
+  location: {
+    fontFamily: "DMSans_500Medium",
+    fontSize: 13,
+  },
+  body: {
+    fontFamily: "DMSans_400Regular",
+    fontSize: 13,
+    color: "#907B64",
+    lineHeight: 20,
+    marginBottom: 10,
+  },
+  metaRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  author: {
+    fontFamily: "DMSans_400Regular",
+    fontSize: 12,
+  },
+  rsvpCount: {
+    fontFamily: "DMSans_600SemiBold",
+    fontSize: 12,
+  },
 });
