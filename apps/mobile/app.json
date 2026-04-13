@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "rural-community-platform",
-    "slug": "rural-community-platform",
+    "name": "Ma Commune",
+    "slug": "ma-commune",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "scheme": "rural-community-platform",
+    "scheme": "ma-commune",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -15,14 +15,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.rural-community-platform.app"
+      "bundleIdentifier": "com.macommune.app"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.rural-community-platform.app"
+      "package": "com.macommune.app"
     },
     "web": {
       "bundler": "metro",
