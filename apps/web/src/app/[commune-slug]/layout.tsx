@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { getCommuneBySlug } from "@rural-community-platform/shared";
+import { ThemeInjector } from "@/components/theme-injector";
 
 export default async function CommuneLayout({
   children,
@@ -19,38 +20,82 @@ export default async function CommuneLayout({
     notFound();
   }
 
-  const primaryColor = commune.primary_color ?? "#1e40af";
-
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      <header
-        className="text-white shadow-md"
-        style={{ backgroundColor: primaryColor }}
-      >
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href={`/${slug}`} className="text-xl font-bold hover:opacity-90">
-            {commune.name}
-          </Link>
+    <div className="flex min-h-screen flex-col bg-[var(--theme-background)]">
+      <ThemeInjector theme={commune.theme} />
+
+      {/* Thin gradient accent bar */}
+      <div
+        className="h-1"
+        style={{
+          background:
+            "linear-gradient(90deg, var(--theme-gradient-1), var(--theme-gradient-2), var(--theme-gradient-3))",
+        }}
+      />
+
+      {/* White institutional header */}
+      <header className="border-b border-[var(--border)] bg-white">
+        <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
+          <div className="flex items-center gap-3">
+            {commune.blason_url && (
+              <img
+                src={commune.blason_url}
+                alt={`Blason de ${commune.name}`}
+                className="h-10 w-10 object-contain"
+              />
+            )}
+            <div>
+              <Link
+                href={`/${slug}`}
+                className="text-xl font-semibold transition-opacity hover:opacity-80"
+                style={{ color: "var(--theme-primary)" }}
+              >
+                {commune.name}
+              </Link>
+              {commune.code_postal && (
+                <p className="text-xs text-[var(--muted-foreground)]">
+                  {commune.code_postal}
+                </p>
+              )}
+              {commune.motto && (
+                <p className="text-xs italic text-[var(--muted-foreground)]">
+                  {commune.motto}
+                </p>
+              )}
+            </div>
+          </div>
           <nav className="flex gap-6 text-sm font-medium">
-            <Link href={`/${slug}`} className="hover:opacity-80 transition-opacity">
+            <Link
+              href={`/${slug}`}
+              className="text-[var(--muted-foreground)] transition-colors hover:text-[var(--theme-primary)]"
+            >
               Accueil
             </Link>
-            <Link href={`/${slug}/evenements`} className="hover:opacity-80 transition-opacity">
-              Événements
+            <Link
+              href={`/${slug}/evenements`}
+              className="text-[var(--muted-foreground)] transition-colors hover:text-[var(--theme-primary)]"
+            >
+              Evenements
+            </Link>
+            <Link
+              href={`/${slug}/infos-pratiques`}
+              className="text-[var(--muted-foreground)] transition-colors hover:text-[var(--theme-primary)]"
+            >
+              Infos pratiques
             </Link>
           </nav>
         </div>
       </header>
 
-      <main className="flex-1 max-w-4xl mx-auto w-full px-4 py-8">
+      <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8">
         {children}
       </main>
 
-      <footer className="border-t border-gray-200 bg-white mt-auto">
-        <div className="max-w-4xl mx-auto px-4 py-6 text-center text-sm text-gray-500">
+      <footer className="mt-auto border-t border-[var(--border)] bg-white">
+        <div className="mx-auto max-w-4xl px-4 py-6 text-center text-sm text-[var(--muted-foreground)]">
           <p>
             Commune de{" "}
-            <span className="font-medium text-gray-700">{commune.name}</span>
+            <span className="font-medium text-[var(--foreground)]">{commune.name}</span>
             {commune.code_postal && (
               <span> — {commune.code_postal}</span>
             )}

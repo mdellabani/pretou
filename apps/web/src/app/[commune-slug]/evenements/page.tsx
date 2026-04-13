@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { data: commune } = await getCommuneBySlug(supabase, slug);
 
   return {
-    title: commune ? `Événements — ${commune.name}` : "Événements",
+    title: commune ? `Evenements — ${commune.name}` : "Evenements",
   };
 }
 
@@ -65,38 +65,41 @@ export default async function EvenementsPage({ params }: Props) {
 
   return (
     <div className="space-y-10">
-      <h1 className="text-2xl font-bold text-gray-900">
-        Événements à {commune.name}
+      <h1 className="text-2xl font-semibold text-[var(--foreground)]">
+        Evenements a {commune.name}
       </h1>
 
       {/* Upcoming events */}
       <section>
-        <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
-          À venir
+        <h2
+          className="mb-4 border-b-2 pb-2 text-xl font-semibold"
+          style={{ borderColor: "var(--theme-primary)", color: "var(--foreground)" }}
+        >
+          A venir
         </h2>
         {upcoming && upcoming.length > 0 ? (
           <div className="space-y-4">
             {upcoming.map((event) => (
               <article
                 key={event.id}
-                className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm"
+                className="rounded-[14px] bg-white p-5 shadow-[0_1px_6px_rgba(160,130,90,0.06)]"
               >
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-lg font-semibold text-[var(--foreground)]">
                   {event.title}
                 </h3>
                 {event.event_date && (
-                  <div className="mt-2 flex flex-col gap-0.5 text-sm text-gray-600">
+                  <div className="mt-2 flex flex-col gap-0.5 text-sm text-[var(--muted-foreground)]">
                     <time dateTime={event.event_date} className="font-medium">
-                      {formatEventDate(event.event_date)} à{" "}
+                      {formatEventDate(event.event_date)} a{" "}
                       {formatEventTime(event.event_date)}
                     </time>
                     {event.event_location && (
-                      <p>📍 {event.event_location}</p>
+                      <p>{event.event_location}</p>
                     )}
                   </div>
                 )}
                 {event.body && (
-                  <p className="text-gray-700 mt-3 text-sm whitespace-pre-line">
+                  <p className="mt-3 whitespace-pre-line text-sm text-[var(--foreground)]/80">
                     {event.body}
                   </p>
                 )}
@@ -104,8 +107,8 @@ export default async function EvenementsPage({ params }: Props) {
             ))}
           </div>
         ) : (
-          <p className="text-gray-500 text-sm">
-            Aucun événement à venir pour le moment.
+          <p className="text-sm text-[var(--muted-foreground)]">
+            Aucun evenement a venir pour le moment.
           </p>
         )}
       </section>
@@ -113,30 +116,33 @@ export default async function EvenementsPage({ params }: Props) {
       {/* Past events */}
       {past && past.length > 0 && (
         <section>
-          <h2 className="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
-            Événements passés
+          <h2
+            className="mb-4 border-b-2 pb-2 text-xl font-semibold"
+            style={{ borderColor: "var(--theme-muted)", color: "var(--foreground)" }}
+          >
+            Evenements passes
           </h2>
           <div className="space-y-4">
             {past.map((event) => (
               <article
                 key={event.id}
-                className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm opacity-75"
+                className="rounded-[14px] bg-white p-5 opacity-60 shadow-[0_1px_6px_rgba(160,130,90,0.06)]"
               >
-                <h3 className="text-lg font-semibold text-gray-700">
+                <h3 className="text-lg font-semibold text-[var(--foreground)]">
                   {event.title}
                 </h3>
                 {event.event_date && (
-                  <div className="mt-2 flex flex-col gap-0.5 text-sm text-gray-500">
+                  <div className="mt-2 flex flex-col gap-0.5 text-sm text-[var(--muted-foreground)]">
                     <time dateTime={event.event_date}>
                       {formatEventDate(event.event_date)}
                     </time>
                     {event.event_location && (
-                      <p>📍 {event.event_location}</p>
+                      <p>{event.event_location}</p>
                     )}
                   </div>
                 )}
                 {event.body && (
-                  <p className="text-gray-600 mt-3 text-sm line-clamp-2">
+                  <p className="mt-3 line-clamp-2 text-sm text-[var(--muted-foreground)]">
                     {event.body}
                   </p>
                 )}

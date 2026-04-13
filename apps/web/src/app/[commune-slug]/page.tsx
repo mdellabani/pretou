@@ -49,26 +49,45 @@ export default async function CommuneHomePage({ params }: Props) {
 
   return (
     <div className="space-y-10">
+      {/* Hero image */}
+      {commune.hero_image_url && (
+        <img
+          src={commune.hero_image_url}
+          alt={`${commune.name}`}
+          className="max-h-80 w-full rounded-xl object-cover"
+        />
+      )}
+
+      {/* Description */}
+      {commune.description && (
+        <p className="text-[var(--foreground)] leading-relaxed">
+          {commune.description}
+        </p>
+      )}
+
       {/* Upcoming events section */}
       {events && events.length > 0 && (
         <section>
-          <h2 className="text-xl font-bold text-gray-800 mb-4 pb-2 border-b border-gray-200">
-            Prochains événements
+          <h2
+            className="mb-4 border-b-2 pb-2 text-xl font-semibold"
+            style={{ borderColor: "var(--theme-primary)", color: "var(--foreground)" }}
+          >
+            Prochains evenements
           </h2>
           <div className="space-y-4">
             {events.map((event) => (
               <article
                 key={event.id}
-                className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm"
+                className="rounded-[14px] bg-white p-5 shadow-[0_1px_6px_rgba(160,130,90,0.06)]"
               >
                 <div className="flex items-start justify-between gap-4">
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-lg font-semibold text-[var(--foreground)]">
                     {event.title}
                   </h3>
                   {event.event_date && (
                     <time
                       dateTime={event.event_date}
-                      className="text-sm text-gray-500 whitespace-nowrap shrink-0"
+                      className="shrink-0 whitespace-nowrap text-sm text-[var(--muted-foreground)]"
                     >
                       {new Date(event.event_date).toLocaleDateString("fr-FR", {
                         day: "numeric",
@@ -79,12 +98,12 @@ export default async function CommuneHomePage({ params }: Props) {
                   )}
                 </div>
                 {event.event_location && (
-                  <p className="text-sm text-gray-500 mt-1">
-                    📍 {event.event_location}
+                  <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+                    {event.event_location}
                   </p>
                 )}
                 {event.body && (
-                  <p className="text-gray-700 mt-2 text-sm line-clamp-3">
+                  <p className="mt-2 line-clamp-3 text-sm text-[var(--foreground)]/80">
                     {event.body}
                   </p>
                 )}
@@ -96,23 +115,26 @@ export default async function CommuneHomePage({ params }: Props) {
 
       {/* Announcements section */}
       <section>
-        <h2 className="text-xl font-bold text-gray-800 mb-4 pb-2 border-b border-gray-200">
-          Annonces officielles
+        <h2
+          className="mb-4 border-b-2 pb-2 text-xl font-semibold"
+          style={{ borderColor: "var(--theme-primary)", color: "var(--foreground)" }}
+        >
+          Dernieres annonces
         </h2>
         {announcements && announcements.length > 0 ? (
           <div className="space-y-4">
             {announcements.map((post) => (
               <article
                 key={post.id}
-                className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm"
+                className="rounded-[14px] bg-white p-5 shadow-[0_1px_6px_rgba(160,130,90,0.06)]"
               >
                 <div className="flex items-start justify-between gap-4">
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-lg font-semibold text-[var(--foreground)]">
                     {post.title}
                   </h3>
                   <time
                     dateTime={post.created_at}
-                    className="text-sm text-gray-500 whitespace-nowrap shrink-0"
+                    className="shrink-0 whitespace-nowrap text-sm text-[var(--muted-foreground)]"
                   >
                     {new Date(post.created_at).toLocaleDateString("fr-FR", {
                       day: "numeric",
@@ -121,17 +143,35 @@ export default async function CommuneHomePage({ params }: Props) {
                     })}
                   </time>
                 </div>
-                <p className="text-gray-700 mt-2 text-sm line-clamp-3">
+                <p className="mt-2 line-clamp-3 text-sm text-[var(--foreground)]/80">
                   {post.body}
                 </p>
               </article>
             ))}
           </div>
         ) : (
-          <p className="text-gray-500 text-sm">
+          <p className="text-sm text-[var(--muted-foreground)]">
             Aucune annonce pour le moment.
           </p>
         )}
+      </section>
+
+      {/* App download banner */}
+      <section className="rounded-[14px] p-6 text-center" style={{ backgroundColor: "var(--theme-pin-bg)" }}>
+        <h2 className="text-lg font-semibold text-[var(--foreground)]">
+          Restez connecte avec votre commune
+        </h2>
+        <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+          Telechargez l&apos;application mobile pour recevoir les notifications et participer a la vie locale.
+        </p>
+        <div className="mt-4 flex items-center justify-center gap-4">
+          <span className="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white">
+            App Store
+          </span>
+          <span className="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white">
+            Google Play
+          </span>
+        </div>
       </section>
     </div>
   );
