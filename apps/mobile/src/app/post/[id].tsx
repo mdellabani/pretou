@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import {
   Alert,
   Image,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -9,6 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import {
@@ -205,8 +208,14 @@ export default function PostDetailScreen() {
   const authorInitial =
     post.profiles.display_name?.charAt(0)?.toUpperCase() ?? "?";
 
+  const insets = useSafeAreaInsets();
+
   return (
-    <View style={[styles.wrapper, { backgroundColor: theme.background }]}>
+    <KeyboardAvoidingView
+      style={[styles.wrapper, { backgroundColor: theme.background }]}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+    >
       <Stack.Screen options={{ title: "Publication", headerBackTitle: "Retour" }} />
       <ScrollView
         style={styles.container}
@@ -400,7 +409,7 @@ export default function PostDetailScreen() {
       </ScrollView>
 
       {/* Comment input bar */}
-      <View style={styles.commentInputBar}>
+      <View style={[styles.commentInputBar, { paddingBottom: Math.max(insets.bottom, 12) }]}>
         <TextInput
           style={styles.commentInput}
           placeholder="Écrire un commentaire..."
@@ -421,7 +430,7 @@ export default function PostDetailScreen() {
           <Send size={16} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
