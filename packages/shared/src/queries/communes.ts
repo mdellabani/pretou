@@ -1,0 +1,24 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "../types";
+
+type Client = SupabaseClient<Database>;
+
+export async function getCommune(client: Client, communeId: string) {
+  return client.from("communes").select("*, epci(name)").eq("id", communeId).single();
+}
+
+export async function getCommuneBySlug(client: Client, slug: string) {
+  return client.from("communes").select("*, epci(name)").eq("slug", slug).single();
+}
+
+export async function getCommunesByEpci(client: Client, epciId: string) {
+  return client.from("communes").select("id, name, slug").eq("epci_id", epciId);
+}
+
+export async function getAllCommunes(client: Client) {
+  return client.from("communes").select("id, name, slug, code_postal").order("name");
+}
+
+export async function getCommuneByInviteCode(client: Client, inviteCode: string) {
+  return client.from("communes").select("id, name, slug").eq("invite_code", inviteCode).single();
+}
