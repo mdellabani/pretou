@@ -22,6 +22,7 @@ interface PostManagementProps {
   page: number;
   perPage: number;
   typeFilter: string | null;
+  dateFilter: string | null;
 }
 
 const PER_PAGE_OPTIONS = [10, 25, 50];
@@ -32,8 +33,14 @@ const TYPE_OPTIONS: Array<{ value: string; label: string }> = [
   { value: "entraide", label: POST_TYPE_LABELS.entraide },
   { value: "discussion", label: POST_TYPE_LABELS.discussion },
 ];
+const DATE_OPTIONS: Array<{ value: string; label: string }> = [
+  { value: "", label: "Toutes les dates" },
+  { value: "today", label: "Aujourd'hui" },
+  { value: "week", label: "Cette semaine" },
+  { value: "month", label: "Ce mois" },
+];
 
-export function PostManagement({ posts, totalCount, page, perPage, typeFilter }: PostManagementProps) {
+export function PostManagement({ posts, totalCount, page, perPage, typeFilter, dateFilter }: PostManagementProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -48,7 +55,7 @@ export function PostManagement({ posts, totalCount, page, perPage, typeFilter }:
       }
     }
     // Reset page when changing filters
-    if ("type" in params || "perPage" in params) {
+    if ("type" in params || "date" in params || "perPage" in params) {
       sp.delete("page");
     }
     const qs = sp.toString();
@@ -92,6 +99,17 @@ export function PostManagement({ posts, totalCount, page, perPage, typeFilter }:
               ))}
             </select>
           </div>
+
+          {/* Date filter */}
+          <select
+            value={dateFilter ?? ""}
+            onChange={(e) => router.push(buildUrl({ date: e.target.value }))}
+            className="rounded-lg border border-[var(--border)] bg-white px-2.5 py-1.5 text-xs font-medium text-[var(--foreground)] outline-none focus:ring-1 focus:ring-[var(--theme-primary)]"
+          >
+            {DATE_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            ))}
+          </select>
 
           {/* Per page */}
           <select

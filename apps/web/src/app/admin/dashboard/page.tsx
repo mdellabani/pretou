@@ -15,13 +15,16 @@ import { CreatePostDialog } from "@/components/create-post-dialog";
 export default async function AdminDashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; perPage?: string; type?: string }>;
+  searchParams: Promise<{ page?: string; perPage?: string; type?: string; date?: string }>;
 }) {
   const params = await searchParams;
   const page = Math.max(1, parseInt(params.page ?? "1", 10) || 1);
   const perPage = [10, 25, 50].includes(Number(params.perPage)) ? Number(params.perPage) : 10;
   const typeFilter = params.type && ["annonce", "evenement", "entraide", "discussion"].includes(params.type)
     ? params.type
+    : null;
+  const dateFilter = params.date && ["today", "week", "month"].includes(params.date)
+    ? params.date
     : null;
 
   const supabase = await createClient();
@@ -45,12 +48,26 @@ export default async function AdminDashboardPage({
     .eq("commune_id", profile.commune_id)
     .gte("created_at", oneWeekAgo.toISOString());
 
-  // Count total posts (with optional type filter)
+  // Compute date filter boundary
+  let dateSince: string | null = null;
+  if (dateFilter === "today") {
+    const d = new Date(); d.setHours(0, 0, 0, 0);
+    dateSince = d.toISOString();
+  } else if (dateFilter === "week") {
+    const d = new Date(); d.setDate(d.getDate() - 7);
+    dateSince = d.toISOString();
+  } else if (dateFilter === "month") {
+    const d = new Date(); d.setDate(d.getDate() - 30);
+    dateSince = d.toISOString();
+  }
+
+  // Count total posts (with optional filters)
   let countQuery = supabase
     .from("posts")
     .select("id", { count: "exact", head: true })
     .eq("commune_id", profile.commune_id);
   if (typeFilter) countQuery = countQuery.eq("type", typeFilter);
+  if (dateSince) countQuery = countQuery.gte("created_at", dateSince);
   const { count: totalCount } = await countQuery;
 
   // Fetch paginated posts
@@ -63,6 +80,7 @@ export default async function AdminDashboardPage({
     .order("created_at", { ascending: false })
     .range(from, to);
   if (typeFilter) postsQuery = postsQuery.eq("type", typeFilter);
+  if (dateSince) postsQuery = postsQuery.gte("created_at", dateSince);
   const { data: posts } = await postsQuery;
 
   // Extract events for calendar
@@ -112,6 +130,7 @@ export default async function AdminDashboardPage({
         page={page}
         perPage={perPage}
         typeFilter={typeFilter}
+        dateFilter={dateFilter}
       />
     </div>
   );
