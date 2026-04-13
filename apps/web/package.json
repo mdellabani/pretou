@@ -15,6 +15,7 @@
     "db:reset": "supabase db reset"
   },
   "dependencies": {
+    "@rural-community-platform/shared": "workspace:*",
     "@radix-ui/react-slot": "^1.2.0",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.49.0",
