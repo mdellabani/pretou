@@ -4,12 +4,13 @@ import {
   RefreshControl,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { PostCard } from "@/components/post-card";
-import { getPosts } from "@rural-community-platform/shared";
+import { getPosts, getEpciPosts } from "@rural-community-platform/shared";
 import type { Post } from "@rural-community-platform/shared";
 
 export default function FeedScreen() {
@@ -17,12 +18,18 @@ export default function FeedScreen() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [scope, setScope] = useState<"commune" | "epci">("commune");
 
   const loadPosts = useCallback(async () => {
     if (!profile?.commune_id) return;
-    const { data } = await getPosts(supabase, profile.commune_id);
+
+    const { data } =
+      scope === "epci" && profile.communes?.epci_id
+        ? await getEpciPosts(supabase, profile.communes.epci_id)
+        : await getPosts(supabase, profile.commune_id);
+
     if (data) setPosts(data as Post[]);
-  }, [profile?.commune_id]);
+  }, [profile?.commune_id, profile?.communes?.epci_id, scope]);
 
   useEffect(() => {
     loadPosts().then(() => setLoading(false));
@@ -76,6 +83,26 @@ export default function FeedScreen() {
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
+      ListHeaderComponent={
+        <View style={styles.toggleContainer}>
+          <TouchableOpacity
+            onPress={() => setScope("commune")}
+            style={[styles.toggleButton, scope === "commune" && styles.toggleButtonActive]}
+          >
+            <Text style={[styles.toggleText, scope === "commune" && styles.toggleTextActive]}>
+              Ma commune
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setScope("epci")}
+            style={[styles.toggleButton, scope === "epci" && styles.toggleButtonActive]}
+          >
+            <Text style={[styles.toggleText, scope === "epci" && styles.toggleTextActive]}>
+              Intercommunalité
+            </Text>
+          </TouchableOpacity>
+        </View>
+      }
       ListEmptyComponent={
         <View style={styles.center}>
           <Text style={styles.emptyText}>Aucune publication pour le moment.</Text>
@@ -95,4 +122,27 @@ const styles = StyleSheet.create({
   loadingText: { fontSize: 16, color: "#71717a" },
   emptyText: { fontSize: 16, color: "#71717a", textAlign: "center" },
   emptySubtext: { fontSize: 14, color: "#a1a1aa", textAlign: "center", marginTop: 4 },
+  toggleContainer: {
+    flexDirection: "row",
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  toggleButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: "#f4f4f5",
+  },
+  toggleButtonActive: {
+    backgroundColor: "#18181b",
+  },
+  toggleText: {
+    fontSize: 14,
+    color: "#71717a",
+  },
+  toggleTextActive: {
+    color: "#ffffff",
+    fontWeight: "600",
+  },
 });
