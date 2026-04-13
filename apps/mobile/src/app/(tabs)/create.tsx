@@ -28,7 +28,8 @@ import { POST_TYPE_LABELS, POST_TYPE_COLORS } from "@rural-community-platform/sh
 import type { PostType } from "@rural-community-platform/shared";
 import type { ImagePickerAsset } from "expo-image-picker";
 
-const POST_TYPES: PostType[] = ["annonce", "evenement", "entraide", "discussion"];
+const ADMIN_POST_TYPES: PostType[] = ["annonce", "evenement", "entraide", "discussion"];
+const RESIDENT_POST_TYPES: PostType[] = ["evenement", "entraide", "discussion"];
 
 const TYPE_ICONS: Record<PostType, typeof Megaphone> = {
   annonce: Megaphone,
@@ -38,7 +39,7 @@ const TYPE_ICONS: Record<PostType, typeof Megaphone> = {
 };
 
 export default function CreatePostScreen() {
-  const { profile } = useAuth();
+  const { profile, isAdmin } = useAuth();
   const theme = useTheme();
   const router = useRouter();
   const [type, setType] = useState<PostType>("discussion");
@@ -134,7 +135,7 @@ export default function CreatePostScreen() {
       {/* Type pills */}
       <Text style={styles.sectionTitle}>Type de publication</Text>
       <View style={styles.typeRow}>
-        {POST_TYPES.map((t) => {
+        {(isAdmin ? ADMIN_POST_TYPES : RESIDENT_POST_TYPES).map((t) => {
           const isActive = type === t;
           const tColor = POST_TYPE_COLORS[t];
           const Icon = TYPE_ICONS[t];
