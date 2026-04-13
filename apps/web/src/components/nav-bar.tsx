@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useProfile } from "@/hooks/use-profile";
-import { LogOut } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 
 export function NavBar() {
   const router = useRouter();
@@ -92,6 +92,13 @@ export function NavBar() {
           <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/30 bg-white/15 text-xs font-semibold text-white">
             {initials}
           </div>
+          <Link
+            href="/app/settings"
+            className="text-white/70 transition-colors hover:text-white"
+            aria-label="Paramètres"
+          >
+            <Settings className="h-4 w-4" />
+          </Link>
           <button
             onClick={handleLogout}
             className="text-white/70 transition-colors hover:text-white"

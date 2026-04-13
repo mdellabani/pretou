@@ -1,4 +1,13 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Stack, useRouter } from "expo-router";
 import { ShieldCheck, LogOut, ChevronRight } from "lucide-react-native";
 import { supabase } from "@/lib/supabase";
@@ -11,6 +20,24 @@ export default function ProfileScreen() {
   const { profile, isAdmin } = useAuth();
   const theme = useTheme();
   const router = useRouter();
+  const [displayName, setDisplayName] = useState(profile?.display_name ?? "");
+  const [saving, setSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "success" | "error">("idle");
+
+  async function handleSaveName() {
+    if (!profile || !displayName.trim()) return;
+    setSaving(true);
+    setSaveStatus("idle");
+    const { error } = await supabase
+      .from("profiles")
+      .update({ display_name: displayName.trim() })
+      .eq("id", profile.id);
+    setSaving(false);
+    setSaveStatus(error ? "error" : "success");
+    if (error) {
+      Alert.alert("Erreur", "Impossible de mettre à jour le nom d'affichage");
+    }
+  }
 
   async function handleLogout() {
     Alert.alert("Déconnexion", "Voulez-vous vous déconnecter ?", [
@@ -42,7 +69,10 @@ export default function ProfileScreen() {
     profile.display_name?.charAt(0)?.toUpperCase() ?? "?";
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
+    <ScrollView
+      style={{ backgroundColor: theme.background }}
+      contentContainerStyle={styles.container}
+    >
       <Stack.Screen options={{ title: "Mon profil", headerBackTitle: "Retour" }} />
       {/* Profile section */}
       <View style={styles.profileSection}>
@@ -73,6 +103,41 @@ export default function ProfileScreen() {
         </View>
       </View>
 
+      {/* Edit name section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Modifier mon profil</Text>
+        <View style={styles.editCard}>
+          <Text style={styles.inputLabel}>Nom d'affichage</Text>
+          <TextInput
+            style={[styles.input, { borderColor: theme.primary + "40" }]}
+            value={displayName}
+            onChangeText={(v) => {
+              setDisplayName(v);
+              setSaveStatus("idle");
+            }}
+            placeholder="Votre prénom ou nom"
+            placeholderTextColor="#a1a1aa"
+          />
+          {saveStatus === "success" && (
+            <Text style={styles.successText}>Nom mis à jour avec succès</Text>
+          )}
+          <TouchableOpacity
+            style={[
+              styles.saveButton,
+              { backgroundColor: theme.primary },
+              saving && styles.saveButtonDisabled,
+            ]}
+            onPress={handleSaveName}
+            disabled={saving}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.saveButtonText}>
+              {saving ? "Enregistrement..." : "Enregistrer"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
       {/* Admin section */}
       {isAdmin && (
         <View style={styles.section}>
@@ -93,7 +158,7 @@ export default function ProfileScreen() {
       )}
 
       {/* Logout */}
-      <View style={styles.section}>
+      <View style={[styles.section, { marginBottom: 40 }]}>
         <TouchableOpacity
           style={styles.logoutButton}
           onPress={handleLogout}
@@ -103,12 +168,12 @@ export default function ProfileScreen() {
           <Text style={styles.logoutText}>Se déconnecter</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24 },
+  container: { padding: 24 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   loadingText: { fontFamily: "DMSans_400Regular", fontSize: 16 },
 
@@ -191,6 +256,50 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
+  editCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 14,
+    padding: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+    gap: 10,
+  },
+  inputLabel: {
+    fontFamily: "DMSans_500Medium",
+    fontSize: 13,
+    color: "#52525b",
+  },
+  input: {
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontFamily: "DMSans_400Regular",
+    fontSize: 15,
+    color: "#18181b",
+    backgroundColor: "#fafafa",
+  },
+  successText: {
+    fontFamily: "DMSans_500Medium",
+    fontSize: 13,
+    color: "#16a34a",
+  },
+  saveButton: {
+    borderRadius: 10,
+    paddingVertical: 12,
+    alignItems: "center",
+  },
+  saveButtonDisabled: {
+    opacity: 0.5,
+  },
+  saveButtonText: {
+    fontFamily: "DMSans_600SemiBold",
+    fontSize: 15,
+    color: "#FFFFFF",
+  },
   logoutButton: {
     flexDirection: "row",
     alignItems: "center",
