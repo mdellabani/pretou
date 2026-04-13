@@ -1,7 +1,18 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
+import { Megaphone, Calendar, HeartHandshake, MessageSquare, Pin, CalendarDays } from "lucide-react-native";
+import { useTheme } from "@/lib/theme-context";
+import { POST_TYPE_COLORS, CARD } from "@/constants/colors";
 import type { Post, PostType } from "@rural-community-platform/shared";
-import { POST_TYPE_LABELS, POST_TYPE_COLORS } from "@rural-community-platform/shared";
+import { POST_TYPE_LABELS } from "@rural-community-platform/shared";
+
+const TYPE_ICONS: Record<string, typeof Megaphone> = {
+  annonce: Megaphone,
+  evenement: Calendar,
+  entraide: HeartHandshake,
+  discussion: MessageSquare,
+};
 
 interface PostCardProps {
   post: Post;
@@ -9,14 +20,15 @@ interface PostCardProps {
 
 export function PostCard({ post }: PostCardProps) {
   const router = useRouter();
-  const typeColor = POST_TYPE_COLORS[post.type as PostType] ?? "#6b7280";
+  const theme = useTheme();
+  const typeColor = POST_TYPE_COLORS[post.type as keyof typeof POST_TYPE_COLORS] ?? "#6b7280";
   const typeLabel = POST_TYPE_LABELS[post.type as PostType] ?? post.type;
+  const TypeIcon = TYPE_ICONS[post.type] ?? MessageSquare;
   const commentCount = post.comments?.[0]?.count ?? 0;
   const authorName = post.profiles?.display_name ?? "Anonyme";
   const createdDate = new Date(post.created_at).toLocaleDateString("fr-FR", {
     day: "numeric",
     month: "short",
-    year: "numeric",
   });
 
   return (
@@ -25,31 +37,63 @@ export function PostCard({ post }: PostCardProps) {
       onPress={() => router.push(`/post/${post.id}`)}
       activeOpacity={0.7}
     >
-      <View style={styles.header}>
-        <View style={[styles.badge, { backgroundColor: typeColor }]}>
-          <Text style={styles.badgeText}>{typeLabel}</Text>
+      {/* Pinned gradient bar */}
+      {post.is_pinned && (
+        <LinearGradient
+          colors={theme.gradient as unknown as [string, string, ...string[]]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.pinnedBar}
+        />
+      )}
+
+      <View style={styles.inner}>
+        {/* Header: badge + pinned label */}
+        <View style={styles.header}>
+          <View style={[styles.badge, { backgroundColor: typeColor + "18" }]}>
+            <TypeIcon size={12} color={typeColor} />
+            <Text style={[styles.badgeText, { color: typeColor }]}>{typeLabel}</Text>
+          </View>
+          {post.is_pinned && (
+            <View style={styles.pinnedLabel}>
+              <Pin size={11} color={theme.primary} />
+              <Text style={[styles.pinnedText, { color: theme.primary }]}>Épinglé</Text>
+            </View>
+          )}
         </View>
-        {post.is_pinned && (
-          <View style={styles.pinnedBadge}>
-            <Text style={styles.pinnedText}>Epingle</Text>
+
+        {/* Title */}
+        <Text style={styles.title} numberOfLines={2}>{post.title}</Text>
+
+        {/* Excerpt */}
+        <Text style={styles.body} numberOfLines={2}>{post.body}</Text>
+
+        {/* Event info */}
+        {post.type === "evenement" && post.event_date && (
+          <View style={styles.eventBox}>
+            <CalendarDays size={13} color={theme.primary} />
+            <Text style={[styles.eventText, { color: theme.primary }]}>
+              {new Date(post.event_date).toLocaleDateString("fr-FR", {
+                day: "numeric",
+                month: "long",
+              })}
+              {post.event_location ? ` · ${post.event_location}` : ""}
+            </Text>
           </View>
         )}
-      </View>
 
-      <Text style={styles.title}>{post.title}</Text>
-      <Text style={styles.body} numberOfLines={3}>
-        {post.body}
-      </Text>
-
-      <View style={styles.footer}>
-        <Text style={styles.meta}>{authorName}</Text>
-        <Text style={styles.metaSep}> - </Text>
-        <Text style={styles.meta}>{createdDate}</Text>
-        {commentCount > 0 && (
-          <Text style={styles.comments}>
-            {commentCount} commentaire{commentCount > 1 ? "s" : ""}
+        {/* Meta */}
+        <View style={styles.footer}>
+          <Text style={styles.meta}>
+            {authorName} · {createdDate}
           </Text>
-        )}
+          {commentCount > 0 && (
+            <View style={styles.commentMeta}>
+              <MessageSquare size={12} color={theme.muted} />
+              <Text style={styles.commentCount}>{commentCount}</Text>
+            </View>
+          )}
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -57,13 +101,22 @@ export function PostCard({ post }: PostCardProps) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 16,
+    backgroundColor: CARD.background,
+    borderRadius: CARD.borderRadius,
     marginHorizontal: 16,
     marginVertical: 6,
-    borderWidth: 1,
-    borderColor: "#e4e4e7",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 3,
+    overflow: "hidden",
+  },
+  pinnedBar: {
+    height: 2.5,
+  },
+  inner: {
+    padding: 14,
   },
   header: {
     flexDirection: "row",
@@ -72,53 +125,72 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   badge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
     paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
+    paddingVertical: 4,
+    borderRadius: 8,
   },
   badgeText: {
-    color: "#fff",
-    fontSize: 12,
-    fontWeight: "600",
+    fontFamily: "DMSans_600SemiBold",
+    fontSize: 11,
   },
-  pinnedBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
-    backgroundColor: "#fbbf24",
+  pinnedLabel: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 3,
+    marginLeft: "auto",
   },
   pinnedText: {
-    color: "#78350f",
-    fontSize: 12,
-    fontWeight: "600",
+    fontFamily: "DMSans_500Medium",
+    fontSize: 11,
   },
   title: {
-    fontSize: 17,
-    fontWeight: "bold",
+    fontFamily: "DMSans_600SemiBold",
+    fontSize: 14,
     color: "#18181b",
     marginBottom: 4,
   },
   body: {
-    fontSize: 14,
-    color: "#52525b",
-    lineHeight: 20,
-    marginBottom: 12,
+    fontFamily: "DMSans_400Regular",
+    fontSize: 13,
+    color: "#71717a",
+    lineHeight: 19,
+    marginBottom: 10,
+  },
+  eventBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    backgroundColor: "#FDF0EB",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    marginBottom: 10,
+  },
+  eventText: {
+    fontFamily: "DMSans_500Medium",
+    fontSize: 12,
   },
   footer: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
   },
   meta: {
+    fontFamily: "DMSans_400Regular",
     fontSize: 12,
     color: "#a1a1aa",
   },
-  metaSep: {
+  commentMeta: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  commentCount: {
+    fontFamily: "DMSans_500Medium",
     fontSize: 12,
     color: "#a1a1aa",
-  },
-  comments: {
-    fontSize: 12,
-    color: "#71717a",
-    marginLeft: "auto",
   },
 });
