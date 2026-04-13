@@ -1,7 +1,9 @@
-import { Stack } from "expo-router";
+import { Stack, useSegments, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useColorScheme } from "react-native";
+import { useEffect } from "react";
+import { AuthProvider, useAuth } from "@/lib/auth-context";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -12,20 +14,52 @@ const queryClient = new QueryClient({
   },
 });
 
+function AuthGate({ children }: { children: React.ReactNode }) {
+  const { session, profile, loading } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (loading) return;
+
+    const inAuthGroup = segments[0] === "auth";
+
+    if (!session && !inAuthGroup) {
+      router.replace("/auth/login");
+    } else if (session && inAuthGroup && profile?.status === "active") {
+      router.replace("/(tabs)/feed");
+    }
+  }, [session, profile, loading, segments]);
+
+  if (loading) return null;
+
+  return <>{children}</>;
+}
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Stack
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: colorScheme === "dark" ? "#09090b" : "#ffffff",
-          },
-          headerTintColor: colorScheme === "dark" ? "#fafafa" : "#09090b",
-        }}
-      />
-      <StatusBar style="auto" />
+      <AuthProvider>
+        <AuthGate>
+          <Stack
+            screenOptions={{
+              headerStyle: {
+                backgroundColor: colorScheme === "dark" ? "#09090b" : "#ffffff",
+              },
+              headerTintColor: colorScheme === "dark" ? "#fafafa" : "#09090b",
+            }}
+          >
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="auth/login" options={{ title: "Connexion", headerShown: false }} />
+            <Stack.Screen name="auth/signup" options={{ title: "Inscription", headerShown: false }} />
+            <Stack.Screen name="post/[id]" options={{ title: "Publication" }} />
+            <Stack.Screen name="admin" options={{ headerShown: false }} />
+          </Stack>
+          <StatusBar style="auto" />
+        </AuthGate>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
