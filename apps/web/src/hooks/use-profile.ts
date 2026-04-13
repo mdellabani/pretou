@@ -5,7 +5,14 @@ import { createClient } from "@/lib/supabase/client";
 import type { Profile } from "@rural-community-platform/shared";
 
 type ProfileWithCommune = Profile & {
-  communes: { name: string; slug: string; epci_id: string | null };
+  communes: {
+    name: string;
+    slug: string;
+    epci_id: string | null;
+    code_postal: string | null;
+    theme: string;
+    motto: string | null;
+  };
 };
 
 export function useProfile() {
@@ -24,7 +31,7 @@ export function useProfile() {
       }
       const { data } = await supabase
         .from("profiles")
-        .select("*, communes(name, slug, epci_id)")
+        .select("*, communes(name, slug, epci_id, code_postal, theme, motto)")
         .eq("id", user.id)
         .single();
       setProfile(data as ProfileWithCommune | null);
