@@ -23,6 +23,14 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const { pathname } = request.nextUrl;
+  if (!user && (pathname.startsWith("/admin") || pathname.startsWith("/app"))) {
+    const loginUrl = request.nextUrl.clone();
+    loginUrl.pathname = "/auth/login";
+    return NextResponse.redirect(loginUrl);
+  }
+
   return supabaseResponse;
 }
