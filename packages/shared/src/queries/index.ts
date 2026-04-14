@@ -6,3 +6,5 @@ export { getComments, createComment, deleteComment } from "./comments";
 export { getRsvps, setRsvp, removeRsvp, getRsvpCounts } from "./rsvps";
 export type { RsvpStatus } from "./rsvps";
 export { getEpciPosts } from "./epci";
+export { getProducers, getPendingProducers, createProducer, approveProducer, rejectProducer, deleteProducer } from "./producers";
+export { getPollByPostId, createPoll, vote, removeVote } from "./polls";

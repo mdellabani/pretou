@@ -3,7 +3,7 @@ import type { Database } from "./database";
 type PostRow = Database["public"]["Tables"]["posts"]["Row"];
 type PostInsert = Database["public"]["Tables"]["posts"]["Insert"];
 
-export type PostType = "annonce" | "evenement" | "entraide" | "discussion";
+export type PostType = "annonce" | "evenement" | "entraide" | "discussion" | "service";
 
 export type Post = PostRow & {
   profiles: { display_name: string; avatar_url: string | null };
@@ -12,4 +12,4 @@ export type Post = PostRow & {
   rsvps: { status: string }[];
 };
 
-export type CreatePostInput = Pick<PostInsert, "title" | "body" | "type" | "event_date" | "event_location" | "epci_visible">;
+export type CreatePostInput = Pick<PostInsert, "title" | "body" | "type" | "event_date" | "event_location" | "epci_visible" | "expires_at">;
