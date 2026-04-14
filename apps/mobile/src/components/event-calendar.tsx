@@ -12,6 +12,7 @@ interface EventCalendarProps {
   events: CalendarEvent[];
   onDayPress: (eventId: string, dateString: string) => void;
   selectedDate?: string | null;
+  onMonthChange?: (year: number, month: number) => void;
 }
 
 const DAY_LABELS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
@@ -22,7 +23,7 @@ function getMonthName(year: number, month: number): string {
   return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
-export function EventCalendar({ events, onDayPress, selectedDate }: EventCalendarProps) {
+export function EventCalendar({ events, onDayPress, selectedDate, onMonthChange }: EventCalendarProps) {
   const theme = useTheme();
 
   const today = new Date();
@@ -30,21 +31,31 @@ export function EventCalendar({ events, onDayPress, selectedDate }: EventCalenda
   const [displayMonth, setDisplayMonth] = useState(today.getMonth());
 
   function goToPrevMonth() {
+    let newMonth = displayMonth;
+    let newYear = displayYear;
     if (displayMonth === 0) {
-      setDisplayMonth(11);
-      setDisplayYear((y) => y - 1);
+      newMonth = 11;
+      newYear = displayYear - 1;
     } else {
-      setDisplayMonth((m) => m - 1);
+      newMonth = displayMonth - 1;
     }
+    setDisplayMonth(newMonth);
+    setDisplayYear(newYear);
+    onMonthChange?.(newYear, newMonth);
   }
 
   function goToNextMonth() {
+    let newMonth = displayMonth;
+    let newYear = displayYear;
     if (displayMonth === 11) {
-      setDisplayMonth(0);
-      setDisplayYear((y) => y + 1);
+      newMonth = 0;
+      newYear = displayYear + 1;
     } else {
-      setDisplayMonth((m) => m + 1);
+      newMonth = displayMonth + 1;
     }
+    setDisplayMonth(newMonth);
+    setDisplayYear(newYear);
+    onMonthChange?.(newYear, newMonth);
   }
 
   const firstDay = new Date(displayYear, displayMonth, 1);
@@ -73,11 +84,8 @@ export function EventCalendar({ events, onDayPress, selectedDate }: EventCalenda
   for (let i = 0; i < startOffset; i++) cells.push(null);
   for (let d = 1; d <= totalDays; d++) cells.push(d);
 
-  // Pad to complete the last row
-  const remainder = cells.length % 7;
-  if (remainder !== 0) {
-    for (let i = 0; i < 7 - remainder; i++) cells.push(null);
-  }
+  // Always pad to 6 rows (42 cells) so the calendar height stays stable
+  while (cells.length < 42) cells.push(null);
 
   function makeDateString(day: number): string {
     return `${displayYear}-${String(displayMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;

@@ -55,13 +55,41 @@ Scan the QR code with Expo Go (phone must be on same WiFi).
 
 ## Demo Accounts
 
-| Email | Password | Role | Name |
-|---|---|---|---|
-| `secretaire@saintmedard64.fr` | `demo1234` | Admin | Secrétariat Mairie |
-| `pierre.m@email.fr` | `demo1234` | Resident | Pierre Moreau |
-| `jeanne.l@email.fr` | `demo1234` | Resident | Jeanne Larrieu |
+All accounts use password **`demo1234`**. Each commune has its own theme, users, posts, and data.
 
-All accounts belong to the commune **Saint-Médard (64370)**.
+### Saint-Médard (theme: terre_doc)
+
+| Email | Role | Name |
+|---|---|---|
+| `secretaire@saintmedard64.fr` | Admin | Secrétariat Mairie |
+| `pierre.m@email.fr` | Resident | Pierre Moreau |
+| `jeanne.l@email.fr` | Resident | Jeanne Larrieu |
+
+### Arthez-de-Béarn (theme: alpin)
+
+| Email | Role | Name |
+|---|---|---|
+| `mairie@arthez-de-bearn.fr` | Admin | Secrétariat Mairie |
+| `marie.d@email.fr` | Resident | Marie Ducasse |
+| `jean-paul.b@email.fr` | Resident | Jean-Paul Bordes |
+
+### Morlanne (theme: atlantique)
+
+| Email | Role | Name |
+|---|---|---|
+| `mairie@morlanne.fr` | Admin | Secrétariat Mairie |
+| `claude.p@email.fr` | Resident | Claude Peyret |
+| `martine.s@email.fr` | Resident | Martine Soubirous |
+
+### Invite codes (for signup)
+
+| Commune | Code |
+|---|---|
+| Saint-Médard | `stmed1` |
+| Arthez-de-Béarn | `arthz1` |
+| Morlanne | `morl01` |
+
+`npx supabase db reset` always restores the same seed state — any manual changes are wiped.
 
 ## Key URLs (Web)
 
@@ -72,7 +100,7 @@ All accounts belong to the commune **Saint-Médard (64370)**.
 | Community feed | `/app/feed` |
 | Admin panel | `/admin/dashboard` |
 | Infos pratiques | `/app/infos-pratiques` |
-| Public commune site | `/saint-medard-64` |
+| Public commune site | `/saint-medard-64`, `/arthez-de-bearn`, `/morlanne` |
 | Public infos pratiques | `/saint-medard-64/infos-pratiques` |
 | Public events | `/saint-medard-64/evenements` |
 

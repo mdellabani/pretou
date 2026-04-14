@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback } from "react";
+import { useState, useCallback } from "react";
+import { EventCalendar } from "./event-calendar";
 
 interface EventPost {
   id: string;
@@ -15,8 +16,6 @@ interface EventsWithCalendarProps {
   upcomingEvents: EventPost[];
   pastEvents: EventPost[];
 }
-
-const DAY_LABELS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 
 function formatEventDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("fr-FR", {
@@ -34,131 +33,106 @@ function formatEventTime(dateStr: string) {
   });
 }
 
-function InteractiveCalendar({
-  events,
-  onDayClick,
-}: {
-  events: EventPost[];
-  onDayClick: (eventId: string) => void;
-}) {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth();
+function eventMatchesMonth(event_date: string | null, year: number, month: number): boolean {
+  if (!event_date) return false;
+  const d = new Date(event_date);
+  return d.getFullYear() === year && d.getMonth() === month;
+}
 
-  const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0);
-
-  // Monday-based offset: 0=Mon, 6=Sun
-  const startOffset = (firstDay.getDay() + 6) % 7;
-  const totalDays = lastDay.getDate();
-
-  const monthName = firstDay.toLocaleDateString("fr-FR", {
-    month: "long",
-    year: "numeric",
-  });
-
-  // Map day-of-month -> first event id on that day
-  const firstEventByDay = new Map<number, string>();
-  const eventDays = new Set<number>();
-  for (const evt of events) {
-    if (!evt.event_date) continue;
-    const d = new Date(evt.event_date);
-    if (d.getMonth() === month && d.getFullYear() === year) {
-      const day = d.getDate();
-      eventDays.add(day);
-      if (!firstEventByDay.has(day)) {
-        firstEventByDay.set(day, evt.id);
-      }
-    }
-  }
-
-  const cells: (number | null)[] = [];
-  for (let i = 0; i < startOffset; i++) cells.push(null);
-  for (let d = 1; d <= totalDays; d++) cells.push(d);
-
-  return (
-    <div className="rounded-[14px] bg-white px-5 py-4 shadow-[0_1px_6px_rgba(160,130,90,0.06)]">
-      <h3 className="mb-3 text-sm font-semibold capitalize text-[var(--foreground)]">
-        {monthName}
-      </h3>
-      <div className="grid grid-cols-7 gap-1 text-center text-xs">
-        {DAY_LABELS.map((label) => (
-          <div
-            key={label}
-            className="py-1 font-medium text-[var(--muted-foreground)]"
-          >
-            {label}
-          </div>
-        ))}
-        {cells.map((day, i) => {
-          const isToday =
-            day === today.getDate() &&
-            month === today.getMonth() &&
-            year === today.getFullYear();
-          const hasEvents = day ? eventDays.has(day) : false;
-          const firstId = day ? firstEventByDay.get(day) : undefined;
-
-          return (
-            <div
-              key={i}
-              id={day ? `cal-day-${day}` : undefined}
-              onClick={() => {
-                if (firstId) onDayClick(firstId);
-              }}
-              className={`relative flex h-8 items-center justify-center rounded-md text-xs ${
-                isToday
-                  ? "font-semibold text-white"
-                  : day
-                    ? "text-[var(--foreground)]"
-                    : ""
-              } ${hasEvents ? "cursor-pointer hover:opacity-75" : ""}`}
-              style={isToday ? { backgroundColor: "var(--theme-primary)" } : undefined}
-            >
-              {day}
-              {hasEvents && (
-                <span
-                  className="absolute -bottom-0.5 h-1 w-1 rounded-full"
-                  style={{ backgroundColor: "var(--theme-primary)" }}
-                />
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
+function eventMatchesDate(event_date: string | null, dateStr: string): boolean {
+  if (!event_date) return false;
+  const d = new Date(event_date);
+  const evtDateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  return evtDateStr === dateStr;
 }
 
 export function EventsWithCalendar({
   upcomingEvents,
   pastEvents,
 }: EventsWithCalendarProps) {
-  const scrollToEvent = useCallback((eventId: string) => {
-    const el = document.getElementById(`event-${eventId}`);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
+  const today = new Date();
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [displayYear, setDisplayYear] = useState(today.getFullYear());
+  const [displayMonth, setDisplayMonth] = useState(today.getMonth());
+
+  const allEvents = [...upcomingEvents, ...pastEvents];
+
+  // Build calendar events for the EventCalendar component
+  const calendarEvents = allEvents
+    .filter((e) => e.event_date != null)
+    .map((e) => ({ id: e.id, date: e.event_date!, title: e.title }));
+
+  // Filter events: by specific date if selected, otherwise by displayed month
+  function filterEvents(events: EventPost[]): EventPost[] {
+    if (selectedDate) {
+      return events.filter((e) => eventMatchesDate(e.event_date, selectedDate));
     }
+    return events.filter((e) => eventMatchesMonth(e.event_date, displayYear, displayMonth));
+  }
+
+  const filteredUpcoming = filterEvents(upcomingEvents);
+  const filteredPast = filterEvents(pastEvents);
+  const totalFiltered = filteredUpcoming.length + filteredPast.length;
+
+  const handleDateSelect = useCallback((date: string | null) => {
+    setSelectedDate(date);
   }, []);
 
-  // Pass all events (upcoming + past) so the calendar shows dots for both
-  const allEvents = [...upcomingEvents, ...pastEvents];
+  const handleMonthChange = useCallback((year: number, month: number) => {
+    setDisplayYear(year);
+    setDisplayMonth(month);
+  }, []);
+
+  const monthLabel = new Date(displayYear, displayMonth, 1).toLocaleDateString("fr-FR", {
+    month: "long",
+    year: "numeric",
+  });
 
   return (
     <div className="space-y-10">
-      {/* Calendar */}
-      <InteractiveCalendar events={allEvents} onDayClick={scrollToEvent} />
+      {/* Calendar with month navigation */}
+      <EventCalendar
+        events={calendarEvents}
+        onDateSelect={handleDateSelect}
+        selectedDate={selectedDate}
+        onMonthChange={handleMonthChange}
+      />
 
-      {/* Upcoming events */}
-      <section>
-        <h2
-          className="mb-4 border-b-2 pb-2 text-xl font-semibold"
-          style={{ borderColor: "var(--theme-primary)", color: "var(--foreground)" }}
-        >
-          A venir
-        </h2>
-        {upcomingEvents.length > 0 ? (
+      {/* Filter indicator */}
+      {selectedDate ? (
+        <div className="flex items-center gap-3">
+          <p className="text-sm text-[var(--muted-foreground)]">
+            {totalFiltered} événement{totalFiltered !== 1 ? "s" : ""} le{" "}
+            {new Date(selectedDate + "T00:00:00").toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}
+          </p>
+          <button
+            onClick={() => setSelectedDate(null)}
+            className="rounded-lg px-3 py-1 text-xs font-medium transition-colors hover:opacity-80"
+            style={{
+              backgroundColor: "var(--theme-pin-bg)",
+              color: "var(--theme-primary)",
+            }}
+          >
+            Voir tout le mois
+          </button>
+        </div>
+      ) : (
+        <p className="text-sm text-[var(--muted-foreground)]">
+          {totalFiltered} événement{totalFiltered !== 1 ? "s" : ""} en {monthLabel}
+        </p>
+      )}
+
+      {/* Events for selected period */}
+      {filteredUpcoming.length > 0 && (
+        <section>
+          <h2
+            className="mb-4 border-b-2 pb-2 text-xl font-semibold"
+            style={{ borderColor: "var(--theme-primary)", color: "var(--foreground)" }}
+          >
+            À venir
+          </h2>
           <div className="space-y-4">
-            {upcomingEvents.map((event) => (
+            {filteredUpcoming.map((event) => (
               <article
                 key={event.id}
                 id={`event-${event.id}`}
@@ -170,7 +144,7 @@ export function EventsWithCalendar({
                 {event.event_date && (
                   <div className="mt-2 flex flex-col gap-0.5 text-sm text-[var(--muted-foreground)]">
                     <time dateTime={event.event_date} className="font-medium">
-                      {formatEventDate(event.event_date)} a{" "}
+                      {formatEventDate(event.event_date)} à{" "}
                       {formatEventTime(event.event_date)}
                     </time>
                     {event.event_location && (
@@ -186,24 +160,20 @@ export function EventsWithCalendar({
               </article>
             ))}
           </div>
-        ) : (
-          <p className="text-sm text-[var(--muted-foreground)]">
-            Aucun evenement a venir pour le moment.
-          </p>
-        )}
-      </section>
+        </section>
+      )}
 
-      {/* Past events */}
-      {pastEvents.length > 0 && (
+      {/* Past events for this month */}
+      {filteredPast.length > 0 && (
         <section>
           <h2
             className="mb-4 border-b-2 pb-2 text-xl font-semibold"
             style={{ borderColor: "var(--theme-muted)", color: "var(--foreground)" }}
           >
-            Evenements passes
+            Événements passés
           </h2>
           <div className="space-y-4">
-            {pastEvents.map((event) => (
+            {filteredPast.map((event) => (
               <article
                 key={event.id}
                 id={`event-${event.id}`}
@@ -231,6 +201,13 @@ export function EventsWithCalendar({
             ))}
           </div>
         </section>
+      )}
+
+      {/* Empty state */}
+      {totalFiltered === 0 && (
+        <p className="text-sm text-[var(--muted-foreground)]">
+          Aucun événement {selectedDate ? "à cette date" : "ce mois-ci"}.
+        </p>
       )}
     </div>
   );

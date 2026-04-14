@@ -38,10 +38,31 @@ INSERT INTO communes (
   'arthz1',
   'alpin',
   'Village étape sur le chemin de Compostelle',
-  'Arthez-de-Béarn est une bastide de 1 800 habitants sur le chemin de Saint-Jacques-de-Compostelle. Chef-lieu de canton, la commune abrite un patrimoine médiéval remarquable et offre un panorama exceptionnel sur la chaîne des Pyrénées.',
+  'Arthez-de-Béarn est une bastide de 1 800 habitants sur le chemin de Saint-Jacques-de-Compostelle. Chef-lieu de canton historique, la commune offre un panorama exceptionnel sur la chaîne des Pyrénées et abrite un patrimoine médiéval remarquable, dont la chapelle romane de Caubin. Dotée d''équipements sportifs, d''une médiathèque et d''un espace France Services, elle allie charme patrimonial et services de proximité.',
   '{
-    "horaires": "Du lundi au vendredi\n8h30 – 12h00 / 14h00 – 17h00",
-    "contact": "Tél : 05 59 67 70 11\nEmail : mairie@arthez-de-bearn.fr"
+    "horaires": "Lundi au vendredi\n9h00 – 12h00 / 13h30 – 17h00\nSamedi : 9h00 – 12h00",
+    "contact": "Tél : 05 59 67 70 52 / 05 59 67 49 81\nEmail : mairie.arthezdebearn@wanadoo.fr\nAdresse : 18, La Carrère, 64370 Arthez-de-Béarn",
+    "services": "Collège Corisande d''Andoins : 05 59 67 70 74\nÉcole publique maternelle et primaire\nÉcole privée Saint-Joseph\nMédiathèque municipale\nPiscine municipale\nFrance Services (aide aux démarches numériques)\nAgence postale\nCamping L''Orée du Bois\nMaison des pèlerins",
+    "associations": "ACPA — Association Culturelle du Pays d''Arthez (salon du livre, expos)\nAPE — Association des Parents d''Élèves (trail, randonnées)\nFC BAAL — Football Club (tournoi international U15)\nTeam Trial 64 — Activités communautaires",
+    "liens": "CC Lacq-Orthez : https://www.cc-lacqorthez.fr\nOffice de tourisme Cœur de Béarn : https://www.coeurdebearn.com\nChapelle de Caubin : patrimoine roman du XIIe siècle"
+  }'::jsonb
+),
+(
+  '00000000-0000-0000-0000-000000000012',
+  '00000000-0000-0000-0000-000000000001',
+  'Morlanne',
+  'morlanne',
+  '64370',
+  'morl01',
+  'atlantique',
+  'Au pied du château, entre Béarn et Chalosse',
+  'Morlanne est un village béarnais niché autour de son château médiéval du XIVe siècle, classé monument historique. À la croisée du Béarn et de la Chalosse, la commune offre un cadre de vie rural préservé avec son marché de producteurs, ses sentiers de randonnée et un patrimoine bâti remarquable — château, église fortifiée et maisons anciennes.',
+  '{
+    "horaires": "Lundi, mardi, jeudi, vendredi\n9h00 – 12h00 / 13h30 – 17h00\nJeudi après-midi : jusqu''à 19h00\nFermé le mercredi",
+    "contact": "Tél : 05 59 81 61 23\nEmail : mairie.morlanne@orange.fr",
+    "services": "Agence postale : lun-mar, jeu-ven 9h-12h / 13h30-17h, mer-sam 9h-12h\nÉcole communale\nMarché de producteurs\nChâteau de Morlanne (visites)\nSentiers de randonnée balisés",
+    "associations": "Comité des fêtes\nAssociation patrimoine et culture\nClub de randonnée",
+    "liens": "Château de Morlanne : https://www.chateaudemorlanne.fr\nCC Lacq-Orthez : https://www.cc-lacqorthez.fr\nTelegram officiel : https://t.me/morlanne_officiel_telegram"
   }'::jsonb
 );
 
@@ -49,7 +70,13 @@ INSERT INTO communes (
 -- Demo users
 -- ================================================
 
-INSERT INTO auth.users (id, instance_id, email, encrypted_password, email_confirmed_at, created_at, updated_at, raw_app_meta_data, raw_user_meta_data, aud, role)
+INSERT INTO auth.users (
+  id, instance_id, email, encrypted_password, email_confirmed_at,
+  created_at, updated_at, raw_app_meta_data, raw_user_meta_data, aud, role,
+  confirmation_token, recovery_token, email_change_token_new, email_change_token_current,
+  phone, phone_change, phone_change_token, email_change, reauthentication_token,
+  is_sso_user, is_anonymous
+)
 VALUES
 (
   '00000000-0000-0000-0000-000000000100',
@@ -58,7 +85,10 @@ VALUES
   crypt('demo1234', gen_salt('bf')),
   now(), now(), now(),
   '{"provider":"email","providers":["email"]}', '{}',
-  'authenticated', 'authenticated'
+  'authenticated', 'authenticated',
+  '', '', '', '',
+  NULL, '', '', '', '',
+  false, false
 ),
 (
   '00000000-0000-0000-0000-000000000101',
@@ -67,7 +97,10 @@ VALUES
   crypt('demo1234', gen_salt('bf')),
   now(), now(), now(),
   '{"provider":"email","providers":["email"]}', '{}',
-  'authenticated', 'authenticated'
+  'authenticated', 'authenticated',
+  '', '', '', '',
+  NULL, '', '', '', '',
+  false, false
 ),
 (
   '00000000-0000-0000-0000-000000000102',
@@ -76,14 +109,178 @@ VALUES
   crypt('demo1234', gen_salt('bf')),
   now(), now(), now(),
   '{"provider":"email","providers":["email"]}', '{}',
-  'authenticated', 'authenticated'
+  'authenticated', 'authenticated',
+  '', '', '', '',
+  NULL, '', '', '', '',
+  false, false
+),
+-- Arthez-de-Béarn users
+(
+  '00000000-0000-0000-0000-000000000200',
+  '00000000-0000-0000-0000-000000000000',
+  'mairie@arthez-de-bearn.fr',
+  crypt('demo1234', gen_salt('bf')),
+  now(), now(), now(),
+  '{"provider":"email","providers":["email"]}', '{}',
+  'authenticated', 'authenticated',
+  '', '', '', '',
+  NULL, '', '', '', '',
+  false, false
+),
+(
+  '00000000-0000-0000-0000-000000000201',
+  '00000000-0000-0000-0000-000000000000',
+  'marie.d@email.fr',
+  crypt('demo1234', gen_salt('bf')),
+  now(), now(), now(),
+  '{"provider":"email","providers":["email"]}', '{}',
+  'authenticated', 'authenticated',
+  '', '', '', '',
+  NULL, '', '', '', '',
+  false, false
+),
+(
+  '00000000-0000-0000-0000-000000000202',
+  '00000000-0000-0000-0000-000000000000',
+  'jean-paul.b@email.fr',
+  crypt('demo1234', gen_salt('bf')),
+  now(), now(), now(),
+  '{"provider":"email","providers":["email"]}', '{}',
+  'authenticated', 'authenticated',
+  '', '', '', '',
+  NULL, '', '', '', '',
+  false, false
+),
+-- Morlanne users
+(
+  '00000000-0000-0000-0000-000000000300',
+  '00000000-0000-0000-0000-000000000000',
+  'mairie@morlanne.fr',
+  crypt('demo1234', gen_salt('bf')),
+  now(), now(), now(),
+  '{"provider":"email","providers":["email"]}', '{}',
+  'authenticated', 'authenticated',
+  '', '', '', '',
+  NULL, '', '', '', '',
+  false, false
+),
+(
+  '00000000-0000-0000-0000-000000000301',
+  '00000000-0000-0000-0000-000000000000',
+  'claude.p@email.fr',
+  crypt('demo1234', gen_salt('bf')),
+  now(), now(), now(),
+  '{"provider":"email","providers":["email"]}', '{}',
+  'authenticated', 'authenticated',
+  '', '', '', '',
+  NULL, '', '', '', '',
+  false, false
+),
+(
+  '00000000-0000-0000-0000-000000000302',
+  '00000000-0000-0000-0000-000000000000',
+  'martine.s@email.fr',
+  crypt('demo1234', gen_salt('bf')),
+  now(), now(), now(),
+  '{"provider":"email","providers":["email"]}', '{}',
+  'authenticated', 'authenticated',
+  '', '', '', '',
+  NULL, '', '', '', '',
+  false, false
+);
+
+-- Identities (required for Supabase GoTrue email/password login)
+INSERT INTO auth.identities (id, user_id, provider_id, provider, identity_data, last_sign_in_at, created_at, updated_at)
+VALUES
+(
+  gen_random_uuid(),
+  '00000000-0000-0000-0000-000000000100',
+  '00000000-0000-0000-0000-000000000100',
+  'email',
+  jsonb_build_object('sub', '00000000-0000-0000-0000-000000000100', 'email', 'secretaire@saintmedard64.fr', 'email_verified', true, 'phone_verified', false),
+  now(), now(), now()
+),
+(
+  gen_random_uuid(),
+  '00000000-0000-0000-0000-000000000101',
+  '00000000-0000-0000-0000-000000000101',
+  'email',
+  jsonb_build_object('sub', '00000000-0000-0000-0000-000000000101', 'email', 'pierre.m@email.fr', 'email_verified', true, 'phone_verified', false),
+  now(), now(), now()
+),
+(
+  gen_random_uuid(),
+  '00000000-0000-0000-0000-000000000102',
+  '00000000-0000-0000-0000-000000000102',
+  'email',
+  jsonb_build_object('sub', '00000000-0000-0000-0000-000000000102', 'email', 'jeanne.l@email.fr', 'email_verified', true, 'phone_verified', false),
+  now(), now(), now()
+),
+-- Arthez identities
+(
+  gen_random_uuid(),
+  '00000000-0000-0000-0000-000000000200',
+  '00000000-0000-0000-0000-000000000200',
+  'email',
+  jsonb_build_object('sub', '00000000-0000-0000-0000-000000000200', 'email', 'mairie@arthez-de-bearn.fr', 'email_verified', true, 'phone_verified', false),
+  now(), now(), now()
+),
+(
+  gen_random_uuid(),
+  '00000000-0000-0000-0000-000000000201',
+  '00000000-0000-0000-0000-000000000201',
+  'email',
+  jsonb_build_object('sub', '00000000-0000-0000-0000-000000000201', 'email', 'marie.d@email.fr', 'email_verified', true, 'phone_verified', false),
+  now(), now(), now()
+),
+(
+  gen_random_uuid(),
+  '00000000-0000-0000-0000-000000000202',
+  '00000000-0000-0000-0000-000000000202',
+  'email',
+  jsonb_build_object('sub', '00000000-0000-0000-0000-000000000202', 'email', 'jean-paul.b@email.fr', 'email_verified', true, 'phone_verified', false),
+  now(), now(), now()
+),
+-- Morlanne identities
+(
+  gen_random_uuid(),
+  '00000000-0000-0000-0000-000000000300',
+  '00000000-0000-0000-0000-000000000300',
+  'email',
+  jsonb_build_object('sub', '00000000-0000-0000-0000-000000000300', 'email', 'mairie@morlanne.fr', 'email_verified', true, 'phone_verified', false),
+  now(), now(), now()
+),
+(
+  gen_random_uuid(),
+  '00000000-0000-0000-0000-000000000301',
+  '00000000-0000-0000-0000-000000000301',
+  'email',
+  jsonb_build_object('sub', '00000000-0000-0000-0000-000000000301', 'email', 'claude.p@email.fr', 'email_verified', true, 'phone_verified', false),
+  now(), now(), now()
+),
+(
+  gen_random_uuid(),
+  '00000000-0000-0000-0000-000000000302',
+  '00000000-0000-0000-0000-000000000302',
+  'email',
+  jsonb_build_object('sub', '00000000-0000-0000-0000-000000000302', 'email', 'martine.s@email.fr', 'email_verified', true, 'phone_verified', false),
+  now(), now(), now()
 );
 
 -- Profiles
 INSERT INTO profiles (id, commune_id, display_name, role, status) VALUES
+  -- Saint-Médard
   ('00000000-0000-0000-0000-000000000100', '00000000-0000-0000-0000-000000000010', 'Secrétariat Mairie', 'admin', 'active'),
   ('00000000-0000-0000-0000-000000000101', '00000000-0000-0000-0000-000000000010', 'Pierre Moreau', 'resident', 'active'),
-  ('00000000-0000-0000-0000-000000000102', '00000000-0000-0000-0000-000000000010', 'Jeanne Larrieu', 'resident', 'active');
+  ('00000000-0000-0000-0000-000000000102', '00000000-0000-0000-0000-000000000010', 'Jeanne Larrieu', 'resident', 'active'),
+  -- Arthez-de-Béarn
+  ('00000000-0000-0000-0000-000000000200', '00000000-0000-0000-0000-000000000011', 'Secrétariat Mairie', 'admin', 'active'),
+  ('00000000-0000-0000-0000-000000000201', '00000000-0000-0000-0000-000000000011', 'Marie Ducasse', 'resident', 'active'),
+  ('00000000-0000-0000-0000-000000000202', '00000000-0000-0000-0000-000000000011', 'Jean-Paul Bordes', 'resident', 'active'),
+  -- Morlanne
+  ('00000000-0000-0000-0000-000000000300', '00000000-0000-0000-0000-000000000012', 'Secrétariat Mairie', 'admin', 'active'),
+  ('00000000-0000-0000-0000-000000000301', '00000000-0000-0000-0000-000000000012', 'Claude Peyret', 'resident', 'active'),
+  ('00000000-0000-0000-0000-000000000302', '00000000-0000-0000-0000-000000000012', 'Martine Soubirous', 'resident', 'active');
 
 -- ================================================
 -- POSTS
@@ -408,3 +605,327 @@ INSERT INTO comments (post_id, author_id, body, created_at) VALUES
 INSERT INTO rsvps (post_id, user_id, status) VALUES
   ('00000000-0000-0000-0000-000000001014', '00000000-0000-0000-0000-000000000101', 'going'),
   ('00000000-0000-0000-0000-000000001014', '00000000-0000-0000-0000-000000000102', 'going');
+
+-- ================================================
+-- ARTHEZ-DE-BÉARN POSTS
+-- ================================================
+
+-- Annonce: Salon du livre ACPA
+INSERT INTO posts (id, commune_id, author_id, type, title, body, is_pinned, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000002001',
+  '00000000-0000-0000-0000-000000000011',
+  '00000000-0000-0000-0000-000000000200',
+  'annonce',
+  'Salon du livre et de la BD — Samedi 25 avril',
+  'L''Association Culturelle du Pays d''Arthez (ACPA) organise son salon annuel du livre et de la bande dessinée le samedi 25 avril à la salle des fêtes.
+
+Entrée libre de 10h à 18h. Une vingtaine d''auteurs et illustrateurs seront présents pour des dédicaces. Ateliers dessin pour les enfants l''après-midi.
+
+Buvette et restauration sur place.',
+  true,
+  now() - interval '1 day'
+);
+
+-- Annonce: Travaux piscine
+INSERT INTO posts (id, commune_id, author_id, type, title, body, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000002002',
+  '00000000-0000-0000-0000-000000000011',
+  '00000000-0000-0000-0000-000000000200',
+  'annonce',
+  'Piscine municipale — Fermeture pour entretien',
+  'La piscine municipale sera fermée du 14 au 28 avril pour les travaux d''entretien annuels.
+
+Réouverture prévue le mardi 29 avril aux horaires habituels. Merci de votre compréhension.',
+  now() - interval '3 days'
+);
+
+-- Annonce: France Services
+INSERT INTO posts (id, commune_id, author_id, type, title, body, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000002003',
+  '00000000-0000-0000-0000-000000000011',
+  '00000000-0000-0000-0000-000000000200',
+  'annonce',
+  'France Services — Permanence carte d''identité',
+  'Rappel : la permanence pour les demandes de carte d''identité et passeport se tient chaque mardi matin de 9h à 12h à l''espace France Services.
+
+Pensez à prendre rendez-vous au 05 59 67 70 52. Pièces à fournir disponibles sur service-public.fr.',
+  now() - interval '5 days'
+);
+
+-- Événement: Tournoi U15 FC BAAL
+INSERT INTO posts (id, commune_id, author_id, type, title, body, event_date, event_location, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000002004',
+  '00000000-0000-0000-0000-000000000011',
+  '00000000-0000-0000-0000-000000000200',
+  'evenement',
+  'Tournoi international U15 — FC BAAL',
+  'Le FC BAAL organise son tournoi international de football en catégorie U15.
+
+8 équipes venues de toute la région et d''Espagne s''affronteront sur les terrains du complexe sportif. Finale à 17h suivie de la remise des trophées.
+
+Entrée gratuite, buvette et grillades sur place.',
+  '2026-06-07T09:00:00Z',
+  'Complexe sportif, Arthez-de-Béarn',
+  now() - interval '2 days'
+);
+
+-- Événement: Trail APE
+INSERT INTO posts (id, commune_id, author_id, type, title, body, event_date, event_location, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000002005',
+  '00000000-0000-0000-0000-000000000011',
+  '00000000-0000-0000-0000-000000000200',
+  'evenement',
+  'Trail et randonnée — APE École publique',
+  'L''association des parents d''élèves organise une journée trail et randonnée ouverte à tous !
+
+Parcours trail : 15 km (dénivelé 350m)
+Parcours randonnée : 8 km (accessible à tous)
+Départ à 9h30 depuis le gymnase.
+
+Inscription 5€ adulte, gratuit -12 ans. Ravitaillement sur le parcours.',
+  '2026-05-31T09:30:00Z',
+  'Gymnase municipal, Arthez-de-Béarn',
+  now() - interval '4 days'
+);
+
+-- Entraide: Pèlerins Compostelle
+INSERT INTO posts (id, commune_id, author_id, type, title, body, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000002006',
+  '00000000-0000-0000-0000-000000000011',
+  '00000000-0000-0000-0000-000000000201',
+  'entraide',
+  'Accueil pèlerins — Besoin de bénévoles',
+  'Bonjour,
+
+La saison des pèlerins reprend sur le chemin de Compostelle et la Maison des pèlerins a besoin de bénévoles pour l''accueil du soir (18h-20h).
+
+Si vous avez une soirée de libre par semaine ou par mois, c''est un moment d''échange vraiment enrichissant. On rencontre des gens du monde entier !
+
+Contactez-moi ou passez à la médiathèque.',
+  now() - interval '6 hours'
+);
+
+-- Entraide: Covoiturage Pau
+INSERT INTO posts (id, commune_id, author_id, type, title, body, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000002007',
+  '00000000-0000-0000-0000-000000000011',
+  '00000000-0000-0000-0000-000000000202',
+  'entraide',
+  'Covoiturage Pau — Tous les lundis et jeudis',
+  'Je travaille à Pau et je fais le trajet Arthez-Pau les lundis et jeudis (départ 7h30, retour 18h). J''ai 2 places dans ma voiture.
+
+Participation aux frais : 3€ l''aller simple. Intéressé(e) ? Répondez ici.',
+  now() - interval '2 days'
+);
+
+-- Discussion: Médiathèque horaires d'été
+INSERT INTO posts (id, commune_id, author_id, type, title, body, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000002008',
+  '00000000-0000-0000-0000-000000000011',
+  '00000000-0000-0000-0000-000000000201',
+  'discussion',
+  'Horaires d''été de la médiathèque ?',
+  'Est-ce que quelqu''un sait si la médiathèque change ses horaires pour l''été ? L''année dernière elle fermait le samedi en juillet-août si je me souviens bien.
+
+Je voudrais m''organiser pour les inscriptions aux activités d''été des enfants.',
+  now() - interval '1 day'
+);
+
+-- Discussion: Camping
+INSERT INTO posts (id, commune_id, author_id, type, title, body, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000002009',
+  '00000000-0000-0000-0000-000000000011',
+  '00000000-0000-0000-0000-000000000202',
+  'discussion',
+  'Camping L''Orée du Bois — Ouverture cette année ?',
+  'Bonjour, quelqu''un a des nouvelles du camping ? J''ai des amis qui voudraient venir en juin mais le site internet n''a pas été mis à jour depuis l''année dernière.
+
+Merci !',
+  now() - interval '3 days'
+);
+
+-- Arthez comments
+INSERT INTO comments (post_id, author_id, body, created_at) VALUES
+  ('00000000-0000-0000-0000-000000002006', '00000000-0000-0000-0000-000000000202', 'Je suis disponible le mercredi soir, c''est possible ? J''ai fait le chemin moi-même il y a 3 ans, ça me ferait plaisir de rendre la pareille.', now() - interval '4 hours'),
+  ('00000000-0000-0000-0000-000000002006', '00000000-0000-0000-0000-000000000201', 'Bien sûr Jean-Paul ! Le mercredi c''est parfait. Passe à la Maison des pèlerins mercredi vers 17h30, je te ferai faire le tour.', now() - interval '3 hours'),
+  ('00000000-0000-0000-0000-000000002008', '00000000-0000-0000-0000-000000000200', 'Bonjour Marie, les horaires d''été seront communiqués fin mai. La médiathèque restera ouverte le samedi matin en juillet cette année.', now() - interval '12 hours'),
+  ('00000000-0000-0000-0000-000000002009', '00000000-0000-0000-0000-000000000201', 'J''ai vu de la lumière là-bas la semaine dernière, ils préparent peut-être l''ouverture. Je passerai demander.', now() - interval '2 days');
+
+-- Arthez RSVPs
+INSERT INTO rsvps (post_id, user_id, status) VALUES
+  ('00000000-0000-0000-0000-000000002004', '00000000-0000-0000-0000-000000000201', 'going'),
+  ('00000000-0000-0000-0000-000000002004', '00000000-0000-0000-0000-000000000202', 'going'),
+  ('00000000-0000-0000-0000-000000002005', '00000000-0000-0000-0000-000000000201', 'going'),
+  ('00000000-0000-0000-0000-000000002005', '00000000-0000-0000-0000-000000000202', 'maybe');
+
+-- ================================================
+-- MORLANNE POSTS
+-- ================================================
+
+-- Annonce: Marché producteurs
+INSERT INTO posts (id, commune_id, author_id, type, title, body, is_pinned, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000003001',
+  '00000000-0000-0000-0000-000000000012',
+  '00000000-0000-0000-0000-000000000300',
+  'annonce',
+  'Marché de producteurs — Reprise le 19 avril',
+  'Le marché de producteurs de Morlanne reprend chaque samedi matin de 9h à 12h30 sur la place du château à partir du 19 avril.
+
+Fromages, charcuterie, miel, légumes de saison, pain au levain et pâtisseries. Venez soutenir nos producteurs locaux !',
+  true,
+  now() - interval '2 hours'
+);
+
+-- Annonce: Château saison
+INSERT INTO posts (id, commune_id, author_id, type, title, body, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000003002',
+  '00000000-0000-0000-0000-000000000012',
+  '00000000-0000-0000-0000-000000000300',
+  'annonce',
+  'Château de Morlanne — Ouverture de la saison 2026',
+  'Le château de Morlanne ouvre ses portes pour la saison le mercredi 16 avril.
+
+Horaires : mercredi au dimanche, 10h30-12h30 / 14h-18h.
+Tarif : 5€ adulte, gratuit -18 ans.
+
+Nouveauté : visite guidée thématique « Gaston Fébus et la chasse au Moyen Âge » les dimanches à 15h.',
+  now() - interval '3 days'
+);
+
+-- Annonce: Travaux route
+INSERT INTO posts (id, commune_id, author_id, type, title, body, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000003003',
+  '00000000-0000-0000-0000-000000000012',
+  '00000000-0000-0000-0000-000000000300',
+  'annonce',
+  'Travaux route de Maslacq — Sens unique temporaire',
+  'Des travaux de voirie sur la route de Maslacq imposeront un sens unique alterné du 21 au 25 avril.
+
+Circulation régulée par feux tricolores. Prévoir 5 minutes de plus pour vos trajets. Déviation possible par la route d''Arzacq.',
+  now() - interval '1 day'
+);
+
+-- Événement: Randonnée patrimoine
+INSERT INTO posts (id, commune_id, author_id, type, title, body, event_date, event_location, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000003004',
+  '00000000-0000-0000-0000-000000000012',
+  '00000000-0000-0000-0000-000000000300',
+  'evenement',
+  'Randonnée patrimoine — Découverte du village fortifié',
+  'Le club de randonnée et l''association patrimoine vous proposent une balade commentée de 6 km à travers le village et ses alentours.
+
+Points d''intérêt : château, église fortifiée, maisons médiévales, lavoir, point de vue sur les Pyrénées.
+
+Accessible à tous. Chaussures de marche conseillées. Goûter offert à l''arrivée.',
+  '2026-05-04T14:00:00Z',
+  'Départ place du château, Morlanne',
+  now() - interval '2 days'
+);
+
+-- Événement: Vide-grenier
+INSERT INTO posts (id, commune_id, author_id, type, title, body, event_date, event_location, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000003005',
+  '00000000-0000-0000-0000-000000000012',
+  '00000000-0000-0000-0000-000000000300',
+  'evenement',
+  'Vide-grenier annuel du comité des fêtes',
+  'Le comité des fêtes organise le vide-grenier annuel !
+
+Exposants : 2€ le mètre linéaire, inscription avant le 10 mai auprès de la mairie.
+Visiteurs : entrée libre dès 8h.
+
+Restauration sur place : grillades, frites, crêpes. Buvette toute la journée.',
+  '2026-05-18T08:00:00Z',
+  'Place du château et rues du village, Morlanne',
+  now() - interval '4 days'
+);
+
+-- Entraide: Tonte moutons
+INSERT INTO posts (id, commune_id, author_id, type, title, body, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000003006',
+  '00000000-0000-0000-0000-000000000012',
+  '00000000-0000-0000-0000-000000000301',
+  'entraide',
+  'Cherche tondeur de moutons',
+  'Bonjour,
+
+J''ai 6 brebis à tondre avant l''été. Mon tondeur habituel a pris sa retraite et je ne trouve personne dans le coin.
+
+Si quelqu''un connaît un tondeur fiable ou sait le faire, je suis preneur. Je peux aussi échanger un service en retour (bricolage, jardin, etc.).
+
+Merci !',
+  now() - interval '8 hours'
+);
+
+-- Entraide: Légumes potager
+INSERT INTO posts (id, commune_id, author_id, type, title, body, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000003007',
+  '00000000-0000-0000-0000-000000000012',
+  '00000000-0000-0000-0000-000000000302',
+  'entraide',
+  'Plants de tomates et courgettes à donner',
+  'J''ai fait trop de semis cette année ! J''ai une trentaine de plants de tomates (cœur de bœuf, marmande, cerise) et une dizaine de plants de courgettes à donner.
+
+Venez les chercher chez moi (maison face à l''église) avant qu''ils ne montent trop. Premier arrivé, premier servi !',
+  now() - interval '4 hours'
+);
+
+-- Discussion: Chemin randonnée
+INSERT INTO posts (id, commune_id, author_id, type, title, body, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000003008',
+  '00000000-0000-0000-0000-000000000012',
+  '00000000-0000-0000-0000-000000000301',
+  'discussion',
+  'Sentier du château — Balisage effacé ?',
+  'J''ai fait le sentier du château dimanche avec des amis et on s''est perdus au niveau du croisement après le lavoir. Les marques jaunes sont presque effacées.
+
+Est-ce que quelqu''un sait si un rebalisage est prévu ? C''est dommage parce que c''est une très belle balade.',
+  now() - interval '1 day'
+);
+
+-- Discussion: Poste
+INSERT INTO posts (id, commune_id, author_id, type, title, body, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000003009',
+  '00000000-0000-0000-0000-000000000012',
+  '00000000-0000-0000-0000-000000000302',
+  'discussion',
+  'Agence postale fermée mercredi ?',
+  'L''agence postale est-elle toujours fermée le mercredi après-midi ? Je dois envoyer un recommandé et je ne peux pas y aller le matin.
+
+Quelqu''un sait si on peut déposer à Arzacq sinon ?',
+  now() - interval '2 days'
+);
+
+-- Morlanne comments
+INSERT INTO comments (post_id, author_id, body, created_at) VALUES
+  ('00000000-0000-0000-0000-000000003006', '00000000-0000-0000-0000-000000000302', 'Mon voisin à Arzacq tond encore, il s''appelle Bernard Loustau. Je te retrouve son numéro.', now() - interval '6 hours'),
+  ('00000000-0000-0000-0000-000000003006', '00000000-0000-0000-0000-000000000301', 'Merci Martine ! Ce serait super. Il fait les petits troupeaux aussi ?', now() - interval '5 hours'),
+  ('00000000-0000-0000-0000-000000003008', '00000000-0000-0000-0000-000000000300', 'Le rebalisage est prévu pour fin avril avec le club de randonnée. Merci du signalement !', now() - interval '12 hours'),
+  ('00000000-0000-0000-0000-000000003008', '00000000-0000-0000-0000-000000000302', 'J''avais remarqué la même chose il y a 2 semaines. En attendant, il faut prendre à gauche au croisement après le lavoir.', now() - interval '10 hours'),
+  ('00000000-0000-0000-0000-000000003009', '00000000-0000-0000-0000-000000000301', 'Oui le mercredi c''est fermé l''après-midi mais ouvert le matin de 9h à 12h. Sinon Arzacq c''est ouvert tout le mercredi.', now() - interval '1 day'),
+  ('00000000-0000-0000-0000-000000003007', '00000000-0000-0000-0000-000000000301', 'Je passe demain matin prendre quelques plants de tomates ! Merci Martine, tu es géniale.', now() - interval '3 hours');
+
+-- Morlanne RSVPs
+INSERT INTO rsvps (post_id, user_id, status) VALUES
+  ('00000000-0000-0000-0000-000000003004', '00000000-0000-0000-0000-000000000301', 'going'),
+  ('00000000-0000-0000-0000-000000003004', '00000000-0000-0000-0000-000000000302', 'going'),
+  ('00000000-0000-0000-0000-000000003005', '00000000-0000-0000-0000-000000000301', 'going'),
+  ('00000000-0000-0000-0000-000000003005', '00000000-0000-0000-0000-000000000302', 'maybe');

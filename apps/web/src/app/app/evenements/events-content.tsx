@@ -37,7 +37,10 @@ function formatTime(dateStr: string) {
 }
 
 export function EventsContent({ events }: EventsContentProps) {
+  const today = new Date();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [displayYear, setDisplayYear] = useState(today.getFullYear());
+  const [displayMonth, setDisplayMonth] = useState(today.getMonth());
 
   const calendarEvents = events
     .filter((e) => e.event_date != null)
@@ -50,7 +53,16 @@ export function EventsContent({ events }: EventsContentProps) {
         const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
         return dateStr === selectedDate;
       })
-    : events;
+    : events.filter((e) => {
+        if (!e.event_date) return false;
+        const d = new Date(e.event_date);
+        return d.getFullYear() === displayYear && d.getMonth() === displayMonth;
+      });
+
+  const monthLabel = new Date(displayYear, displayMonth, 1).toLocaleDateString("fr-FR", {
+    month: "long",
+    year: "numeric",
+  });
 
   return (
     <div className="space-y-6">
@@ -58,12 +70,16 @@ export function EventsContent({ events }: EventsContentProps) {
         events={calendarEvents}
         onDateSelect={setSelectedDate}
         selectedDate={selectedDate}
+        onMonthChange={(year, month) => {
+          setDisplayYear(year);
+          setDisplayMonth(month);
+        }}
       />
 
-      {selectedDate && (
+      {selectedDate ? (
         <div className="flex items-center justify-between">
           <p className="text-sm font-medium text-[var(--foreground)]">
-            {filteredEvents.length} événement{filteredEvents.length > 1 ? "s" : ""} le{" "}
+            {filteredEvents.length} événement{filteredEvents.length !== 1 ? "s" : ""} le{" "}
             {new Date(selectedDate + "T00:00:00").toLocaleDateString("fr-FR", {
               day: "numeric",
               month: "long",
@@ -77,9 +93,13 @@ export function EventsContent({ events }: EventsContentProps) {
               color: "var(--theme-primary)",
             }}
           >
-            Voir tous les événements
+            Voir tout le mois
           </button>
         </div>
+      ) : (
+        <p className="text-sm text-[var(--muted-foreground)]">
+          {filteredEvents.length} événement{filteredEvents.length !== 1 ? "s" : ""} en {monthLabel}
+        </p>
       )}
 
       {filteredEvents.length > 0 ? (

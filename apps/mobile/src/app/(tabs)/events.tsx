@@ -24,6 +24,8 @@ export default function EventsScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [displayYear, setDisplayYear] = useState(new Date().getFullYear());
+  const [displayMonth, setDisplayMonth] = useState(new Date().getMonth());
   const listRef = useRef<FlatList<Post>>(null);
 
   const loadEvents = useCallback(async () => {
@@ -88,7 +90,13 @@ export default function EventsScreen() {
     .filter((e) => e.event_date != null)
     .map((e) => ({ id: e.id, date: e.event_date! }));
 
-  // Filter events by selected date
+  const handleMonthChange = useCallback((year: number, month: number) => {
+    setDisplayYear(year);
+    setDisplayMonth(month);
+    setSelectedDate(null);
+  }, []);
+
+  // Filter events by selected date or displayed month
   const filteredEvents = selectedDate
     ? events.filter((e) => {
         if (!e.event_date) return false;
@@ -96,7 +104,11 @@ export default function EventsScreen() {
         const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
         return dateStr === selectedDate;
       })
-    : events;
+    : events.filter((e) => {
+        if (!e.event_date) return false;
+        const d = new Date(e.event_date);
+        return d.getFullYear() === displayYear && d.getMonth() === displayMonth;
+      });
 
   if (loading) {
     return (
@@ -122,6 +134,7 @@ export default function EventsScreen() {
             events={calendarEvents}
             onDayPress={handleDayPress}
             selectedDate={selectedDate}
+            onMonthChange={handleMonthChange}
           />
           {selectedDate && (
             <TouchableOpacity
