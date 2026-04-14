@@ -26,7 +26,11 @@ INSERT INTO communes (
     "contact": "Tél : 05 59 67 56 14\nEmail : contact@saintmedard64.fr\nAdresse : Mairie, 64370 Saint-Médard",
     "services": "Crèche intercommunale (Sault de Navailles) : 05 59 67 90 12\nÉcole primaire Le Hêtre Blanc (Hagetaubin) : 05 59 67 52 04\nCollège Corisande d''Andoins (Arthez-de-Béarn) : 05 59 67 70 74\nLycée Gaston Fébus (Orthez) : 05 59 67 08 00\nTransport à la demande Mobilacq : 0 970 870 870 (2€/trajet)\nGare SNCF Orthez : 3635",
     "associations": "CCAS — Actions sociales, repas des aînés, sorties\nComité des Fêtes — Animations et rassemblements (cdfsaintmedard@gmail.com)\nLes Hippos''Amuz — Supporters du RCSM, sorties rugby\nSaint-Médard Loisirs — Ateliers créatifs, lecture, pétanque, jeux de cartes (06 41 05 06 70)\nRCSM — Rugby Club Saint-Médard",
-    "liens": "CC Lacq-Orthez : https://www.cc-lacqorthez.fr\nTransports 64 : https://www.transport64.fr\nDéchèteries CCLO : 05 59 60 95 42"
+    "liens": "CC Lacq-Orthez : https://www.cc-lacqorthez.fr\nTransports 64 : https://www.transport64.fr\nDéchèteries CCLO : 05 59 60 95 42",
+    "commerces": [
+      {"nom": "Café O''Médard", "horaires": "Ven-Sam soir, Dim matin", "emoji": "☕"},
+      {"nom": "Bibliothèque ambulante", "horaires": "Mercredi 10h-12h (hors vacances)", "emoji": "📚"}
+    ]
   }'::jsonb
 ),
 (
@@ -44,7 +48,12 @@ INSERT INTO communes (
     "contact": "Tél : 05 59 67 70 52 / 05 59 67 49 81\nEmail : mairie.arthezdebearn@wanadoo.fr\nAdresse : 18, La Carrère, 64370 Arthez-de-Béarn",
     "services": "Collège Corisande d''Andoins : 05 59 67 70 74\nÉcole publique maternelle et primaire\nÉcole privée Saint-Joseph\nMédiathèque municipale\nPiscine municipale\nFrance Services (aide aux démarches numériques)\nAgence postale\nCamping L''Orée du Bois\nMaison des pèlerins",
     "associations": "ACPA — Association Culturelle du Pays d''Arthez (salon du livre, expos)\nAPE — Association des Parents d''Élèves (trail, randonnées)\nFC BAAL — Football Club (tournoi international U15)\nTeam Trial 64 — Activités communautaires",
-    "liens": "CC Lacq-Orthez : https://www.cc-lacqorthez.fr\nOffice de tourisme Cœur de Béarn : https://www.coeurdebearn.com\nChapelle de Caubin : patrimoine roman du XIIe siècle"
+    "liens": "CC Lacq-Orthez : https://www.cc-lacqorthez.fr\nOffice de tourisme Cœur de Béarn : https://www.coeurdebearn.com\nChapelle de Caubin : patrimoine roman du XIIe siècle",
+    "commerces": [
+      {"nom": "Médiathèque municipale", "horaires": "Mar-Sam 9h-12h / 14h-18h", "emoji": "📚"},
+      {"nom": "Piscine municipale", "horaires": "Juin-Sept, horaires affichés", "emoji": "🏊"},
+      {"nom": "Camping L''Orée du Bois", "horaires": "Avr-Oct", "emoji": "⛺"}
+    ]
   }'::jsonb
 ),
 (
@@ -62,7 +71,11 @@ INSERT INTO communes (
     "contact": "Tél : 05 59 81 61 23\nEmail : mairie.morlanne@orange.fr",
     "services": "Agence postale : lun-mar, jeu-ven 9h-12h / 13h30-17h, mer-sam 9h-12h\nÉcole communale\nMarché de producteurs\nChâteau de Morlanne (visites)\nSentiers de randonnée balisés",
     "associations": "Comité des fêtes\nAssociation patrimoine et culture\nClub de randonnée",
-    "liens": "Château de Morlanne : https://www.chateaudemorlanne.fr\nCC Lacq-Orthez : https://www.cc-lacqorthez.fr\nTelegram officiel : https://t.me/morlanne_officiel_telegram"
+    "liens": "Château de Morlanne : https://www.chateaudemorlanne.fr\nCC Lacq-Orthez : https://www.cc-lacqorthez.fr\nTelegram officiel : https://t.me/morlanne_officiel_telegram",
+    "commerces": [
+      {"nom": "Château de Morlanne", "horaires": "Mer-Dim 10h30-12h30 / 14h-18h", "tel": "05 59 81 60 27", "emoji": "🏰"},
+      {"nom": "Agence postale", "horaires": "Lun-Mar, Jeu-Ven 9h-12h / 13h30-17h, Mer-Sam 9h-12h", "emoji": "📮"}
+    ]
   }'::jsonb
 );
 
