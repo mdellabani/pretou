@@ -40,5 +40,10 @@ export function useProfile() {
     load();
   }, []);
 
-  return { profile, loading, isAdmin: profile?.role === "admin" };
+  return {
+    profile,
+    loading,
+    isAdmin: profile?.role === "admin",
+    isModerator: profile?.role === "moderator" || profile?.role === "admin",
+  };
 }

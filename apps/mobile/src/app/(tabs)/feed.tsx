@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  ActivityIndicator,
   FlatList,
   RefreshControl,
   ScrollView,
@@ -16,7 +17,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
 import { PostCard } from "@/components/post-card";
 import { FeedHeader } from "@/components/feed-header";
-import { getPosts, getEpciPosts, POST_TYPE_LABELS, getProducers } from "@rural-community-platform/shared";
+import { getPosts, getEpciPosts, getPostsPaginated, getPinnedPosts, POST_TYPE_LABELS, getProducers } from "@rural-community-platform/shared";
 import type { Post, PostType } from "@rural-community-platform/shared";
 
 // --- Filter options ---
@@ -76,21 +77,48 @@ export default function FeedScreen() {
   // Multi-select type filter (empty set = all)
   const [activeTypes, setActiveTypes] = useState<Set<PostType>>(new Set());
   const [dateFilter, setDateFilter] = useState<DateFilter>("");
+  // Pagination
+  const [cursor, setCursor] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   const loadPosts = useCallback(async () => {
     if (!profile?.commune_id) return;
 
-    const { data } =
-      scope === "epci" && profile.communes?.epci_id
-        ? await getEpciPosts(supabase, profile.communes.epci_id)
-        : await getPosts(supabase, profile.commune_id);
+    if (scope === "epci" && profile.communes?.epci_id) {
+      // For EPCI scope, use the old approach (load all)
+      const { data } = await getEpciPosts(supabase, profile.communes.epci_id);
+      if (data) setPosts(data as Post[]);
+      setHasMore(false);
+    } else {
+      // For commune scope, use pagination
+      const { data: pinnedData } = await getPinnedPosts(supabase, profile.commune_id);
+      const { data: paginatedData } = await getPostsPaginated(supabase, profile.commune_id, null, 20);
 
-    if (data) setPosts(data as Post[]);
+      if (paginatedData) {
+        const allPosts = [...(pinnedData ?? []), ...(paginatedData as Post[])];
+        setPosts(allPosts);
+        setCursor(paginatedData.length > 0 ? paginatedData[paginatedData.length - 1].created_at : null);
+        setHasMore(paginatedData.length >= 20);
+      }
+    }
 
     // Load producer count
     const { data: producers } = await getProducers(supabase);
     if (producers) setProducerCount(producers.length);
   }, [profile?.commune_id, profile?.communes?.epci_id, scope]);
+
+  const loadMore = useCallback(async () => {
+    if (loadingMore || !hasMore || !cursor || !profile?.commune_id || scope === "epci") return;
+    setLoadingMore(true);
+    const { data } = await getPostsPaginated(supabase, profile.commune_id, cursor, 20);
+    if (data) {
+      setPosts((prev) => [...prev, ...(data as Post[])]);
+      setHasMore(data.length >= 20);
+      setCursor(data.length > 0 ? data[data.length - 1].created_at : null);
+    }
+    setLoadingMore(false);
+  }, [loadingMore, hasMore, cursor, profile?.commune_id, scope]);
 
   useEffect(() => {
     loadPosts().then(() => setLoading(false));
@@ -167,6 +195,11 @@ export default function FeedScreen() {
         }
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={
+          loadingMore ? <ActivityIndicator style={{ padding: 16 }} /> : null
         }
         ListHeaderComponent={
           <>

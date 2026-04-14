@@ -127,6 +127,19 @@ VALUES
   NULL, '', '', '', '',
   false, false
 ),
+-- Saint-Médard moderator
+(
+  '00000000-0000-0000-0000-000000000103',
+  '00000000-0000-0000-0000-000000000000',
+  'moderateur@saintmedard64.fr',
+  crypt('demo1234', gen_salt('bf')),
+  now(), now(), now(),
+  '{"provider":"email","providers":["email"]}', '{}',
+  'authenticated', 'authenticated',
+  '', '', '', '',
+  NULL, '', '', '', '',
+  false, false
+),
 -- Arthez-de-Béarn users
 (
   '00000000-0000-0000-0000-000000000200',
@@ -229,6 +242,14 @@ VALUES
   jsonb_build_object('sub', '00000000-0000-0000-0000-000000000102', 'email', 'jeanne.l@email.fr', 'email_verified', true, 'phone_verified', false),
   now(), now(), now()
 ),
+(
+  gen_random_uuid(),
+  '00000000-0000-0000-0000-000000000103',
+  '00000000-0000-0000-0000-000000000103',
+  'email',
+  jsonb_build_object('sub', '00000000-0000-0000-0000-000000000103', 'email', 'moderateur@saintmedard64.fr', 'email_verified', true, 'phone_verified', false),
+  now(), now(), now()
+),
 -- Arthez identities
 (
   gen_random_uuid(),
@@ -286,6 +307,7 @@ INSERT INTO profiles (id, commune_id, display_name, role, status) VALUES
   ('00000000-0000-0000-0000-000000000100', '00000000-0000-0000-0000-000000000010', 'Secrétariat Mairie', 'admin', 'active'),
   ('00000000-0000-0000-0000-000000000101', '00000000-0000-0000-0000-000000000010', 'Pierre Moreau', 'resident', 'active'),
   ('00000000-0000-0000-0000-000000000102', '00000000-0000-0000-0000-000000000010', 'Jeanne Larrieu', 'resident', 'active'),
+  ('00000000-0000-0000-0000-000000000103', '00000000-0000-0000-0000-000000000010', 'Sophie Dupin', 'moderator', 'active'),
   -- Arthez-de-Béarn
   ('00000000-0000-0000-0000-000000000200', '00000000-0000-0000-0000-000000000011', 'Secrétariat Mairie', 'admin', 'active'),
   ('00000000-0000-0000-0000-000000000201', '00000000-0000-0000-0000-000000000011', 'Marie Ducasse', 'resident', 'active'),

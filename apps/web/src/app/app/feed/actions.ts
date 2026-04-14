@@ -45,6 +45,89 @@ export async function createPostAction(formData: FormData) {
     expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
   }
 
+  // Rate limiting (residents only)
+  if (profile.role === "resident") {
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const { count: dailyCount } = await supabase
+      .from("posts")
+      .select("id", { count: "exact", head: true })
+      .eq("author_id", user.id)
+      .gte("created_at", oneDayAgo);
+
+    if ((dailyCount ?? 0) >= 5) {
+      return { error: "Vous avez atteint la limite de publications pour aujourd'hui (5 maximum)", warning: undefined };
+    }
+
+    if (parsed.data.type === "service") {
+      const { count: serviceCount } = await supabase
+        .from("posts")
+        .select("id", { count: "exact", head: true })
+        .eq("author_id", user.id)
+        .eq("type", "service")
+        .gte("created_at", oneDayAgo);
+
+      if ((serviceCount ?? 0) >= 2) {
+        return { error: "Vous avez atteint la limite d'annonces de service pour aujourd'hui (2 maximum)", warning: undefined };
+      }
+    }
+  }
+
+  // Word filter check
+  const { data: bannedWords } = await supabase.from("word_filters").select("word");
+  if (bannedWords && bannedWords.length > 0) {
+    const text = `${parsed.data.title} ${parsed.data.body}`;
+    const matchedWord = bannedWords.find((w) => {
+      const escaped = w.word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const regex = new RegExp(`\\b${escaped}\\b`, "i");
+      return regex.test(text);
+    });
+
+    if (matchedWord) {
+      // Insert post as hidden
+      const { data: post, error } = await supabase
+        .from("posts")
+        .insert({
+          ...parsed.data,
+          commune_id: profile.commune_id,
+          author_id: user.id,
+          expires_at: expiresAt,
+          is_hidden: true,
+        })
+        .select()
+        .single();
+
+      if (error || !post) return { error: "Erreur lors de la publication", warning: undefined };
+
+      // Auto-report with system category
+      await supabase.from("reports").insert({
+        post_id: post.id,
+        reporter_id: user.id,
+        category: "autre",
+        reason: `Mot filtré automatiquement : ${matchedWord.word}`,
+      });
+
+      // Audit log
+      await supabase.from("audit_log").insert({
+        commune_id: profile.commune_id,
+        actor_id: null,
+        action: "post_hidden",
+        target_type: "post",
+        target_id: post.id,
+        reason: `Filtre automatique : ${matchedWord.word}`,
+      });
+
+      // Still create poll if provided
+      const pollDataStr = formData.get("poll_data") as string | null;
+      if (pollDataStr) {
+        const pollData: CreatePollInput = JSON.parse(pollDataStr);
+        await createPoll(supabase, post.id, pollData);
+      }
+
+      revalidatePath("/app/feed");
+      return { error: null, warning: "Votre publication est en cours de vérification." };
+    }
+  }
+
   const { data: post, error } = await supabase
     .from("posts")
     .insert({
@@ -56,7 +139,7 @@ export async function createPostAction(formData: FormData) {
     .select()
     .single();
 
-  if (error || !post) return { error: "Erreur lors de la publication" };
+  if (error || !post) return { error: "Erreur lors de la publication", warning: undefined };
 
   // Create poll if provided
   const pollDataStr = formData.get("poll_data") as string | null;
@@ -71,5 +154,5 @@ export async function createPostAction(formData: FormData) {
   }
 
   revalidatePath("/app/feed");
-  return { error: null };
+  return { error: null, warning: undefined };
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PostTypeBadge } from "@/components/post-type-badge";
+import { ReportDialog } from "@/components/report-dialog";
 import type { Post, PostType } from "@rural-community-platform/shared";
 import { Pin, MessageCircle } from "lucide-react";
 
@@ -54,40 +55,53 @@ export function PostCard({ post }: { post: Post }) {
             {post.body}
           </p>
 
-          <div className="mt-3 flex items-center gap-3 text-xs text-[var(--muted-foreground)]">
-            <span className="font-medium">{post.profiles?.display_name}</span>
-            <span>·</span>
-            <span>
-              {new Date(post.created_at).toLocaleDateString("fr-FR", {
-                day: "numeric",
-                month: "short",
-              })}
-            </span>
-            {commentCount > 0 && (
-              <>
-                <span>·</span>
-                <span className="inline-flex items-center gap-1">
-                  <MessageCircle size={12} />
-                  {commentCount}
-                </span>
-              </>
-            )}
-            {post.type === "evenement" && rsvpCount > 0 && (
-              <>
-                <span>·</span>
-                <span>
-                  {rsvpCount} participant{rsvpCount > 1 ? "s" : ""}
-                </span>
-              </>
-            )}
-            {post.type === "service" && post.expires_at && (
-              <>
-                <span>·</span>
-                <span className="inline-flex items-center rounded bg-amber-100 px-2 py-0.5 font-medium text-amber-700">
-                  {getExpiryText()}
-                </span>
-              </>
-            )}
+          <div className="mt-3 flex items-center justify-between gap-3 text-xs text-[var(--muted-foreground)]">
+            <div className="flex items-center gap-3">
+              <span className="font-medium">{post.profiles?.display_name}</span>
+              {/* TODO: Add moderator badge here when post.profiles includes role field.
+                  Currently post queries only fetch display_name, not role.
+                  Once we update all post queries to include role, add:
+                  {post.profiles?.role === 'moderator' && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold">
+                      <Shield size={12} />
+                      Modérateur
+                    </span>
+                  )}
+              */}
+              <span>·</span>
+              <span>
+                {new Date(post.created_at).toLocaleDateString("fr-FR", {
+                  day: "numeric",
+                  month: "short",
+                })}
+              </span>
+              {commentCount > 0 && (
+                <>
+                  <span>·</span>
+                  <span className="inline-flex items-center gap-1">
+                    <MessageCircle size={12} />
+                    {commentCount}
+                  </span>
+                </>
+              )}
+              {post.type === "evenement" && rsvpCount > 0 && (
+                <>
+                  <span>·</span>
+                  <span>
+                    {rsvpCount} participant{rsvpCount > 1 ? "s" : ""}
+                  </span>
+                </>
+              )}
+              {post.type === "service" && post.expires_at && (
+                <>
+                  <span>·</span>
+                  <span className="inline-flex items-center rounded bg-amber-100 px-2 py-0.5 font-medium text-amber-700">
+                    {getExpiryText()}
+                  </span>
+                </>
+              )}
+            </div>
+            <ReportDialog postId={post.id} />
           </div>
         </div>
       </div>

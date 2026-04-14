@@ -85,9 +85,99 @@ export default function CreatePostScreen() {
 
     setLoading(true);
 
+    // Rate limiting (residents only)
+    if (profile.role === "resident") {
+      const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+      const { count: dailyCount } = await supabase
+        .from("posts")
+        .select("id", { count: "exact", head: true })
+        .eq("author_id", profile.id)
+        .gte("created_at", oneDayAgo);
+
+      if ((dailyCount ?? 0) >= 5) {
+        setLoading(false);
+        Alert.alert("Limite atteinte", "Vous avez atteint la limite de publications pour aujourd'hui (5 maximum)");
+        return;
+      }
+
+      if (type === "service") {
+        const { count: serviceCount } = await supabase
+          .from("posts")
+          .select("id", { count: "exact", head: true })
+          .eq("author_id", profile.id)
+          .eq("type", "service")
+          .gte("created_at", oneDayAgo);
+
+        if ((serviceCount ?? 0) >= 2) {
+          setLoading(false);
+          Alert.alert("Limite atteinte", "Vous avez atteint la limite d'annonces de service pour aujourd'hui (2 maximum)");
+          return;
+        }
+      }
+    }
+
     const expiresAt = type === "service"
       ? new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
       : null;
+
+    // Word filter check
+    const { data: bannedWords } = await supabase.from("word_filters").select("word");
+    if (bannedWords && bannedWords.length > 0) {
+      const text = `${title} ${body}`;
+      const matchedWord = bannedWords.find((w) => {
+        const escaped = w.word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const regex = new RegExp(`\\b${escaped}\\b`, "i");
+        return regex.test(text);
+      });
+
+      if (matchedWord) {
+        const { data: hiddenPost, error: hiddenError } = await supabase
+          .from("posts")
+          .insert({
+            ...parsed.data,
+            commune_id: profile.commune_id,
+            author_id: profile.id,
+            expires_at: expiresAt,
+            is_hidden: true,
+          })
+          .select()
+          .single();
+
+        if (hiddenError || !hiddenPost) {
+          setLoading(false);
+          Alert.alert("Erreur", "Impossible de créer la publication");
+          return;
+        }
+
+        await supabase.from("reports").insert({
+          post_id: hiddenPost.id,
+          reporter_id: profile.id,
+          category: "autre",
+          reason: `Mot filtré automatiquement : ${matchedWord.word}`,
+        });
+
+        // Create poll if needed
+        if (showPoll && pollQuestion.trim()) {
+          const validOptions = pollOptions.filter((opt) => opt.trim().length > 0);
+          if (validOptions.length >= 2) {
+            await createPoll(supabase, hiddenPost.id, {
+              question: pollQuestion,
+              poll_type: pollType,
+              allow_multiple: pollAllowMultiple,
+              options: validOptions,
+            });
+          }
+        }
+
+        setLoading(false);
+        Alert.alert("En cours de vérification", "Votre publication est en cours de vérification par un modérateur.");
+        setTitle(""); setBody(""); setEventDate(""); setEventLocation("");
+        setImage(null); setType("discussion"); setShowPoll(false);
+        setPollQuestion(""); setPollOptions(["", ""]); setPollAllowMultiple(false);
+        router.navigate("/(tabs)/feed");
+        return;
+      }
+    }
 
     const { data: post, error } = await supabase
       .from("posts")

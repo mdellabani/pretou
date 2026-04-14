@@ -8,7 +8,7 @@ import { LogOut } from "lucide-react";
 
 export function NavBar() {
   const router = useRouter();
-  const { profile, loading, isAdmin } = useProfile();
+  const { profile, loading, isAdmin, isModerator } = useProfile();
 
   async function handleLogout() {
     const supabase = createClient();
@@ -104,6 +104,14 @@ export function NavBar() {
             className="rounded-md px-3 py-1.5 text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white"
           >
             Admin
+          </Link>
+        )}
+        {!isAdmin && isModerator && (
+          <Link
+            href="/moderation/dashboard"
+            className="rounded-md px-3 py-1.5 text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white"
+          >
+            Modération
           </Link>
         )}
       </div>

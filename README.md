@@ -62,6 +62,7 @@ All accounts use password **`demo1234`**. Each commune has its own theme, users,
 | Email | Role | Name |
 |---|---|---|
 | `secretaire@saintmedard64.fr` | Admin | Secrétariat Mairie |
+| `moderateur@saintmedard64.fr` | Moderator | Sophie Dupin |
 | `pierre.m@email.fr` | Resident | Pierre Moreau |
 | `jeanne.l@email.fr` | Resident | Jeanne Larrieu |
 
