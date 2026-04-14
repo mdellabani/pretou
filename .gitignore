@@ -9,3 +9,8 @@ dist/
 *.tgz
 web-build/
 .firecrawl/
+.playwright-mcp/
+.superpowers/
+supabase/.branches/
+supabase/.temp/
+*.png

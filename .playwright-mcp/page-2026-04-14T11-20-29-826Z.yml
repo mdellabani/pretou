@@ -1,8 +1,0 @@
-- generic [active] [ref=e1]:
-  - main [ref=e2]:
-    - heading "rural-community-platform" [level=1] [ref=e3]
-    - paragraph [ref=e4]:
-      - text: Scaffolded with Forge. Start editing
-      - code [ref=e5]: src/app/page.tsx
-      - text: .
-  - alert [ref=e6]

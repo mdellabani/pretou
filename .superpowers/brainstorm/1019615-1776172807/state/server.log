@@ -1,4 +1,0 @@
-{"type":"server-started","port":52376,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:52376","screen_dir":"/home/mde/Code/personal/rural-community-platform/.superpowers/brainstorm/1019615-1776172807/content","state_dir":"/home/mde/Code/personal/rural-community-platform/.superpowers/brainstorm/1019615-1776172807/state"}
-{"type":"screen-added","file":"/home/mde/Code/personal/rural-community-platform/.superpowers/brainstorm/1019615-1776172807/content/producers-placement.html"}
-{"type":"screen-added","file":"/home/mde/Code/personal/rural-community-platform/.superpowers/brainstorm/1019615-1776172807/content/infos-pratiques.html"}
-{"type":"server-stopped","reason":"idle timeout"}
