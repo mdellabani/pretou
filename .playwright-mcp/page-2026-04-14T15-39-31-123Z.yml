@@ -1,0 +1,311 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - heading "Fil de la commune" [level=1] [ref=e6]
+        - button "Nouvelle publication" [ref=e7]
+      - generic [ref=e8]:
+        - link "Ma commune" [ref=e9] [cursor=pointer]:
+          - /url: /app/feed
+        - link "Intercommunalité" [ref=e10] [cursor=pointer]:
+          - /url: /app/feed?scope=epci
+      - generic [ref=e11]:
+        - button "Tout" [ref=e12]
+        - button "Annonce officielle" [ref=e13]
+        - button "Événement" [ref=e14]
+        - button "Entraide" [ref=e15]
+        - button "Discussion" [ref=e16]
+        - button "Service" [ref=e17]
+        - generic [ref=e18]: "|"
+        - button "Toutes" [ref=e19]
+        - button "Aujourd'hui" [ref=e20]
+        - button "Cette semaine" [ref=e21]
+        - button "Ce mois" [ref=e22]
+      - link "🌿 Producteurs locaux 1 producteur · Circuit court →" [ref=e23] [cursor=pointer]:
+        - /url: /app/producteurs
+        - generic [ref=e24]:
+          - paragraph [ref=e25]: 🌿 Producteurs locaux
+          - paragraph [ref=e26]: 1 producteur · Circuit court
+        - generic [ref=e27]: →
+      - generic [ref=e28]:
+        - link "Épinglé Mairie fermée au public — Travaux budget Annonce officielle La mairie sera fermée au public le lundi 14 et le jeudi 17 avril en raison des travaux de préparation du budget communal. Pour toute urgence, vous pouvez joindre le secrétariat par téléphone au 05 59 67 56 14 ou par email à contact@saintmedard64.fr. Nous vous remercions de votre compréhension. Secrétariat Mairie · 14 avr." [ref=e29] [cursor=pointer]:
+          - /url: /app/posts/00000000-0000-0000-0000-000000001001
+          - generic [ref=e31]:
+            - generic [ref=e32]:
+              - generic [ref=e33]:
+                - generic [ref=e34]:
+                  - img [ref=e35]
+                  - text: Épinglé
+                - heading "Mairie fermée au public — Travaux budget" [level=3] [ref=e37]
+              - generic [ref=e39]:
+                - img [ref=e40]
+                - text: Annonce officielle
+            - paragraph [ref=e43]: La mairie sera fermée au public le lundi 14 et le jeudi 17 avril en raison des travaux de préparation du budget communal. Pour toute urgence, vous pouvez joindre le secrétariat par téléphone au 05 59 67 56 14 ou par email à contact@saintmedard64.fr. Nous vous remercions de votre compréhension.
+            - generic [ref=e44]:
+              - generic [ref=e45]: Secrétariat Mairie
+              - generic [ref=e46]: ·
+              - generic [ref=e47]: 14 avr.
+        - 'link "Tonte de pelouse — Disponible ce week-end Service Je propose de tondre votre pelouse ce samedi ou dimanche. J''ai ma propre tondeuse. Tarif : 20€ pour un terrain standard, 30€ pour les grands terrains. Contactez-moi ici ou par commentaire. Pierre Moreau · 14 avr. · Expire dans 7j" [ref=e48] [cursor=pointer]':
+          - /url: /app/posts/00000000-0000-0000-0000-000000001018
+          - generic [ref=e50]:
+            - generic [ref=e51]:
+              - heading "Tonte de pelouse — Disponible ce week-end" [level=3] [ref=e53]
+              - generic [ref=e55]:
+                - img [ref=e56]
+                - text: Service
+            - paragraph [ref=e58]: "Je propose de tondre votre pelouse ce samedi ou dimanche. J'ai ma propre tondeuse. Tarif : 20€ pour un terrain standard, 30€ pour les grands terrains. Contactez-moi ici ou par commentaire."
+            - generic [ref=e59]:
+              - generic [ref=e60]: Pierre Moreau
+              - generic [ref=e61]: ·
+              - generic [ref=e62]: 14 avr.
+              - generic [ref=e63]: ·
+              - generic [ref=e64]: Expire dans 7j
+        - 'link "Garde d''enfants mercredi après-midi Service Je suis disponible les mercredis après-midi pour garder vos enfants (3-10 ans). Expérience : maman de 3 enfants, ancienne assistante maternelle. Tarif : 8€/heure, goûter inclus. Je me déplace sur Saint-Médard et alentours. Jeanne Larrieu · 14 avr. · Expire dans 7j" [ref=e65] [cursor=pointer]':
+          - /url: /app/posts/00000000-0000-0000-0000-000000001019
+          - generic [ref=e67]:
+            - generic [ref=e68]:
+              - heading "Garde d'enfants mercredi après-midi" [level=3] [ref=e70]
+              - generic [ref=e72]:
+                - img [ref=e73]
+                - text: Service
+            - paragraph [ref=e75]: "Je suis disponible les mercredis après-midi pour garder vos enfants (3-10 ans). Expérience : maman de 3 enfants, ancienne assistante maternelle. Tarif : 8€/heure, goûter inclus. Je me déplace sur Saint-Médard et alentours."
+            - generic [ref=e76]:
+              - generic [ref=e77]: Jeanne Larrieu
+              - generic [ref=e78]: ·
+              - generic [ref=e79]: 14 avr.
+              - generic [ref=e80]: ·
+              - generic [ref=e81]: Expire dans 7j
+        - 'link "Qui pourrait garder mes poules pendant les vacances ? Entraide Bonjour, Je pars en vacances du 28 avril au 5 mai et je cherche quelqu''un qui pourrait passer donner à manger à mes 4 poules (chemin du Moulin). C''est très simple : un seau de grain le matin et vérifier qu''elles ont de l''eau. En échange vous pouvez garder les œufs ! Merci d''avance. Jeanne Larrieu · 14 avr. · 1" [ref=e82] [cursor=pointer]':
+          - /url: /app/posts/00000000-0000-0000-0000-000000001016
+          - generic [ref=e84]:
+            - generic [ref=e85]:
+              - heading "Qui pourrait garder mes poules pendant les vacances ?" [level=3] [ref=e87]
+              - generic [ref=e89]:
+                - img [ref=e90]
+                - text: Entraide
+            - paragraph [ref=e95]: "Bonjour, Je pars en vacances du 28 avril au 5 mai et je cherche quelqu'un qui pourrait passer donner à manger à mes 4 poules (chemin du Moulin). C'est très simple : un seau de grain le matin et vérifier qu'elles ont de l'eau. En échange vous pouvez garder les œufs ! Merci d'avance."
+            - generic [ref=e96]:
+              - generic [ref=e97]: Jeanne Larrieu
+              - generic [ref=e98]: ·
+              - generic [ref=e99]: 14 avr.
+              - generic [ref=e100]: ·
+              - generic [ref=e101]:
+                - img [ref=e102]
+                - text: "1"
+        - link "Covoiturage Orthez le mercredi — Places disponibles Entraide Bonjour, Je descends à Orthez tous les mercredis matin (départ 8h30 du parking de la mairie, retour vers 12h30). J'ai 3 places disponibles dans la voiture. C'est gratuit, juste du bon sens entre voisins ! Si ça intéresse quelqu'un, répondez ici ou venez directement mercredi matin. Jeanne Larrieu · 14 avr." [ref=e104] [cursor=pointer]:
+          - /url: /app/posts/00000000-0000-0000-0000-000000001008
+          - generic [ref=e106]:
+            - generic [ref=e107]:
+              - heading "Covoiturage Orthez le mercredi — Places disponibles" [level=3] [ref=e109]
+              - generic [ref=e111]:
+                - img [ref=e112]
+                - text: Entraide
+            - paragraph [ref=e117]: Bonjour, Je descends à Orthez tous les mercredis matin (départ 8h30 du parking de la mairie, retour vers 12h30). J'ai 3 places disponibles dans la voiture. C'est gratuit, juste du bon sens entre voisins ! Si ça intéresse quelqu'un, répondez ici ou venez directement mercredi matin.
+            - generic [ref=e118]:
+              - generic [ref=e119]: Jeanne Larrieu
+              - generic [ref=e120]: ·
+              - generic [ref=e121]: 14 avr.
+        - link "Concours de pétanque Saint-Médard Loisirs — Qui participe ? Discussion Saint-Médard Loisirs organise un concours de pétanque le dimanche 4 mai sur le terrain derrière la salle des fêtes. Inscription en doublette, 5€ par équipe. Qui est chaud ? On peut monter une équipe ensemble si quelqu'un cherche un partenaire. Pierre Moreau · 14 avr." [ref=e122] [cursor=pointer]:
+          - /url: /app/posts/00000000-0000-0000-0000-000000001017
+          - generic [ref=e124]:
+            - generic [ref=e125]:
+              - heading "Concours de pétanque Saint-Médard Loisirs — Qui participe ?" [level=3] [ref=e127]
+              - generic [ref=e129]:
+                - img [ref=e130]
+                - text: Discussion
+            - paragraph [ref=e132]: Saint-Médard Loisirs organise un concours de pétanque le dimanche 4 mai sur le terrain derrière la salle des fêtes. Inscription en doublette, 5€ par équipe. Qui est chaud ? On peut monter une équipe ensemble si quelqu'un cherche un partenaire.
+            - generic [ref=e133]:
+              - generic [ref=e134]: Pierre Moreau
+              - generic [ref=e135]: ·
+              - generic [ref=e136]: 14 avr.
+        - link "Travaux chemin du lavoir — Circulation modifiée Annonce officielle Des travaux de réfection du chemin communal reliant le lavoir à la mairie débuteront le lundi 21 avril pour une durée estimée de 2 semaines. La circulation sera déviée par le chemin de la crête. Un plan de déviation sera affiché en mairie et aux entrées du chemin. Merci de votre patience. Ces travaux amélioreront considérablement l'état de cette voie très empruntée par les promeneurs. Secrétariat Mairie · 13 avr." [ref=e137] [cursor=pointer]:
+          - /url: /app/posts/00000000-0000-0000-0000-000000001003
+          - generic [ref=e139]:
+            - generic [ref=e140]:
+              - heading "Travaux chemin du lavoir — Circulation modifiée" [level=3] [ref=e142]
+              - generic [ref=e144]:
+                - img [ref=e145]
+                - text: Annonce officielle
+            - paragraph [ref=e148]: Des travaux de réfection du chemin communal reliant le lavoir à la mairie débuteront le lundi 21 avril pour une durée estimée de 2 semaines. La circulation sera déviée par le chemin de la crête. Un plan de déviation sera affiché en mairie et aux entrées du chemin. Merci de votre patience. Ces travaux amélioreront considérablement l'état de cette voie très empruntée par les promeneurs.
+            - generic [ref=e149]:
+              - generic [ref=e150]: Secrétariat Mairie
+              - generic [ref=e151]: ·
+              - generic [ref=e152]: 13 avr.
+        - link "Cherche coup de main pour débroussaillage Entraide Bonjour à tous, J'ai un terrain d'environ 500m² à débroussailler avant l'été (derrière le chemin de la crête). J'ai le matériel mais c'est un gros travail seul. Si quelqu'un est disponible samedi matin, je serais reconnaissant ! Je peux rendre la pareille pour des travaux ou du bricolage. On pourra faire un casse-croûte ensemble à midi. Pierre Moreau · 13 avr. · 2" [ref=e153] [cursor=pointer]:
+          - /url: /app/posts/00000000-0000-0000-0000-000000001007
+          - generic [ref=e155]:
+            - generic [ref=e156]:
+              - heading "Cherche coup de main pour débroussaillage" [level=3] [ref=e158]
+              - generic [ref=e160]:
+                - img [ref=e161]
+                - text: Entraide
+            - paragraph [ref=e166]: Bonjour à tous, J'ai un terrain d'environ 500m² à débroussailler avant l'été (derrière le chemin de la crête). J'ai le matériel mais c'est un gros travail seul. Si quelqu'un est disponible samedi matin, je serais reconnaissant ! Je peux rendre la pareille pour des travaux ou du bricolage. On pourra faire un casse-croûte ensemble à midi.
+            - generic [ref=e167]:
+              - generic [ref=e168]: Pierre Moreau
+              - generic [ref=e169]: ·
+              - generic [ref=e170]: 13 avr.
+              - generic [ref=e171]: ·
+              - generic [ref=e172]:
+                - img [ref=e173]
+                - text: "2"
+        - 'link "Tournoi de printemps du RCSM Événement Le Rugby Club Saint-Médard organise son tournoi de printemps annuel ! Au programme : - 9h00 : Tournoi jeunes (catégories M8 à M14) - 14h00 : Matchs seniors - 18h00 : Remise des trophées - 19h00 : Repas au club (réservation obligatoire) Buvette et restauration sur place toute la journée. Venez nombreux soutenir nos équipes ! Secrétariat Mairie · 12 avr. · 1 participant" [ref=e175] [cursor=pointer]':
+          - /url: /app/posts/00000000-0000-0000-0000-000000001006
+          - generic [ref=e177]:
+            - generic [ref=e178]:
+              - heading "Tournoi de printemps du RCSM" [level=3] [ref=e180]
+              - generic [ref=e182]:
+                - img [ref=e183]
+                - text: Événement
+            - paragraph [ref=e185]: "Le Rugby Club Saint-Médard organise son tournoi de printemps annuel ! Au programme : - 9h00 : Tournoi jeunes (catégories M8 à M14) - 14h00 : Matchs seniors - 18h00 : Remise des trophées - 19h00 : Repas au club (réservation obligatoire) Buvette et restauration sur place toute la journée. Venez nombreux soutenir nos équipes !"
+            - generic [ref=e186]:
+              - generic [ref=e187]: Secrétariat Mairie
+              - generic [ref=e188]: ·
+              - generic [ref=e189]: 12 avr.
+              - generic [ref=e190]: ·
+              - generic [ref=e191]: 1 participant
+        - link "Horaires d'ouverture du café O'Médard ? Discussion Bonjour, est-ce que quelqu'un connaît les horaires actuels du O'Médard ? J'ai essayé d'y passer vendredi après-midi mais c'était fermé. Merci ! Pierre Moreau · 12 avr. · 1" [ref=e192] [cursor=pointer]:
+          - /url: /app/posts/00000000-0000-0000-0000-000000001010
+          - generic [ref=e194]:
+            - generic [ref=e195]:
+              - heading "Horaires d'ouverture du café O'Médard ?" [level=3] [ref=e197]
+              - generic [ref=e199]:
+                - img [ref=e200]
+                - text: Discussion
+            - paragraph [ref=e202]: Bonjour, est-ce que quelqu'un connaît les horaires actuels du O'Médard ? J'ai essayé d'y passer vendredi après-midi mais c'était fermé. Merci !
+            - generic [ref=e203]:
+              - generic [ref=e204]: Pierre Moreau
+              - generic [ref=e205]: ·
+              - generic [ref=e206]: 12 avr.
+              - generic [ref=e207]: ·
+              - generic [ref=e208]:
+                - img [ref=e209]
+                - text: "1"
+        - 'link "Collecte des déchets — 1er mai Annonce officielle En raison du jour férié du 1er mai, la collecte des ordures ménagères prévue le jeudi 1er mai est reportée au vendredi 2 mai. Merci de sortir vos bacs la veille au soir. Pour rappel : bac vert (ordures ménagères) le jeudi, bac jaune (recyclables) un mardi sur deux. En cas de doute, contactez le service environnement CCLO au 05 59 60 95 42. Secrétariat Mairie · 11 avr." [ref=e211] [cursor=pointer]':
+          - /url: /app/posts/00000000-0000-0000-0000-000000001002
+          - generic [ref=e213]:
+            - generic [ref=e214]:
+              - heading "Collecte des déchets — 1er mai" [level=3] [ref=e216]
+              - generic [ref=e218]:
+                - img [ref=e219]
+                - text: Annonce officielle
+            - paragraph [ref=e222]: "En raison du jour férié du 1er mai, la collecte des ordures ménagères prévue le jeudi 1er mai est reportée au vendredi 2 mai. Merci de sortir vos bacs la veille au soir. Pour rappel : bac vert (ordures ménagères) le jeudi, bac jaune (recyclables) un mardi sur deux. En cas de doute, contactez le service environnement CCLO au 05 59 60 95 42."
+            - generic [ref=e223]:
+              - generic [ref=e224]: Secrétariat Mairie
+              - generic [ref=e225]: ·
+              - generic [ref=e226]: 11 avr.
+        - 'link "Voyage \"Paris croisière\" — Génération Mouvements 64 Événement L''association Génération Mouvements 64 organise un voyage à Paris incluant une croisière sur la Seine et la visite de Montmartre. Dates : du 15 au 18 juin 2026 Tarif : 380€ par personne (transport, hébergement, visites inclus) Inscriptions avant le 15 mai auprès du CCAS ou en mairie. Ouvert à tous les habitants de la commune et des communes voisines. Secrétariat Mairie · 10 avr. · 1 participant" [ref=e227] [cursor=pointer]':
+          - /url: /app/posts/00000000-0000-0000-0000-000000001004
+          - generic [ref=e229]:
+            - generic [ref=e230]:
+              - heading "Voyage \"Paris croisière\" — Génération Mouvements 64" [level=3] [ref=e232]
+              - generic [ref=e234]:
+                - img [ref=e235]
+                - text: Événement
+            - paragraph [ref=e237]: "L'association Génération Mouvements 64 organise un voyage à Paris incluant une croisière sur la Seine et la visite de Montmartre. Dates : du 15 au 18 juin 2026 Tarif : 380€ par personne (transport, hébergement, visites inclus) Inscriptions avant le 15 mai auprès du CCAS ou en mairie. Ouvert à tous les habitants de la commune et des communes voisines."
+            - generic [ref=e238]:
+              - generic [ref=e239]: Secrétariat Mairie
+              - generic [ref=e240]: ·
+              - generic [ref=e241]: 10 avr.
+              - generic [ref=e242]: ·
+              - generic [ref=e243]: 1 participant
+        - link "Des nouvelles du chemin communal vers le lavoir ? Discussion Quelqu'un sait si les travaux du chemin entre le lavoir et la mairie vont reprendre bientôt ? Ça fait des mois que c'est en plan et c'est devenu vraiment impraticable quand il pleut. Les enfants l'empruntent pour aller au car scolaire et c'est dangereux avec toute cette boue. Jeanne Larrieu · 10 avr. · 3" [ref=e244] [cursor=pointer]:
+          - /url: /app/posts/00000000-0000-0000-0000-000000001009
+          - generic [ref=e246]:
+            - generic [ref=e247]:
+              - heading "Des nouvelles du chemin communal vers le lavoir ?" [level=3] [ref=e249]
+              - generic [ref=e251]:
+                - img [ref=e252]
+                - text: Discussion
+            - paragraph [ref=e254]: Quelqu'un sait si les travaux du chemin entre le lavoir et la mairie vont reprendre bientôt ? Ça fait des mois que c'est en plan et c'est devenu vraiment impraticable quand il pleut. Les enfants l'empruntent pour aller au car scolaire et c'est dangereux avec toute cette boue.
+            - generic [ref=e255]:
+              - generic [ref=e256]: Jeanne Larrieu
+              - generic [ref=e257]: ·
+              - generic [ref=e258]: 10 avr.
+              - generic [ref=e259]: ·
+              - generic [ref=e260]:
+                - img [ref=e261]
+                - text: "3"
+        - link "Repas des aînés du CCAS Événement Le CCAS de Saint-Médard vous invite au traditionnel repas des aînés. Un moment de convivialité autour d'un bon repas préparé par un traiteur local. Animation musicale l'après-midi. Inscription obligatoire avant le 20 avril auprès du secrétariat de mairie. Secrétariat Mairie · 9 avr. · 2 participants" [ref=e263] [cursor=pointer]:
+          - /url: /app/posts/00000000-0000-0000-0000-000000001005
+          - generic [ref=e265]:
+            - generic [ref=e266]:
+              - heading "Repas des aînés du CCAS" [level=3] [ref=e268]
+              - generic [ref=e270]:
+                - img [ref=e271]
+                - text: Événement
+            - paragraph [ref=e273]: Le CCAS de Saint-Médard vous invite au traditionnel repas des aînés. Un moment de convivialité autour d'un bon repas préparé par un traiteur local. Animation musicale l'après-midi. Inscription obligatoire avant le 20 avril auprès du secrétariat de mairie.
+            - generic [ref=e274]:
+              - generic [ref=e275]: Secrétariat Mairie
+              - generic [ref=e276]: ·
+              - generic [ref=e277]: 9 avr.
+              - generic [ref=e278]: ·
+              - generic [ref=e279]: 2 participants
+        - link "Fermeture du O'Médard pour le week-end de Pâques Annonce officielle Le café O'Médard sera exceptionnellement fermé ce vendredi 3 avril et dimanche 5 avril pour le week-end de Pâques. Réouverture normale le vendredi suivant. Bonnes fêtes à tous ! Secrétariat Mairie · 2 avr." [ref=e280] [cursor=pointer]:
+          - /url: /app/posts/00000000-0000-0000-0000-000000001011
+          - generic [ref=e282]:
+            - generic [ref=e283]:
+              - heading "Fermeture du O'Médard pour le week-end de Pâques" [level=3] [ref=e285]
+              - generic [ref=e287]:
+                - img [ref=e288]
+                - text: Annonce officielle
+            - paragraph [ref=e291]: Le café O'Médard sera exceptionnellement fermé ce vendredi 3 avril et dimanche 5 avril pour le week-end de Pâques. Réouverture normale le vendredi suivant. Bonnes fêtes à tous !
+            - generic [ref=e292]:
+              - generic [ref=e293]: Secrétariat Mairie
+              - generic [ref=e294]: ·
+              - generic [ref=e295]: 2 avr.
+        - 'link "O''Médard : changement de régisseur Annonce officielle Après plusieurs années de service au café communal O''Médard, Daniel Labielle prend une retraite bien méritée. Nous le remercions chaleureusement pour son engagement et sa bonne humeur qui ont fait du O''Médard un vrai lieu de vie pour le village. Un nouveau régisseur prendra ses fonctions prochainement. Les horaires d''ouverture seront communiqués dès que possible. Merci Daniel ! Secrétariat Mairie · 1 mars" [ref=e296] [cursor=pointer]':
+          - /url: /app/posts/00000000-0000-0000-0000-000000001012
+          - generic [ref=e298]:
+            - generic [ref=e299]:
+              - 'heading "O''Médard : changement de régisseur" [level=3] [ref=e301]'
+              - generic [ref=e303]:
+                - img [ref=e304]
+                - text: Annonce officielle
+            - paragraph [ref=e307]: Après plusieurs années de service au café communal O'Médard, Daniel Labielle prend une retraite bien méritée. Nous le remercions chaleureusement pour son engagement et sa bonne humeur qui ont fait du O'Médard un vrai lieu de vie pour le village. Un nouveau régisseur prendra ses fonctions prochainement. Les horaires d'ouverture seront communiqués dès que possible. Merci Daniel !
+            - generic [ref=e308]:
+              - generic [ref=e309]: Secrétariat Mairie
+              - generic [ref=e310]: ·
+              - generic [ref=e311]: 1 mars
+        - link "Route de Juren fermée — Mercredi 11 février Annonce officielle Le mercredi 11 février 2026 de 13h à 17h, la route de Juren sera fermée à la circulation pour des travaux d'entretien. Déviation possible par la route de la crête. Merci de votre compréhension. Secrétariat Mairie · 10 févr." [ref=e312] [cursor=pointer]:
+          - /url: /app/posts/00000000-0000-0000-0000-000000001013
+          - generic [ref=e314]:
+            - generic [ref=e315]:
+              - heading "Route de Juren fermée — Mercredi 11 février" [level=3] [ref=e317]
+              - generic [ref=e319]:
+                - img [ref=e320]
+                - text: Annonce officielle
+            - paragraph [ref=e323]: Le mercredi 11 février 2026 de 13h à 17h, la route de Juren sera fermée à la circulation pour des travaux d'entretien. Déviation possible par la route de la crête. Merci de votre compréhension.
+            - generic [ref=e324]:
+              - generic [ref=e325]: Secrétariat Mairie
+              - generic [ref=e326]: ·
+              - generic [ref=e327]: 10 févr.
+        - 'link "Cérémonie des vœux du maire Événement Le maire et le conseil municipal vous convient à la cérémonie des vœux pour la nouvelle année. Au programme : allocution du maire, bilan de l''année écoulée et projets pour 2026, suivis d''un moment de convivialité autour du verre de l''amitié. Tous les habitants sont les bienvenus ! Secrétariat Mairie · 17 janv. · 2 participants" [ref=e328] [cursor=pointer]':
+          - /url: /app/posts/00000000-0000-0000-0000-000000001014
+          - generic [ref=e330]:
+            - generic [ref=e331]:
+              - heading "Cérémonie des vœux du maire" [level=3] [ref=e333]
+              - generic [ref=e335]:
+                - img [ref=e336]
+                - text: Événement
+            - paragraph [ref=e338]: "Le maire et le conseil municipal vous convient à la cérémonie des vœux pour la nouvelle année. Au programme : allocution du maire, bilan de l'année écoulée et projets pour 2026, suivis d'un moment de convivialité autour du verre de l'amitié. Tous les habitants sont les bienvenus !"
+            - generic [ref=e339]:
+              - generic [ref=e340]: Secrétariat Mairie
+              - generic [ref=e341]: ·
+              - generic [ref=e342]: 17 janv.
+              - generic [ref=e343]: ·
+              - generic [ref=e344]: 2 participants
+        - 'link "Intervention Enedis — Coupure électrique le 23 décembre Annonce officielle Enedis interviendra le mardi 23 décembre au matin sur le réseau électrique de la commune. Rues concernées : chemin du Moulin, route de Juren, chemin de la crête. Horaires : 8h30 à 12h30. Pensez à éteindre vos appareils sensibles avant la coupure. Secrétariat Mairie · 24 déc." [ref=e345] [cursor=pointer]':
+          - /url: /app/posts/00000000-0000-0000-0000-000000001015
+          - generic [ref=e347]:
+            - generic [ref=e348]:
+              - heading "Intervention Enedis — Coupure électrique le 23 décembre" [level=3] [ref=e350]
+              - generic [ref=e352]:
+                - img [ref=e353]
+                - text: Annonce officielle
+            - paragraph [ref=e356]: "Enedis interviendra le mardi 23 décembre au matin sur le réseau électrique de la commune. Rues concernées : chemin du Moulin, route de Juren, chemin de la crête. Horaires : 8h30 à 12h30. Pensez à éteindre vos appareils sensibles avant la coupure."
+            - generic [ref=e357]:
+              - generic [ref=e358]: Secrétariat Mairie
+              - generic [ref=e359]: ·
+              - generic [ref=e360]: 24 déc.
+  - button "Open Next.js Dev Tools" [ref=e366] [cursor=pointer]:
+    - img [ref=e367]

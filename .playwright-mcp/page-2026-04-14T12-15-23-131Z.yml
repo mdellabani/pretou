@@ -1,0 +1,162 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - heading "Fil de la commune" [level=1] [ref=e6]
+        - button "Nouvelle publication" [ref=e7]
+      - generic [ref=e8]:
+        - link "Ma commune" [ref=e9] [cursor=pointer]:
+          - /url: /app/feed
+        - link "Intercommunalité" [ref=e10] [cursor=pointer]:
+          - /url: /app/feed?scope=epci
+      - generic [ref=e11]:
+        - button "Tout" [ref=e12]
+        - button "Annonce officielle" [ref=e13]
+        - button "Événement" [ref=e14]
+        - button "Entraide" [ref=e15]
+        - button "Discussion" [ref=e16]
+        - generic [ref=e17]: "|"
+        - button "Toutes" [ref=e18]
+        - button "Aujourd'hui" [ref=e19]
+        - button "Cette semaine" [ref=e20]
+        - button "Ce mois" [ref=e21]
+      - generic [ref=e22]:
+        - link "Épinglé Salon du livre et de la BD — Samedi 25 avril Annonce officielle L'Association Culturelle du Pays d'Arthez (ACPA) organise son salon annuel du livre et de la bande dessinée le samedi 25 avril à la salle des fêtes. Entrée libre de 10h à 18h. Une vingtaine d'auteurs et illustrateurs seront présents pour des dédicaces. Ateliers dessin pour les enfants l'après-midi. Buvette et restauration sur place. Secrétariat Mairie · 13 avr." [ref=e23] [cursor=pointer]:
+          - /url: /app/posts/00000000-0000-0000-0000-000000002001
+          - generic [ref=e25]:
+            - generic [ref=e26]:
+              - generic [ref=e27]:
+                - generic [ref=e28]:
+                  - img [ref=e29]
+                  - text: Épinglé
+                - heading "Salon du livre et de la BD — Samedi 25 avril" [level=3] [ref=e31]
+              - generic [ref=e33]:
+                - img [ref=e34]
+                - text: Annonce officielle
+            - paragraph [ref=e37]: L'Association Culturelle du Pays d'Arthez (ACPA) organise son salon annuel du livre et de la bande dessinée le samedi 25 avril à la salle des fêtes. Entrée libre de 10h à 18h. Une vingtaine d'auteurs et illustrateurs seront présents pour des dédicaces. Ateliers dessin pour les enfants l'après-midi. Buvette et restauration sur place.
+            - generic [ref=e38]:
+              - generic [ref=e39]: Secrétariat Mairie
+              - generic [ref=e40]: ·
+              - generic [ref=e41]: 13 avr.
+        - link "Accueil pèlerins — Besoin de bénévoles Entraide Bonjour, La saison des pèlerins reprend sur le chemin de Compostelle et la Maison des pèlerins a besoin de bénévoles pour l'accueil du soir (18h-20h). Si vous avez une soirée de libre par semaine ou par mois, c'est un moment d'échange vraiment enrichissant. On rencontre des gens du monde entier ! Contactez-moi ou passez à la médiathèque. Marie Ducasse · 14 avr. · 2" [ref=e42] [cursor=pointer]:
+          - /url: /app/posts/00000000-0000-0000-0000-000000002006
+          - generic [ref=e44]:
+            - generic [ref=e45]:
+              - heading "Accueil pèlerins — Besoin de bénévoles" [level=3] [ref=e47]
+              - generic [ref=e49]:
+                - img [ref=e50]
+                - text: Entraide
+            - paragraph [ref=e55]: Bonjour, La saison des pèlerins reprend sur le chemin de Compostelle et la Maison des pèlerins a besoin de bénévoles pour l'accueil du soir (18h-20h). Si vous avez une soirée de libre par semaine ou par mois, c'est un moment d'échange vraiment enrichissant. On rencontre des gens du monde entier ! Contactez-moi ou passez à la médiathèque.
+            - generic [ref=e56]:
+              - generic [ref=e57]: Marie Ducasse
+              - generic [ref=e58]: ·
+              - generic [ref=e59]: 14 avr.
+              - generic [ref=e60]: ·
+              - generic [ref=e61]:
+                - img [ref=e62]
+                - text: "2"
+        - link "Horaires d'été de la médiathèque ? Discussion Est-ce que quelqu'un sait si la médiathèque change ses horaires pour l'été ? L'année dernière elle fermait le samedi en juillet-août si je me souviens bien. Je voudrais m'organiser pour les inscriptions aux activités d'été des enfants. Marie Ducasse · 13 avr. · 1" [ref=e64] [cursor=pointer]:
+          - /url: /app/posts/00000000-0000-0000-0000-000000002008
+          - generic [ref=e66]:
+            - generic [ref=e67]:
+              - heading "Horaires d'été de la médiathèque ?" [level=3] [ref=e69]
+              - generic [ref=e71]:
+                - img [ref=e72]
+                - text: Discussion
+            - paragraph [ref=e74]: Est-ce que quelqu'un sait si la médiathèque change ses horaires pour l'été ? L'année dernière elle fermait le samedi en juillet-août si je me souviens bien. Je voudrais m'organiser pour les inscriptions aux activités d'été des enfants.
+            - generic [ref=e75]:
+              - generic [ref=e76]: Marie Ducasse
+              - generic [ref=e77]: ·
+              - generic [ref=e78]: 13 avr.
+              - generic [ref=e79]: ·
+              - generic [ref=e80]:
+                - img [ref=e81]
+                - text: "1"
+        - 'link "Covoiturage Pau — Tous les lundis et jeudis Entraide Je travaille à Pau et je fais le trajet Arthez-Pau les lundis et jeudis (départ 7h30, retour 18h). J''ai 2 places dans ma voiture. Participation aux frais : 3€ l''aller simple. Intéressé(e) ? Répondez ici. Jean-Paul Bordes · 12 avr." [ref=e83] [cursor=pointer]':
+          - /url: /app/posts/00000000-0000-0000-0000-000000002007
+          - generic [ref=e85]:
+            - generic [ref=e86]:
+              - heading "Covoiturage Pau — Tous les lundis et jeudis" [level=3] [ref=e88]
+              - generic [ref=e90]:
+                - img [ref=e91]
+                - text: Entraide
+            - paragraph [ref=e96]: "Je travaille à Pau et je fais le trajet Arthez-Pau les lundis et jeudis (départ 7h30, retour 18h). J'ai 2 places dans ma voiture. Participation aux frais : 3€ l'aller simple. Intéressé(e) ? Répondez ici."
+            - generic [ref=e97]:
+              - generic [ref=e98]: Jean-Paul Bordes
+              - generic [ref=e99]: ·
+              - generic [ref=e100]: 12 avr.
+        - link "Tournoi international U15 — FC BAAL Événement Le FC BAAL organise son tournoi international de football en catégorie U15. 8 équipes venues de toute la région et d'Espagne s'affronteront sur les terrains du complexe sportif. Finale à 17h suivie de la remise des trophées. Entrée gratuite, buvette et grillades sur place. Secrétariat Mairie · 12 avr. · 2 participants" [ref=e101] [cursor=pointer]:
+          - /url: /app/posts/00000000-0000-0000-0000-000000002004
+          - generic [ref=e103]:
+            - generic [ref=e104]:
+              - heading "Tournoi international U15 — FC BAAL" [level=3] [ref=e106]
+              - generic [ref=e108]:
+                - img [ref=e109]
+                - text: Événement
+            - paragraph [ref=e111]: Le FC BAAL organise son tournoi international de football en catégorie U15. 8 équipes venues de toute la région et d'Espagne s'affronteront sur les terrains du complexe sportif. Finale à 17h suivie de la remise des trophées. Entrée gratuite, buvette et grillades sur place.
+            - generic [ref=e112]:
+              - generic [ref=e113]: Secrétariat Mairie
+              - generic [ref=e114]: ·
+              - generic [ref=e115]: 12 avr.
+              - generic [ref=e116]: ·
+              - generic [ref=e117]: 2 participants
+        - link "Camping L'Orée du Bois — Ouverture cette année ? Discussion Bonjour, quelqu'un a des nouvelles du camping ? J'ai des amis qui voudraient venir en juin mais le site internet n'a pas été mis à jour depuis l'année dernière. Merci ! Jean-Paul Bordes · 11 avr. · 1" [ref=e118] [cursor=pointer]:
+          - /url: /app/posts/00000000-0000-0000-0000-000000002009
+          - generic [ref=e120]:
+            - generic [ref=e121]:
+              - heading "Camping L'Orée du Bois — Ouverture cette année ?" [level=3] [ref=e123]
+              - generic [ref=e125]:
+                - img [ref=e126]
+                - text: Discussion
+            - paragraph [ref=e128]: Bonjour, quelqu'un a des nouvelles du camping ? J'ai des amis qui voudraient venir en juin mais le site internet n'a pas été mis à jour depuis l'année dernière. Merci !
+            - generic [ref=e129]:
+              - generic [ref=e130]: Jean-Paul Bordes
+              - generic [ref=e131]: ·
+              - generic [ref=e132]: 11 avr.
+              - generic [ref=e133]: ·
+              - generic [ref=e134]:
+                - img [ref=e135]
+                - text: "1"
+        - link "Piscine municipale — Fermeture pour entretien Annonce officielle La piscine municipale sera fermée du 14 au 28 avril pour les travaux d'entretien annuels. Réouverture prévue le mardi 29 avril aux horaires habituels. Merci de votre compréhension. Secrétariat Mairie · 11 avr." [ref=e137] [cursor=pointer]:
+          - /url: /app/posts/00000000-0000-0000-0000-000000002002
+          - generic [ref=e139]:
+            - generic [ref=e140]:
+              - heading "Piscine municipale — Fermeture pour entretien" [level=3] [ref=e142]
+              - generic [ref=e144]:
+                - img [ref=e145]
+                - text: Annonce officielle
+            - paragraph [ref=e148]: La piscine municipale sera fermée du 14 au 28 avril pour les travaux d'entretien annuels. Réouverture prévue le mardi 29 avril aux horaires habituels. Merci de votre compréhension.
+            - generic [ref=e149]:
+              - generic [ref=e150]: Secrétariat Mairie
+              - generic [ref=e151]: ·
+              - generic [ref=e152]: 11 avr.
+        - 'link "Trail et randonnée — APE École publique Événement L''association des parents d''élèves organise une journée trail et randonnée ouverte à tous ! Parcours trail : 15 km (dénivelé 350m) Parcours randonnée : 8 km (accessible à tous) Départ à 9h30 depuis le gymnase. Inscription 5€ adulte, gratuit -12 ans. Ravitaillement sur le parcours. Secrétariat Mairie · 10 avr. · 1 participant" [ref=e153] [cursor=pointer]':
+          - /url: /app/posts/00000000-0000-0000-0000-000000002005
+          - generic [ref=e155]:
+            - generic [ref=e156]:
+              - heading "Trail et randonnée — APE École publique" [level=3] [ref=e158]
+              - generic [ref=e160]:
+                - img [ref=e161]
+                - text: Événement
+            - paragraph [ref=e163]: "L'association des parents d'élèves organise une journée trail et randonnée ouverte à tous ! Parcours trail : 15 km (dénivelé 350m) Parcours randonnée : 8 km (accessible à tous) Départ à 9h30 depuis le gymnase. Inscription 5€ adulte, gratuit -12 ans. Ravitaillement sur le parcours."
+            - generic [ref=e164]:
+              - generic [ref=e165]: Secrétariat Mairie
+              - generic [ref=e166]: ·
+              - generic [ref=e167]: 10 avr.
+              - generic [ref=e168]: ·
+              - generic [ref=e169]: 1 participant
+        - 'link "France Services — Permanence carte d''identité Annonce officielle Rappel : la permanence pour les demandes de carte d''identité et passeport se tient chaque mardi matin de 9h à 12h à l''espace France Services. Pensez à prendre rendez-vous au 05 59 67 70 52. Pièces à fournir disponibles sur service-public.fr. Secrétariat Mairie · 9 avr." [ref=e170] [cursor=pointer]':
+          - /url: /app/posts/00000000-0000-0000-0000-000000002003
+          - generic [ref=e172]:
+            - generic [ref=e173]:
+              - heading "France Services — Permanence carte d'identité" [level=3] [ref=e175]
+              - generic [ref=e177]:
+                - img [ref=e178]
+                - text: Annonce officielle
+            - paragraph [ref=e181]: "Rappel : la permanence pour les demandes de carte d'identité et passeport se tient chaque mardi matin de 9h à 12h à l'espace France Services. Pensez à prendre rendez-vous au 05 59 67 70 52. Pièces à fournir disponibles sur service-public.fr."
+            - generic [ref=e182]:
+              - generic [ref=e183]: Secrétariat Mairie
+              - generic [ref=e184]: ·
+              - generic [ref=e185]: 9 avr.
+  - button "Open Next.js Dev Tools" [ref=e191] [cursor=pointer]:
+    - img [ref=e192]

@@ -1,0 +1,191 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e23] [cursor=pointer]:
+    - img [ref=e24]
+  - alert [ref=e27]
+  - generic [ref=e250]:
+    - navigation [ref=e251]:
+      - generic [ref=e255]:
+        - generic [ref=e256]:
+          - generic [ref=e257]:
+            - link "Morlanne" [ref=e258] [cursor=pointer]:
+              - /url: /app/feed
+            - paragraph [ref=e259]: "64370"
+          - generic [ref=e260]: Au pied du château, entre Béarn et Chalosse
+          - generic [ref=e261]:
+            - link "Fil" [ref=e262] [cursor=pointer]:
+              - /url: /app/feed
+            - link "Événements" [ref=e263] [cursor=pointer]:
+              - /url: /app/evenements
+            - link "Mon espace" [ref=e264] [cursor=pointer]:
+              - /url: /app/mon-espace
+            - link "Infos pratiques" [ref=e265] [cursor=pointer]:
+              - /url: /app/infos-pratiques
+        - generic [ref=e266]:
+          - generic [ref=e267]: Claude Peyret
+          - link "CP" [ref=e268] [cursor=pointer]:
+            - /url: /app/settings
+          - button "Déconnexion" [ref=e269]:
+            - img [ref=e270]
+    - main [ref=e273]:
+      - generic [ref=e274]:
+        - generic [ref=e275]:
+          - heading "Fil de la commune" [level=1] [ref=e276]
+          - button "Nouvelle publication" [ref=e277]
+        - generic [ref=e278]:
+          - link "Ma commune" [ref=e279] [cursor=pointer]:
+            - /url: /app/feed
+          - link "Intercommunalité" [ref=e280] [cursor=pointer]:
+            - /url: /app/feed?scope=epci
+        - generic [ref=e281]:
+          - button "Tout" [ref=e282]
+          - button "Annonce officielle" [ref=e283]
+          - button "Événement" [ref=e284]
+          - button "Entraide" [ref=e285]
+          - button "Discussion" [ref=e286]
+          - generic [ref=e287]: "|"
+          - button "Toutes" [ref=e288]
+          - button "Aujourd'hui" [ref=e289]
+          - button "Cette semaine" [ref=e290]
+          - button "Ce mois" [ref=e291]
+        - generic [ref=e292]:
+          - link "Épinglé Marché de producteurs — Reprise le 19 avril Annonce officielle Le marché de producteurs de Morlanne reprend chaque samedi matin de 9h à 12h30 sur la place du château à partir du 19 avril. Fromages, charcuterie, miel, légumes de saison, pain au levain et pâtisseries. Venez soutenir nos producteurs locaux ! Secrétariat Mairie · 14 avr." [ref=e293] [cursor=pointer]:
+            - /url: /app/posts/00000000-0000-0000-0000-000000003001
+            - generic [ref=e295]:
+              - generic [ref=e296]:
+                - generic [ref=e297]:
+                  - generic [ref=e298]:
+                    - img [ref=e299]
+                    - text: Épinglé
+                  - heading "Marché de producteurs — Reprise le 19 avril" [level=3] [ref=e301]
+                - generic [ref=e303]:
+                  - img [ref=e304]
+                  - text: Annonce officielle
+              - paragraph [ref=e307]: Le marché de producteurs de Morlanne reprend chaque samedi matin de 9h à 12h30 sur la place du château à partir du 19 avril. Fromages, charcuterie, miel, légumes de saison, pain au levain et pâtisseries. Venez soutenir nos producteurs locaux !
+              - generic [ref=e308]:
+                - generic [ref=e309]: Secrétariat Mairie
+                - generic [ref=e310]: ·
+                - generic [ref=e311]: 14 avr.
+          - link "Plants de tomates et courgettes à donner Entraide J'ai fait trop de semis cette année ! J'ai une trentaine de plants de tomates (cœur de bœuf, marmande, cerise) et une dizaine de plants de courgettes à donner. Venez les chercher chez moi (maison face à l'église) avant qu'ils ne montent trop. Premier arrivé, premier servi ! Martine Soubirous · 14 avr. · 1" [ref=e312] [cursor=pointer]:
+            - /url: /app/posts/00000000-0000-0000-0000-000000003007
+            - generic [ref=e314]:
+              - generic [ref=e315]:
+                - heading "Plants de tomates et courgettes à donner" [level=3] [ref=e317]
+                - generic [ref=e319]:
+                  - img [ref=e320]
+                  - text: Entraide
+              - paragraph [ref=e325]: J'ai fait trop de semis cette année ! J'ai une trentaine de plants de tomates (cœur de bœuf, marmande, cerise) et une dizaine de plants de courgettes à donner. Venez les chercher chez moi (maison face à l'église) avant qu'ils ne montent trop. Premier arrivé, premier servi !
+              - generic [ref=e326]:
+                - generic [ref=e327]: Martine Soubirous
+                - generic [ref=e328]: ·
+                - generic [ref=e329]: 14 avr.
+                - generic [ref=e330]: ·
+                - generic [ref=e331]:
+                  - img [ref=e332]
+                  - text: "1"
+          - link "Cherche tondeur de moutons Entraide Bonjour, J'ai 6 brebis à tondre avant l'été. Mon tondeur habituel a pris sa retraite et je ne trouve personne dans le coin. Si quelqu'un connaît un tondeur fiable ou sait le faire, je suis preneur. Je peux aussi échanger un service en retour (bricolage, jardin, etc.). Merci ! Claude Peyret · 14 avr. · 2" [ref=e334] [cursor=pointer]:
+            - /url: /app/posts/00000000-0000-0000-0000-000000003006
+            - generic [ref=e336]:
+              - generic [ref=e337]:
+                - heading "Cherche tondeur de moutons" [level=3] [ref=e339]
+                - generic [ref=e341]:
+                  - img [ref=e342]
+                  - text: Entraide
+              - paragraph [ref=e347]: Bonjour, J'ai 6 brebis à tondre avant l'été. Mon tondeur habituel a pris sa retraite et je ne trouve personne dans le coin. Si quelqu'un connaît un tondeur fiable ou sait le faire, je suis preneur. Je peux aussi échanger un service en retour (bricolage, jardin, etc.). Merci !
+              - generic [ref=e348]:
+                - generic [ref=e349]: Claude Peyret
+                - generic [ref=e350]: ·
+                - generic [ref=e351]: 14 avr.
+                - generic [ref=e352]: ·
+                - generic [ref=e353]:
+                  - img [ref=e354]
+                  - text: "2"
+          - link "Travaux route de Maslacq — Sens unique temporaire Annonce officielle Des travaux de voirie sur la route de Maslacq imposeront un sens unique alterné du 21 au 25 avril. Circulation régulée par feux tricolores. Prévoir 5 minutes de plus pour vos trajets. Déviation possible par la route d'Arzacq. Secrétariat Mairie · 13 avr." [ref=e356] [cursor=pointer]:
+            - /url: /app/posts/00000000-0000-0000-0000-000000003003
+            - generic [ref=e358]:
+              - generic [ref=e359]:
+                - heading "Travaux route de Maslacq — Sens unique temporaire" [level=3] [ref=e361]
+                - generic [ref=e363]:
+                  - img [ref=e364]
+                  - text: Annonce officielle
+              - paragraph [ref=e367]: Des travaux de voirie sur la route de Maslacq imposeront un sens unique alterné du 21 au 25 avril. Circulation régulée par feux tricolores. Prévoir 5 minutes de plus pour vos trajets. Déviation possible par la route d'Arzacq.
+              - generic [ref=e368]:
+                - generic [ref=e369]: Secrétariat Mairie
+                - generic [ref=e370]: ·
+                - generic [ref=e371]: 13 avr.
+          - link "Sentier du château — Balisage effacé ? Discussion J'ai fait le sentier du château dimanche avec des amis et on s'est perdus au niveau du croisement après le lavoir. Les marques jaunes sont presque effacées. Est-ce que quelqu'un sait si un rebalisage est prévu ? C'est dommage parce que c'est une très belle balade. Claude Peyret · 13 avr. · 2" [ref=e372] [cursor=pointer]:
+            - /url: /app/posts/00000000-0000-0000-0000-000000003008
+            - generic [ref=e374]:
+              - generic [ref=e375]:
+                - heading "Sentier du château — Balisage effacé ?" [level=3] [ref=e377]
+                - generic [ref=e379]:
+                  - img [ref=e380]
+                  - text: Discussion
+              - paragraph [ref=e382]: J'ai fait le sentier du château dimanche avec des amis et on s'est perdus au niveau du croisement après le lavoir. Les marques jaunes sont presque effacées. Est-ce que quelqu'un sait si un rebalisage est prévu ? C'est dommage parce que c'est une très belle balade.
+              - generic [ref=e383]:
+                - generic [ref=e384]: Claude Peyret
+                - generic [ref=e385]: ·
+                - generic [ref=e386]: 13 avr.
+                - generic [ref=e387]: ·
+                - generic [ref=e388]:
+                  - img [ref=e389]
+                  - text: "2"
+          - link "Agence postale fermée mercredi ? Discussion L'agence postale est-elle toujours fermée le mercredi après-midi ? Je dois envoyer un recommandé et je ne peux pas y aller le matin. Quelqu'un sait si on peut déposer à Arzacq sinon ? Martine Soubirous · 12 avr. · 1" [ref=e391] [cursor=pointer]:
+            - /url: /app/posts/00000000-0000-0000-0000-000000003009
+            - generic [ref=e393]:
+              - generic [ref=e394]:
+                - heading "Agence postale fermée mercredi ?" [level=3] [ref=e396]
+                - generic [ref=e398]:
+                  - img [ref=e399]
+                  - text: Discussion
+              - paragraph [ref=e401]: L'agence postale est-elle toujours fermée le mercredi après-midi ? Je dois envoyer un recommandé et je ne peux pas y aller le matin. Quelqu'un sait si on peut déposer à Arzacq sinon ?
+              - generic [ref=e402]:
+                - generic [ref=e403]: Martine Soubirous
+                - generic [ref=e404]: ·
+                - generic [ref=e405]: 12 avr.
+                - generic [ref=e406]: ·
+                - generic [ref=e407]:
+                  - img [ref=e408]
+                  - text: "1"
+          - 'link "Randonnée patrimoine — Découverte du village fortifié Événement Le club de randonnée et l''association patrimoine vous proposent une balade commentée de 6 km à travers le village et ses alentours. Points d''intérêt : château, église fortifiée, maisons médiévales, lavoir, point de vue sur les Pyrénées. Accessible à tous. Chaussures de marche conseillées. Goûter offert à l''arrivée. Secrétariat Mairie · 12 avr. · 2 participants" [ref=e410] [cursor=pointer]':
+            - /url: /app/posts/00000000-0000-0000-0000-000000003004
+            - generic [ref=e412]:
+              - generic [ref=e413]:
+                - heading "Randonnée patrimoine — Découverte du village fortifié" [level=3] [ref=e415]
+                - generic [ref=e417]:
+                  - img [ref=e418]
+                  - text: Événement
+              - paragraph [ref=e420]: "Le club de randonnée et l'association patrimoine vous proposent une balade commentée de 6 km à travers le village et ses alentours. Points d'intérêt : château, église fortifiée, maisons médiévales, lavoir, point de vue sur les Pyrénées. Accessible à tous. Chaussures de marche conseillées. Goûter offert à l'arrivée."
+              - generic [ref=e421]:
+                - generic [ref=e422]: Secrétariat Mairie
+                - generic [ref=e423]: ·
+                - generic [ref=e424]: 12 avr.
+                - generic [ref=e425]: ·
+                - generic [ref=e426]: 2 participants
+          - 'link "Château de Morlanne — Ouverture de la saison 2026 Annonce officielle Le château de Morlanne ouvre ses portes pour la saison le mercredi 16 avril. Horaires : mercredi au dimanche, 10h30-12h30 / 14h-18h. Tarif : 5€ adulte, gratuit -18 ans. Nouveauté : visite guidée thématique « Gaston Fébus et la chasse au Moyen Âge » les dimanches à 15h. Secrétariat Mairie · 11 avr." [ref=e427] [cursor=pointer]':
+            - /url: /app/posts/00000000-0000-0000-0000-000000003002
+            - generic [ref=e429]:
+              - generic [ref=e430]:
+                - heading "Château de Morlanne — Ouverture de la saison 2026" [level=3] [ref=e432]
+                - generic [ref=e434]:
+                  - img [ref=e435]
+                  - text: Annonce officielle
+              - paragraph [ref=e438]: "Le château de Morlanne ouvre ses portes pour la saison le mercredi 16 avril. Horaires : mercredi au dimanche, 10h30-12h30 / 14h-18h. Tarif : 5€ adulte, gratuit -18 ans. Nouveauté : visite guidée thématique « Gaston Fébus et la chasse au Moyen Âge » les dimanches à 15h."
+              - generic [ref=e439]:
+                - generic [ref=e440]: Secrétariat Mairie
+                - generic [ref=e441]: ·
+                - generic [ref=e442]: 11 avr.
+          - 'link "Vide-grenier annuel du comité des fêtes Événement Le comité des fêtes organise le vide-grenier annuel ! Exposants : 2€ le mètre linéaire, inscription avant le 10 mai auprès de la mairie. Visiteurs : entrée libre dès 8h. Restauration sur place : grillades, frites, crêpes. Buvette toute la journée. Secrétariat Mairie · 10 avr. · 1 participant" [ref=e443] [cursor=pointer]':
+            - /url: /app/posts/00000000-0000-0000-0000-000000003005
+            - generic [ref=e445]:
+              - generic [ref=e446]:
+                - heading "Vide-grenier annuel du comité des fêtes" [level=3] [ref=e448]
+                - generic [ref=e450]:
+                  - img [ref=e451]
+                  - text: Événement
+              - paragraph [ref=e453]: "Le comité des fêtes organise le vide-grenier annuel ! Exposants : 2€ le mètre linéaire, inscription avant le 10 mai auprès de la mairie. Visiteurs : entrée libre dès 8h. Restauration sur place : grillades, frites, crêpes. Buvette toute la journée."
+              - generic [ref=e454]:
+                - generic [ref=e455]: Secrétariat Mairie
+                - generic [ref=e456]: ·
+                - generic [ref=e457]: 10 avr.
+                - generic [ref=e458]: ·
+                - generic [ref=e459]: 1 participant

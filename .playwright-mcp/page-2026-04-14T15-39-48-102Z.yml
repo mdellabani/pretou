@@ -1,0 +1,48 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - heading "Producteurs locaux" [level=1] [ref=e5]
+      - generic [ref=e6]:
+        - generic [ref=e7]:
+          - img [ref=e8]
+          - textbox "Rechercher par nom ou description..." [ref=e11]
+        - generic [ref=e12]:
+          - button "Légumes" [ref=e13]
+          - button "Fruits" [ref=e14]
+          - button "Fromages" [ref=e15]
+          - button "Miel" [ref=e16]
+          - button "Pain" [ref=e17]
+          - button "Viande" [ref=e18]
+          - button "Œufs" [ref=e19]
+          - button "Paniers / AMAP" [ref=e20]
+          - button "Vin" [ref=e21]
+          - button "Conserves" [ref=e22]
+          - button "Autre" [ref=e23]
+        - generic [ref=e24]:
+          - generic [ref=e25]:
+            - button "Liste" [ref=e26]:
+              - img
+              - text: Liste
+            - button "Grille" [ref=e27]:
+              - img
+              - text: Grille
+            - button "Carte" [disabled]:
+              - img
+              - text: Carte
+          - button "Ajouter un producteur" [ref=e28]
+        - generic [ref=e31]:
+          - generic [ref=e32]:
+            - heading "Les Œufs de Jeanne" [level=3] [ref=e33]
+            - generic [ref=e35]: Œufs
+            - paragraph [ref=e36]: Saint-Médard
+            - paragraph [ref=e37]: Œufs frais de poules élevées en plein air, nourries aux grains. Petit élevage familial, 50 poules sur le chemin du Moulin à Saint-Médard.
+            - generic [ref=e39]:
+              - img [ref=e40]
+              - generic [ref=e43]: Chemin du Moulin, Saint-Médard
+            - generic [ref=e44]:
+              - img [ref=e45]
+              - generic [ref=e48]: Tous les jours, passez chercher vos œufs ! Boîte à la porte.
+          - generic [ref=e50]: LŒ
+  - button "Open Next.js Dev Tools" [ref=e56] [cursor=pointer]:
+    - img [ref=e57]
+  - alert [ref=e60]

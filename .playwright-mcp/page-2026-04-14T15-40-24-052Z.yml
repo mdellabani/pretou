@@ -1,0 +1,47 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - generic [ref=e8]:
+            - img [ref=e9]
+            - text: Discussion
+          - heading "Concours de pétanque Saint-Médard Loisirs — Qui participe ?" [level=1] [ref=e11]
+          - generic [ref=e12]:
+            - generic [ref=e13]:
+              - generic [ref=e14]: Pierre Moreau
+              - generic [ref=e15]: 14 avril 2026
+            - button "Supprimer" [ref=e16]:
+              - img [ref=e17]
+              - text: Supprimer
+        - generic [ref=e20]:
+          - paragraph [ref=e21]: Saint-Médard Loisirs organise un concours de pétanque le dimanche 4 mai sur le terrain derrière la salle des fêtes. Inscription en doublette, 5€ par équipe. Qui est chaud ? On peut monter une équipe ensemble si quelqu'un cherche un partenaire.
+          - generic [ref=e22]:
+            - paragraph [ref=e23]: Quel jour vous arrange le mieux ?
+            - generic [ref=e24]:
+              - button "Samedi 3 mai 0%(0)" [ref=e25]:
+                - generic [ref=e27]:
+                  - generic [ref=e29]: Samedi 3 mai
+                  - generic [ref=e30]:
+                    - generic [ref=e31]: 0%
+                    - generic [ref=e32]: (0)
+              - button "Dimanche 4 mai 100%(1)" [ref=e34]:
+                - generic [ref=e36]:
+                  - generic [ref=e38]: Dimanche 4 mai
+                  - generic [ref=e39]:
+                    - generic [ref=e40]: 100%
+                    - generic [ref=e41]: (1)
+              - button "Les deux me vont 0%(0)" [ref=e44]:
+                - generic [ref=e46]:
+                  - generic [ref=e48]: Les deux me vont
+                  - generic [ref=e49]:
+                    - generic [ref=e50]: 0%
+                    - generic [ref=e51]: (0)
+      - generic [ref=e53]:
+        - heading "Commentaires (0)" [level=2] [ref=e54]
+        - paragraph [ref=e56]: Aucun commentaire pour le moment.
+        - generic [ref=e57]:
+          - textbox "Écrire un commentaire..." [ref=e58]
+          - button "Commenter" [disabled]
+  - button "Open Next.js Dev Tools" [ref=e64] [cursor=pointer]:
+    - img [ref=e65]

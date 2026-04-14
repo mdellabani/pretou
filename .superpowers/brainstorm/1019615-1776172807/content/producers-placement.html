@@ -1,0 +1,99 @@
+<h2>Where do producers live in the app?</h2>
+<p class="subtitle">Two approaches — same directory page, different entry points</p>
+
+<div class="cards">
+  <!-- Option A -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 0;">
+      <!-- Mock nav + page -->
+      <div style="background: linear-gradient(135deg, #D35230, #E49035); padding: 10px 16px; border-radius: 8px 8px 0 0;">
+        <div style="font-weight: 600; color: white; font-size: 14px; margin-bottom: 6px;">Saint-Médard</div>
+        <div style="display: flex; gap: 12px;">
+          <span style="color: rgba(255,255,255,0.6); font-size: 11px;">Fil</span>
+          <span style="color: white; font-size: 11px; border-bottom: 2px solid white; padding-bottom: 2px; font-weight: 600;">Vie locale</span>
+          <span style="color: rgba(255,255,255,0.6); font-size: 11px;">Mon espace</span>
+          <span style="color: rgba(255,255,255,0.6); font-size: 11px;">Infos</span>
+        </div>
+      </div>
+      <div style="background: #FBF7F1; padding: 12px;">
+        <!-- Sub-tabs -->
+        <div style="display: flex; gap: 6px; margin-bottom: 12px;">
+          <span style="background: white; border: 1px solid #e5ddd0; padding: 4px 12px; border-radius: 20px; font-size: 10px; color: #6b7280;">Événements</span>
+          <span style="background: #D35230; padding: 4px 12px; border-radius: 20px; font-size: 10px; color: white; font-weight: 600;">Producteurs</span>
+        </div>
+        <!-- Producer cards -->
+        <div style="background: white; border-radius: 10px; padding: 10px; margin-bottom: 6px; border: 1px solid #f0e8da;">
+          <div style="font-size: 11px; font-weight: 600; color: #2E2118;">🍯 Miel du Béarn — Famille Castaing</div>
+          <div style="font-size: 9px; color: #907B64; margin-top: 2px;">Miel, pollen, propolis · Morlanne</div>
+        </div>
+        <div style="background: white; border-radius: 10px; padding: 10px; margin-bottom: 6px; border: 1px solid #f0e8da;">
+          <div style="font-size: 11px; font-weight: 600; color: #2E2118;">🧀 Fromagerie Etchegaray</div>
+          <div style="font-size: 9px; color: #907B64; margin-top: 2px;">Fromage de brebis · Arthez-de-Béarn</div>
+        </div>
+        <div style="background: white; border-radius: 10px; padding: 10px; border: 1px solid #f0e8da;">
+          <div style="font-size: 11px; font-weight: 600; color: #2E2118;">🥬 AMAP Lacq-Orthez</div>
+          <div style="font-size: 9px; color: #907B64; margin-top: 2px;">Paniers légumes bio · Retrait jeudi</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — "Vie locale" tab</h3>
+      <p>Rename Événements → Vie locale. Sub-tabs for Événements and Producteurs. Producers always one tap away.</p>
+      <div class="pros-cons" style="margin-top: 8px;">
+        <div class="pros"><h4>Pros</h4><ul><li>Always visible in main nav</li><li>No extra nav item</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Calendar and producers feel unrelated</li><li>"Vie locale" is vague</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Option C -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 0;">
+      <!-- Mock nav + feed -->
+      <div style="background: linear-gradient(135deg, #D35230, #E49035); padding: 10px 16px; border-radius: 8px 8px 0 0;">
+        <div style="font-weight: 600; color: white; font-size: 14px; margin-bottom: 6px;">Saint-Médard</div>
+        <div style="display: flex; gap: 12px;">
+          <span style="color: white; font-size: 11px; border-bottom: 2px solid white; padding-bottom: 2px; font-weight: 600;">Fil</span>
+          <span style="color: rgba(255,255,255,0.6); font-size: 11px;">Événements</span>
+          <span style="color: rgba(255,255,255,0.6); font-size: 11px;">Mon espace</span>
+          <span style="color: rgba(255,255,255,0.6); font-size: 11px;">Infos</span>
+        </div>
+      </div>
+      <div style="background: #FBF7F1; padding: 12px;">
+        <!-- Producer banner -->
+        <div style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 1px solid #bbf7d0; border-radius: 12px; padding: 12px; margin-bottom: 10px; cursor: pointer;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-size: 11px; font-weight: 700; color: #15803d;">🌿 Producteurs locaux</div>
+              <div style="font-size: 9px; color: #4ade80; margin-top: 2px;">12 producteurs · Circuit court</div>
+            </div>
+            <div style="font-size: 16px; color: #15803d;">→</div>
+          </div>
+        </div>
+        <!-- Regular feed posts -->
+        <div style="background: white; border-radius: 10px; padding: 10px; margin-bottom: 6px; border: 1px solid #f0e8da;">
+          <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">
+            <span style="font-size: 8px; background: #dc2626; color: white; padding: 1px 6px; border-radius: 8px;">Annonce</span>
+          </div>
+          <div style="font-size: 11px; font-weight: 600; color: #2E2118;">Mairie fermée — Travaux budget</div>
+          <div style="font-size: 9px; color: #907B64; margin-top: 2px;">Secrétariat Mairie · 14 avr.</div>
+        </div>
+        <div style="background: white; border-radius: 10px; padding: 10px; border: 1px solid #f0e8da;">
+          <div style="display: flex; align-items: center; gap: 4px; margin-bottom: 4px;">
+            <span style="font-size: 8px; background: #16a34a; color: white; padding: 1px 6px; border-radius: 8px;">Entraide</span>
+          </div>
+          <div style="font-size: 11px; font-weight: 600; color: #2E2118;">Garde de poules pendant vacances</div>
+          <div style="font-size: 9px; color: #907B64; margin-top: 2px;">Jeanne Larrieu · 14 avr.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Banner on feed + dedicated page</h3>
+      <p>Sticky banner at top of feed links to <code>/app/producteurs</code>. Nav stays unchanged. Full directory page with search, filters, map.</p>
+      <div class="pros-cons" style="margin-top: 8px;">
+        <div class="pros"><h4>Pros</h4><ul><li>Nav stays clean — 4 tabs</li><li>Seen daily on the feed</li><li>Full page for proper directory UX</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>One extra click to reach</li><li>Banner could feel like an ad</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

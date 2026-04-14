@@ -1,0 +1,63 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - navigation [ref=e195]:
+      - generic [ref=e198]:
+        - generic [ref=e199]:
+          - link "Arthez-de-Béarn" [ref=e200] [cursor=pointer]:
+            - /url: /app/feed
+          - paragraph [ref=e201]: Village étape sur le chemin de Compostelle
+        - generic [ref=e202]:
+          - link "SM" [ref=e203] [cursor=pointer]:
+            - /url: /app/settings
+          - button "Déconnexion" [ref=e204]:
+            - img [ref=e205]
+      - generic [ref=e208]:
+        - link "Fil" [ref=e209] [cursor=pointer]:
+          - /url: /app/feed
+        - link "Événements" [ref=e210] [cursor=pointer]:
+          - /url: /app/evenements
+        - link "Mon espace" [ref=e211] [cursor=pointer]:
+          - /url: /app/mon-espace
+        - link "Infos pratiques" [ref=e212] [cursor=pointer]:
+          - /url: /app/infos-pratiques
+        - link "Admin" [ref=e213] [cursor=pointer]:
+          - /url: /admin/dashboard
+    - main [ref=e3]:
+      - generic [ref=e215]:
+        - generic [ref=e216]:
+          - generic [ref=e217]:
+            - generic [ref=e219]:
+              - img [ref=e220]
+              - text: Entraide
+            - heading "Accueil pèlerins — Besoin de bénévoles" [level=1] [ref=e225]
+            - generic [ref=e226]:
+              - generic [ref=e227]:
+                - generic [ref=e228]: Marie Ducasse
+                - generic [ref=e229]: 14 avril 2026
+              - button "Supprimer" [ref=e230]:
+                - img [ref=e231]
+                - text: Supprimer
+          - paragraph [ref=e235]: Bonjour, La saison des pèlerins reprend sur le chemin de Compostelle et la Maison des pèlerins a besoin de bénévoles pour l'accueil du soir (18h-20h). Si vous avez une soirée de libre par semaine ou par mois, c'est un moment d'échange vraiment enrichissant. On rencontre des gens du monde entier ! Contactez-moi ou passez à la médiathèque.
+        - generic [ref=e236]:
+          - heading "Commentaires (2)" [level=2] [ref=e237]
+          - generic [ref=e238]:
+            - generic [ref=e241]:
+              - generic [ref=e242]:
+                - generic [ref=e243]:
+                  - generic [ref=e244]: Jean-Paul Bordes
+                  - generic [ref=e245]: 14 avril 2026 à 10:06
+                - paragraph [ref=e246]: Je suis disponible le mercredi soir, c'est possible ? J'ai fait le chemin moi-même il y a 3 ans, ça me ferait plaisir de rendre la pareille.
+              - button "Supprimer" [ref=e247]
+            - generic [ref=e250]:
+              - generic [ref=e251]:
+                - generic [ref=e252]:
+                  - generic [ref=e253]: Marie Ducasse
+                  - generic [ref=e254]: 14 avril 2026 à 11:06
+                - paragraph [ref=e255]: Bien sûr Jean-Paul ! Le mercredi c'est parfait. Passe à la Maison des pèlerins mercredi vers 17h30, je te ferai faire le tour.
+              - button "Supprimer" [ref=e256]
+          - generic [ref=e257]:
+            - textbox "Écrire un commentaire..." [ref=e258]
+            - button "Commenter" [disabled]
+  - button "Open Next.js Dev Tools" [ref=e191] [cursor=pointer]:
+    - img [ref=e192]
+  - alert [ref=e214]

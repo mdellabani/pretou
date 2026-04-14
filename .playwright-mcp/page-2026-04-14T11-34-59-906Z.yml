@@ -1,0 +1,139 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e23] [cursor=pointer]:
+    - img [ref=e24]
+  - alert [ref=e27]
+  - generic [ref=e28]:
+    - navigation [ref=e29]:
+      - generic [ref=e33]:
+        - generic [ref=e34]:
+          - generic [ref=e35]:
+            - link "Saint-Médard" [ref=e36] [cursor=pointer]:
+              - /url: /app/feed
+            - paragraph [ref=e37]: "64370"
+          - generic [ref=e38]: Entre mer et montagne, au cœur du Béarn
+          - generic [ref=e39]:
+            - link "Fil" [ref=e40] [cursor=pointer]:
+              - /url: /app/feed
+            - link "Événements" [ref=e41] [cursor=pointer]:
+              - /url: /app/evenements
+            - link "Mon espace" [ref=e42] [cursor=pointer]:
+              - /url: /app/mon-espace
+            - link "Infos pratiques" [ref=e43] [cursor=pointer]:
+              - /url: /app/infos-pratiques
+        - generic [ref=e44]:
+          - generic [ref=e45]: Pierre Moreau
+          - link "PM" [ref=e46] [cursor=pointer]:
+            - /url: /app/settings
+          - button "Déconnexion" [ref=e47]:
+            - img [ref=e48]
+    - main [ref=e51]:
+      - generic [ref=e494]:
+        - heading "Événements" [level=1] [ref=e495]
+        - generic [ref=e496]:
+          - generic [ref=e497]:
+            - generic [ref=e498]:
+              - button "Mois précédent" [ref=e499]:
+                - img [ref=e500]
+              - heading "Mai 2026" [level=3] [ref=e623]
+              - button "Mois suivant" [ref=e503]:
+                - img [ref=e504]
+            - generic [ref=e506]:
+              - generic [ref=e507]: Lun
+              - generic [ref=e508]: Mar
+              - generic [ref=e509]: Mer
+              - generic [ref=e510]: Jeu
+              - generic [ref=e511]: Ven
+              - generic [ref=e512]: Sam
+              - generic [ref=e513]: Dim
+              - generic [ref=e518]: "1"
+              - generic [ref=e519]: "2"
+              - generic [ref=e520]: "3"
+              - generic [ref=e521]: "4"
+              - generic [ref=e522]: "5"
+              - generic [ref=e523]: "6"
+              - generic [ref=e524]: "7"
+              - generic [ref=e525]: "8"
+              - generic [ref=e526]: "9"
+              - generic [ref=e527] [cursor=pointer]: "10"
+              - generic [ref=e528]: "11"
+              - generic [ref=e529]: "12"
+              - generic [ref=e530]: "13"
+              - generic [ref=e531]: "14"
+              - generic [ref=e532]: "15"
+              - generic [ref=e533]: "16"
+              - generic [ref=e534]: "17"
+              - generic [ref=e535]: "18"
+              - generic [ref=e536]: "19"
+              - generic [ref=e537]: "20"
+              - generic [ref=e538]: "21"
+              - generic [ref=e539]: "22"
+              - generic [ref=e540]: "23"
+              - generic [ref=e541]: "24"
+              - generic [ref=e542]: "25"
+              - generic [ref=e544]: "26"
+              - generic [ref=e545]: "27"
+              - generic [ref=e546]: "28"
+              - generic [ref=e547]: "29"
+              - generic [ref=e548]: "30"
+              - generic [ref=e549]: "31"
+          - generic [ref=e550]:
+            - 'link "samedi 17 janvier · 19:00 Cérémonie des vœux du maire Salle des fêtes de Saint-Médard Le maire et le conseil municipal vous convient à la cérémonie des vœux pour la nouvelle année. Au programme : allocution du maire, bilan de l''année écoulée et projets pour 2026, suivis d''un moment de convivialité autour du verre de l''amitié. Tous les habitants sont les bienvenus ! Secrétariat Mairie · 2 participants" [ref=e630] [cursor=pointer]':
+              - /url: /app/posts/00000000-0000-0000-0000-000000001014
+              - generic [ref=e632]:
+                - generic [ref=e633]:
+                  - img [ref=e634]
+                  - generic [ref=e636]: samedi 17 janvier · 19:00
+                - heading "Cérémonie des vœux du maire" [level=3] [ref=e637]
+                - generic [ref=e638]:
+                  - img [ref=e639]
+                  - generic [ref=e642]: Salle des fêtes de Saint-Médard
+                - paragraph [ref=e643]: "Le maire et le conseil municipal vous convient à la cérémonie des vœux pour la nouvelle année. Au programme : allocution du maire, bilan de l'année écoulée et projets pour 2026, suivis d'un moment de convivialité autour du verre de l'amitié. Tous les habitants sont les bienvenus !"
+                - generic [ref=e644]:
+                  - generic [ref=e645]: Secrétariat Mairie
+                  - generic [ref=e646]: ·
+                  - generic [ref=e647]: 2 participants
+            - link "lundi 27 avril · 14:00 Repas des aînés du CCAS Salle des fêtes de Saint-Médard Le CCAS de Saint-Médard vous invite au traditionnel repas des aînés. Un moment de convivialité autour d'un bon repas préparé par un traiteur local. Animation musicale l'après-midi. Inscription obligatoire avant le 20 avril auprès du secrétariat de mairie. Secrétariat Mairie · 2 participants" [ref=e648] [cursor=pointer]:
+              - /url: /app/posts/00000000-0000-0000-0000-000000001005
+              - generic [ref=e650]:
+                - generic [ref=e651]:
+                  - img [ref=e652]
+                  - generic [ref=e654]: lundi 27 avril · 14:00
+                - heading "Repas des aînés du CCAS" [level=3] [ref=e655]
+                - generic [ref=e656]:
+                  - img [ref=e657]
+                  - generic [ref=e660]: Salle des fêtes de Saint-Médard
+                - paragraph [ref=e661]: Le CCAS de Saint-Médard vous invite au traditionnel repas des aînés. Un moment de convivialité autour d'un bon repas préparé par un traiteur local. Animation musicale l'après-midi. Inscription obligatoire avant le 20 avril auprès du secrétariat de mairie.
+                - generic [ref=e662]:
+                  - generic [ref=e663]: Secrétariat Mairie
+                  - generic [ref=e664]: ·
+                  - generic [ref=e665]: 2 participants
+            - 'link "dimanche 10 mai · 11:00 Tournoi de printemps du RCSM Stade du Moulin, Saint-Médard Le Rugby Club Saint-Médard organise son tournoi de printemps annuel ! Au programme : - 9h00 : Tournoi jeunes (catégories M8 à M14) - 14h00 : Matchs seniors - 18h00 : Remise des trophées - 19h00 : Repas au club (réservation obligatoire) Buvette et restauration sur place toute la journée. Venez nombreux soutenir nos équipes ! Secrétariat Mairie · 1 participant" [ref=e587] [cursor=pointer]':
+              - /url: /app/posts/00000000-0000-0000-0000-000000001006
+              - generic [ref=e589]:
+                - generic [ref=e590]:
+                  - img [ref=e591]
+                  - generic [ref=e593]: dimanche 10 mai · 11:00
+                - heading "Tournoi de printemps du RCSM" [level=3] [ref=e594]
+                - generic [ref=e595]:
+                  - img [ref=e596]
+                  - generic [ref=e599]: Stade du Moulin, Saint-Médard
+                - paragraph [ref=e600]: "Le Rugby Club Saint-Médard organise son tournoi de printemps annuel ! Au programme : - 9h00 : Tournoi jeunes (catégories M8 à M14) - 14h00 : Matchs seniors - 18h00 : Remise des trophées - 19h00 : Repas au club (réservation obligatoire) Buvette et restauration sur place toute la journée. Venez nombreux soutenir nos équipes !"
+                - generic [ref=e601]:
+                  - generic [ref=e602]: Secrétariat Mairie
+                  - generic [ref=e603]: ·
+                  - generic [ref=e604]: 1 participant
+            - 'link "lundi 15 juin · 10:00 Voyage \"Paris croisière\" — Génération Mouvements 64 Départ parking mairie — Paris L''association Génération Mouvements 64 organise un voyage à Paris incluant une croisière sur la Seine et la visite de Montmartre. Dates : du 15 au 18 juin 2026 Tarif : 380€ par personne (transport, hébergement, visites inclus) Inscriptions avant le 15 mai auprès du CCAS ou en mairie. Ouvert à tous les habitants de la commune et des communes voisines. Secrétariat Mairie · 1 participant" [ref=e666] [cursor=pointer]':
+              - /url: /app/posts/00000000-0000-0000-0000-000000001004
+              - generic [ref=e668]:
+                - generic [ref=e669]:
+                  - img [ref=e670]
+                  - generic [ref=e672]: lundi 15 juin · 10:00
+                - heading "Voyage \"Paris croisière\" — Génération Mouvements 64" [level=3] [ref=e673]
+                - generic [ref=e674]:
+                  - img [ref=e675]
+                  - generic [ref=e678]: Départ parking mairie — Paris
+                - paragraph [ref=e679]: "L'association Génération Mouvements 64 organise un voyage à Paris incluant une croisière sur la Seine et la visite de Montmartre. Dates : du 15 au 18 juin 2026 Tarif : 380€ par personne (transport, hébergement, visites inclus) Inscriptions avant le 15 mai auprès du CCAS ou en mairie. Ouvert à tous les habitants de la commune et des communes voisines."
+                - generic [ref=e680]:
+                  - generic [ref=e681]: Secrétariat Mairie
+                  - generic [ref=e682]: ·
+                  - generic [ref=e683]: 1 participant

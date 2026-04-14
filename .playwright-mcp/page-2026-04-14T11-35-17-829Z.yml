@@ -1,0 +1,47 @@
+- generic [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e23] [cursor=pointer]:
+    - img [ref=e24]
+  - alert [ref=e27]
+  - generic [ref=e28]:
+    - navigation [ref=e29]:
+      - generic [ref=e33]:
+        - generic [ref=e34]:
+          - generic [ref=e35]:
+            - link "Saint-Médard" [ref=e36] [cursor=pointer]:
+              - /url: /app/feed
+            - paragraph [ref=e37]: "64370"
+          - generic [ref=e38]: Entre mer et montagne, au cœur du Béarn
+          - generic [ref=e39]:
+            - link "Fil" [ref=e40] [cursor=pointer]:
+              - /url: /app/feed
+            - link "Événements" [ref=e41] [cursor=pointer]:
+              - /url: /app/evenements
+            - link "Mon espace" [ref=e42] [cursor=pointer]:
+              - /url: /app/mon-espace
+            - link "Infos pratiques" [active] [ref=e43] [cursor=pointer]:
+              - /url: /app/infos-pratiques
+        - generic [ref=e44]:
+          - generic [ref=e45]: Pierre Moreau
+          - link "PM" [ref=e46] [cursor=pointer]:
+            - /url: /app/settings
+          - button "Déconnexion" [ref=e47]:
+            - img [ref=e48]
+    - main [ref=e51]:
+      - generic [ref=e684]:
+        - heading "Infos pratiques — Saint-Médard" [level=1] [ref=e685]
+        - generic [ref=e686]:
+          - generic [ref=e687]:
+            - heading "Horaires de la mairie" [level=2] [ref=e688]
+            - generic [ref=e689]: Lundi et jeudi 8h00 – 12h00 / 12h30 – 17h30
+          - generic [ref=e690]:
+            - heading "Contact" [level=2] [ref=e691]
+            - generic [ref=e692]: "Tél : 05 59 67 56 14 Email : contact@saintmedard64.fr Adresse : Mairie, 64370 Saint-Médard"
+          - generic [ref=e693]:
+            - heading "Services de proximité" [level=2] [ref=e694]
+            - generic [ref=e695]: "Crèche intercommunale (Sault de Navailles) : 05 59 67 90 12 École primaire Le Hêtre Blanc (Hagetaubin) : 05 59 67 52 04 Collège Corisande d'Andoins (Arthez-de-Béarn) : 05 59 67 70 74 Lycée Gaston Fébus (Orthez) : 05 59 67 08 00 Transport à la demande Mobilacq : 0 970 870 870 (2€/trajet) Gare SNCF Orthez : 3635"
+          - generic [ref=e696]:
+            - heading "Associations" [level=2] [ref=e697]
+            - generic [ref=e698]: CCAS — Actions sociales, repas des aînés, sorties Comité des Fêtes — Animations et rassemblements (cdfsaintmedard@gmail.com) Les Hippos'Amuz — Supporters du RCSM, sorties rugby Saint-Médard Loisirs — Ateliers créatifs, lecture, pétanque, jeux de cartes (06 41 05 06 70) RCSM — Rugby Club Saint-Médard
+          - generic [ref=e699]:
+            - heading "Liens utiles" [level=2] [ref=e700]
+            - generic [ref=e701]: "CC Lacq-Orthez : https://www.cc-lacqorthez.fr Transports 64 : https://www.transport64.fr Déchèteries CCLO : 05 59 60 95 42"

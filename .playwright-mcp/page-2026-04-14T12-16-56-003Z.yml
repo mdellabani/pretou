@@ -1,0 +1,88 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e7]:
+          - link "Arthez-de-Béarn" [ref=e8] [cursor=pointer]:
+            - /url: /arthez-de-bearn
+          - paragraph [ref=e9]: "64370"
+          - paragraph [ref=e10]: Village étape sur le chemin de Compostelle
+        - navigation [ref=e11]:
+          - link "Accueil" [ref=e12] [cursor=pointer]:
+            - /url: /arthez-de-bearn
+          - link "Evenements" [ref=e13] [cursor=pointer]:
+            - /url: /arthez-de-bearn/evenements
+          - link "Infos pratiques" [ref=e14] [cursor=pointer]:
+            - /url: /arthez-de-bearn/infos-pratiques
+    - main [ref=e15]:
+      - generic [ref=e16]:
+        - heading "Evenements a Arthez-de-Béarn" [level=1] [ref=e17]
+        - generic [ref=e18]:
+          - generic [ref=e19]:
+            - generic [ref=e20]:
+              - button "Mois précédent" [ref=e21]:
+                - img [ref=e22]
+              - heading "Avril 2026" [level=3] [ref=e24]
+              - button "Mois suivant" [ref=e25]:
+                - img [ref=e26]
+            - generic [ref=e28]:
+              - generic [ref=e29]: Lun
+              - generic [ref=e30]: Mar
+              - generic [ref=e31]: Mer
+              - generic [ref=e32]: Jeu
+              - generic [ref=e33]: Ven
+              - generic [ref=e34]: Sam
+              - generic [ref=e35]: Dim
+              - generic [ref=e38]: "1"
+              - generic [ref=e39]: "2"
+              - generic [ref=e40]: "3"
+              - generic [ref=e41]: "4"
+              - generic [ref=e42]: "5"
+              - generic [ref=e43]: "6"
+              - generic [ref=e44]: "7"
+              - generic [ref=e45]: "8"
+              - generic [ref=e46]: "9"
+              - generic [ref=e47]: "10"
+              - generic [ref=e48]: "11"
+              - generic [ref=e49]: "12"
+              - generic [ref=e50]: "13"
+              - generic [ref=e51]: "14"
+              - generic [ref=e52]: "15"
+              - generic [ref=e53]: "16"
+              - generic [ref=e54]: "17"
+              - generic [ref=e55]: "18"
+              - generic [ref=e56]: "19"
+              - generic [ref=e57]: "20"
+              - generic [ref=e58]: "21"
+              - generic [ref=e59]: "22"
+              - generic [ref=e60]: "23"
+              - generic [ref=e61]: "24"
+              - generic [ref=e62]: "25"
+              - generic [ref=e63]: "26"
+              - generic [ref=e64]: "27"
+              - generic [ref=e65]: "28"
+              - generic [ref=e66]: "29"
+              - generic [ref=e67]: "30"
+          - generic [ref=e71]:
+            - heading "À venir" [level=2] [ref=e72]
+            - generic [ref=e73]:
+              - article [ref=e74]:
+                - heading "Trail et randonnée — APE École publique" [level=3] [ref=e75]
+                - generic [ref=e76]:
+                  - time [ref=e77]: dimanche 31 mai 2026 à 11:30
+                  - paragraph [ref=e78]: Gymnase municipal, Arthez-de-Béarn
+                - paragraph [ref=e79]: "L'association des parents d'élèves organise une journée trail et randonnée ouverte à tous ! Parcours trail : 15 km (dénivelé 350m) Parcours randonnée : 8 km (accessible à tous) Départ à 9h30 depuis le gymnase. Inscription 5€ adulte, gratuit -12 ans. Ravitaillement sur le parcours."
+              - article [ref=e80]:
+                - heading "Tournoi international U15 — FC BAAL" [level=3] [ref=e81]
+                - generic [ref=e82]:
+                  - time [ref=e83]: dimanche 7 juin 2026 à 11:00
+                  - paragraph [ref=e84]: Complexe sportif, Arthez-de-Béarn
+                - paragraph [ref=e85]: Le FC BAAL organise son tournoi international de football en catégorie U15. 8 équipes venues de toute la région et d'Espagne s'affronteront sur les terrains du complexe sportif. Finale à 17h suivie de la remise des trophées. Entrée gratuite, buvette et grillades sur place.
+    - contentinfo [ref=e86]:
+      - generic [ref=e87]:
+        - paragraph [ref=e88]:
+          - text: Commune de Arthez-de-Béarn
+          - generic [ref=e89]: — 64370
+        - paragraph [ref=e90]: Plateforme communautaire rurale
+  - button "Open Next.js Dev Tools" [ref=e96] [cursor=pointer]:
+    - img [ref=e97]

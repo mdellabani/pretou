@@ -1,0 +1,27 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - heading "Paramètres du compte" [level=1] [ref=e5]
+      - generic [ref=e6]:
+        - heading "Informations du compte" [level=2] [ref=e7]
+        - generic [ref=e8]:
+          - generic [ref=e9]:
+            - term [ref=e10]: E-mail
+            - definition [ref=e11]: secretaire@saintmedard64.fr
+          - generic [ref=e12]:
+            - term [ref=e13]: Commune
+            - definition [ref=e14]: Saint-Médard
+          - generic [ref=e15]:
+            - term [ref=e16]: Rôle
+            - definition [ref=e17]: Administrateur
+      - generic [ref=e18]:
+        - heading "Modifier mon profil" [level=2] [ref=e19]
+        - generic [ref=e20]:
+          - generic [ref=e21]:
+            - text: Nom d'affichage
+            - textbox "Nom d'affichage" [ref=e22]:
+              - /placeholder: Votre prénom ou nom
+              - text: Secrétariat Mairie
+          - button "Enregistrer" [ref=e23]
+  - button "Open Next.js Dev Tools" [ref=e29] [cursor=pointer]:
+    - img [ref=e30]

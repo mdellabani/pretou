@@ -1,0 +1,93 @@
+- generic [active] [ref=e1]:
+  - main [ref=e3]:
+    - generic [ref=e4]:
+      - heading "Infos pratiques — Saint-Médard" [level=1] [ref=e5]
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - generic [ref=e9]:
+            - img [ref=e10]
+            - heading "🏛️ Saint-Médard" [level=2] [ref=e13]
+          - generic [ref=e14]:
+            - generic [ref=e15]: Lundi et jeudi
+            - generic [ref=e16]: 8h00 – 12h00 / 12h30 – 17h30
+        - generic [ref=e17]:
+          - generic [ref=e18]:
+            - img [ref=e19]
+            - link "05 59 67 56 14" [ref=e21] [cursor=pointer]:
+              - /url: tel:0559675614
+          - generic [ref=e22]:
+            - img [ref=e23]
+            - link "contact@saintmedard64.fr" [ref=e26] [cursor=pointer]:
+              - /url: mailto:contact@saintmedard64.fr
+          - generic [ref=e27]:
+            - img [ref=e28]
+            - generic [ref=e31]: Mairie, 64370 Saint-Médard
+      - generic [ref=e32]:
+        - heading "📍 Services de proximité" [level=2] [ref=e33]
+        - generic [ref=e34]:
+          - generic [ref=e36]:
+            - generic [ref=e37]:
+              - generic [ref=e38]: Crèche intercommunale
+              - generic [ref=e39]: Sault de Navailles
+            - link "05 59 67 90 12" [ref=e40] [cursor=pointer]:
+              - /url: tel:0559679012
+          - generic [ref=e42]:
+            - generic [ref=e43]:
+              - generic [ref=e44]: École primaire Le Hêtre Blanc
+              - generic [ref=e45]: Hagetaubin
+            - link "05 59 67 52 04" [ref=e46] [cursor=pointer]:
+              - /url: tel:0559675204
+          - generic [ref=e48]:
+            - generic [ref=e49]:
+              - generic [ref=e50]: Collège Corisande d'Andoins
+              - generic [ref=e51]: Arthez-de-Béarn
+            - link "05 59 67 70 74" [ref=e52] [cursor=pointer]:
+              - /url: tel:0559677074
+          - generic [ref=e54]:
+            - generic [ref=e55]:
+              - generic [ref=e56]: Lycée Gaston Fébus
+              - generic [ref=e57]: Orthez
+            - link "05 59 67 08 00" [ref=e58] [cursor=pointer]:
+              - /url: tel:0559670800
+          - generic [ref=e60]:
+            - generic [ref=e62]: Transport à la demande Mobilacq
+            - link "0 970 870 870 (2€/trajet)" [ref=e63] [cursor=pointer]:
+              - /url: tel:0970870870(2€/trajet)
+          - generic [ref=e65]:
+            - generic [ref=e67]: Gare SNCF Orthez
+            - link "3635" [ref=e68] [cursor=pointer]:
+              - /url: tel:3635
+      - generic [ref=e69]:
+        - heading "🤝 Associations" [level=2] [ref=e70]
+        - generic [ref=e71]:
+          - generic "Actions sociales, repas des aînés, sorties" [ref=e72]: CCAS
+          - generic "Animations et rassemblements (cdfsaintmedard@gmail.com)" [ref=e73]: Comité des Fêtes
+          - generic "Supporters du RCSM, sorties rugby" [ref=e74]: Les Hippos'Amuz
+          - generic "Ateliers créatifs, lecture, pétanque, jeux de cartes (06 41 05 06 70)" [ref=e75]: Saint-Médard Loisirs
+          - generic "Rugby Club Saint-Médard" [ref=e76]: RCSM
+      - generic [ref=e77]:
+        - heading "🏪 Commerces & services" [level=2] [ref=e78]
+        - generic [ref=e79]:
+          - generic [ref=e80]:
+            - generic [ref=e81]: ☕
+            - generic [ref=e82]:
+              - generic [ref=e83]: Café O'Médard
+              - generic [ref=e84]: Ven-Sam soir, Dim matin
+          - generic [ref=e85]:
+            - generic [ref=e86]: 📚
+            - generic [ref=e87]:
+              - generic [ref=e88]: Bibliothèque ambulante
+              - generic [ref=e89]: Mercredi 10h-12h (hors vacances)
+      - generic [ref=e90]:
+        - heading "🔗 Liens utiles" [level=2] [ref=e91]
+        - generic [ref=e92]:
+          - link "CC Lacq-Orthez" [ref=e93] [cursor=pointer]:
+            - /url: https://www.cc-lacqorthez.fr
+            - generic [ref=e94]: CC Lacq-Orthez
+            - img [ref=e95]
+          - link "Transports 64" [ref=e99] [cursor=pointer]:
+            - /url: https://www.transport64.fr
+            - generic [ref=e100]: Transports 64
+            - img [ref=e101]
+  - button "Open Next.js Dev Tools" [ref=e110] [cursor=pointer]:
+    - img [ref=e111]
