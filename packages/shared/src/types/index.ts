@@ -4,3 +4,5 @@ export type { Commune, EPCI } from "./commune";
 export type { Profile, Role, ProfileStatus } from "./profile";
 export type { Producer, ProducerStatus, CreateProducerInput } from "./producer";
 export type { Poll, PollOption, PollType, CreatePollInput } from "./poll";
+export type { Report, ReportCategory, ReportStatus } from "./report";
+export type { AuditLog, AuditAction } from "./audit";

@@ -28,6 +28,10 @@ export async function demoteToResident(client: Client, userId: string) {
   return client.from("profiles").update({ role: "resident" }).eq("id", userId);
 }
 
+export async function promoteToModerator(client: Client, userId: string) {
+  return client.from("profiles").update({ role: "moderator" }).eq("id", userId);
+}
+
 export async function getCommuneMembers(client: Client, communeId: string) {
   return client
     .from("profiles")

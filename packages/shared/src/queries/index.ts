@@ -1,10 +1,12 @@
-export { getPosts, getPostById, createPost, deletePost, togglePinPost, getPostsByType } from "./posts";
+export { getPosts, getPostById, createPost, deletePost, togglePinPost, getPostsByType, getPostsPaginated, getPinnedPosts } from "./posts";
 export { getCommune, getCommuneBySlug, getCommunesByEpci, getAllCommunes, getCommuneByInviteCode } from "./communes";
 export { getProfile, createProfile, updateProfile } from "./profiles";
-export { getPendingUsers, approveUser, rejectUser, promoteToAdmin, demoteToResident, getCommuneMembers } from "./admin";
+export { getPendingUsers, approveUser, rejectUser, promoteToAdmin, demoteToResident, promoteToModerator, getCommuneMembers } from "./admin";
 export { getComments, createComment, deleteComment } from "./comments";
 export { getRsvps, setRsvp, removeRsvp, getRsvpCounts } from "./rsvps";
 export type { RsvpStatus } from "./rsvps";
 export { getEpciPosts } from "./epci";
 export { getProducers, getPendingProducers, createProducer, approveProducer, rejectProducer, deleteProducer } from "./producers";
 export { getPollByPostId, createPoll, vote, removeVote } from "./polls";
+export { createReport, getPendingReports, getReportsByPost, dismissReport, actionReport, getReporterStats, hasUserReported } from "./reports";
+export { logAction, getAuditLog, getMyAuditLog } from "./audit";
