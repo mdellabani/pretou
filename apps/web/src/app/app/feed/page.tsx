@@ -36,6 +36,9 @@ export default async function FeedPage({
     .order("is_pinned", { ascending: false })
     .order("created_at", { ascending: false });
 
+  // Expiration filter (active service posts only)
+  query = query.or("expires_at.is.null,expires_at.gt." + new Date().toISOString());
+
   // Type filter (multi-select)
   if (selectedTypes.length > 0) {
     query = query.in("type", selectedTypes);
@@ -54,6 +57,13 @@ export default async function FeedPage({
   }
 
   const { data: posts } = await query;
+
+  // Fetch producer count for banner
+  const { count: producerCount } = await supabase
+    .from("producers")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "active")
+    .eq("commune_id", profile.commune_id);
 
   return (
     <div className="space-y-4">
@@ -86,6 +96,22 @@ export default async function FeedPage({
 
       {/* Filters */}
       <FeedFilters types={selectedTypes} date={dateFilter} />
+
+      {/* Producers banner */}
+      {scope === "commune" && (producerCount ?? 0) > 0 && (
+        <Link
+          href="/app/producteurs"
+          className="flex items-center justify-between rounded-xl border border-green-200 bg-gradient-to-r from-green-50 to-emerald-50 px-5 py-3.5 transition-shadow hover:shadow-md"
+        >
+          <div>
+            <p className="text-sm font-bold text-green-800">🌿 Producteurs locaux</p>
+            <p className="text-xs text-green-600">
+              {producerCount} producteur{(producerCount ?? 0) !== 1 ? "s" : ""} · Circuit court
+            </p>
+          </div>
+          <span className="text-lg text-green-700">→</span>
+        </Link>
+      )}
 
       {/* Posts */}
       {posts && posts.length > 0 ? (

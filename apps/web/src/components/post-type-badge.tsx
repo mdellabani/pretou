@@ -3,13 +3,14 @@ import {
   POST_TYPE_COLORS,
 } from "@rural-community-platform/shared";
 import type { PostType } from "@rural-community-platform/shared";
-import { Megaphone, Calendar, HeartHandshake, MessageCircle } from "lucide-react";
+import { Megaphone, Calendar, HeartHandshake, MessageCircle, Wrench } from "lucide-react";
 
 const POST_TYPE_ICON: Record<PostType, React.ComponentType<{ className?: string; size?: number }>> = {
   annonce: Megaphone,
   evenement: Calendar,
   entraide: HeartHandshake,
   discussion: MessageCircle,
+  service: Wrench,
 };
 
 export function PostTypeBadge({ type }: { type: PostType }) {

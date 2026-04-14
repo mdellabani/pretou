@@ -942,3 +942,163 @@ INSERT INTO rsvps (post_id, user_id, status) VALUES
   ('00000000-0000-0000-0000-000000003004', '00000000-0000-0000-0000-000000000302', 'going'),
   ('00000000-0000-0000-0000-000000003005', '00000000-0000-0000-0000-000000000301', 'going'),
   ('00000000-0000-0000-0000-000000003005', '00000000-0000-0000-0000-000000000302', 'maybe');
+
+-- ================================================
+-- SERVICE POSTS (all communes)
+-- ================================================
+
+-- Saint-Médard: Tonte de pelouse
+INSERT INTO posts (id, commune_id, author_id, type, title, body, expires_at, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000001018',
+  '00000000-0000-0000-0000-000000000010',
+  '00000000-0000-0000-0000-000000000101',
+  'service',
+  'Tonte de pelouse — Disponible ce week-end',
+  'Je propose de tondre votre pelouse ce samedi ou dimanche. J''ai ma propre tondeuse.
+
+Tarif : 20€ pour un terrain standard, 30€ pour les grands terrains.
+
+Contactez-moi ici ou par commentaire.',
+  now() + interval '7 days',
+  now() - interval '1 hour'
+);
+
+-- Saint-Médard: Garde d'enfants
+INSERT INTO posts (id, commune_id, author_id, type, title, body, expires_at, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000001019',
+  '00000000-0000-0000-0000-000000000010',
+  '00000000-0000-0000-0000-000000000102',
+  'service',
+  'Garde d''enfants mercredi après-midi',
+  'Je suis disponible les mercredis après-midi pour garder vos enfants (3-10 ans).
+
+Expérience : maman de 3 enfants, ancienne assistante maternelle.
+Tarif : 8€/heure, goûter inclus.
+
+Je me déplace sur Saint-Médard et alentours.',
+  now() + interval '7 days',
+  now() - interval '3 hours'
+);
+
+-- Arthez: Cours de maths
+INSERT INTO posts (id, commune_id, author_id, type, title, body, expires_at, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000002010',
+  '00000000-0000-0000-0000-000000000011',
+  '00000000-0000-0000-0000-000000000201',
+  'service',
+  'Soutien scolaire maths — Collège et lycée',
+  'Professeure à la retraite, je propose du soutien en mathématiques pour collégiens et lycéens.
+
+Tarif : 15€/heure, chez moi ou à la médiathèque.
+Disponible lundi, mardi et jeudi après-midi.',
+  now() + interval '7 days',
+  now() - interval '5 hours'
+);
+
+-- Morlanne: Petit bricolage
+INSERT INTO posts (id, commune_id, author_id, type, title, body, expires_at, created_at) VALUES
+(
+  '00000000-0000-0000-0000-000000003010',
+  '00000000-0000-0000-0000-000000000012',
+  '00000000-0000-0000-0000-000000000301',
+  'service',
+  'Petit bricolage et réparations — Disponible cette semaine',
+  'Bricoleur du dimanche mais efficace ! Je peux vous aider pour :
+- Étagères, fixations murales
+- Petite plomberie (robinet, joint)
+- Montage de meubles
+
+Tarif libre (ce que vous estimez juste). Matériel à votre charge.
+Disponible cette semaine, contactez-moi.',
+  now() + interval '7 days',
+  now() - interval '2 hours'
+);
+
+-- ================================================
+-- POLLS
+-- ================================================
+
+-- Vote poll on pétanque discussion (Saint-Médard)
+INSERT INTO polls (id, post_id, question, poll_type, allow_multiple) VALUES
+  ('00000000-0000-0000-0000-000000005001', '00000000-0000-0000-0000-000000001017', 'Quel jour vous arrange le mieux ?', 'vote', false);
+
+INSERT INTO poll_options (id, poll_id, label, position) VALUES
+  ('00000000-0000-0000-0000-000000006001', '00000000-0000-0000-0000-000000005001', 'Samedi 3 mai', 0),
+  ('00000000-0000-0000-0000-000000006002', '00000000-0000-0000-0000-000000005001', 'Dimanche 4 mai', 1),
+  ('00000000-0000-0000-0000-000000006003', '00000000-0000-0000-0000-000000005001', 'Les deux me vont', 2);
+
+INSERT INTO poll_votes (poll_option_id, user_id) VALUES
+  ('00000000-0000-0000-0000-000000006002', '00000000-0000-0000-0000-000000000102');
+
+-- Participation poll on BBQ Arthez discussion
+INSERT INTO polls (id, post_id, question, poll_type, allow_multiple) VALUES
+  ('00000000-0000-0000-0000-000000005002', '00000000-0000-0000-0000-000000002006', 'Qui peut aider à l''accueil ?', 'participation', false);
+
+INSERT INTO poll_options (id, poll_id, label, position) VALUES
+  ('00000000-0000-0000-0000-000000006004', '00000000-0000-0000-0000-000000005002', 'Je participe', 0),
+  ('00000000-0000-0000-0000-000000006005', '00000000-0000-0000-0000-000000005002', 'Peut-être', 1),
+  ('00000000-0000-0000-0000-000000006006', '00000000-0000-0000-0000-000000005002', 'Pas disponible', 2);
+
+INSERT INTO poll_votes (poll_option_id, user_id) VALUES
+  ('00000000-0000-0000-0000-000000006004', '00000000-0000-0000-0000-000000000202');
+
+-- ================================================
+-- PRODUCERS
+-- ================================================
+
+INSERT INTO producers (id, commune_id, created_by, name, description, categories, pickup_location, delivers, contact_phone, schedule, status) VALUES
+(
+  '00000000-0000-0000-0000-000000004001',
+  '00000000-0000-0000-0000-000000000012',
+  '00000000-0000-0000-0000-000000000301',
+  'Miel du Béarn — Famille Peyret',
+  'Apiculteur depuis 3 générations, nous produisons du miel toutes fleurs, du miel de châtaignier et du miel d''acacia. Nos ruches sont installées entre Morlanne et Arthez, au cœur du Béarn.',
+  ARRAY['miel'],
+  'Ferme Peyret, chemin du Castet, Morlanne',
+  false,
+  '06 12 34 56 78',
+  'Vente à la ferme : samedi matin 9h-12h ou sur rendez-vous',
+  'active'
+),
+(
+  '00000000-0000-0000-0000-000000004002',
+  '00000000-0000-0000-0000-000000000011',
+  '00000000-0000-0000-0000-000000000201',
+  'Les Jardins d''Arthez',
+  'Maraîchage bio sur 2 hectares. Légumes de saison, herbes aromatiques. Membre du réseau AMAP Lacq-Orthez.',
+  ARRAY['legumes', 'paniers'],
+  'Route de Pau, Arthez-de-Béarn',
+  true,
+  '06 98 76 54 32',
+  'Paniers AMAP : jeudi 17h-19h au parking mairie. Marché d''Arthez : samedi matin.',
+  'active'
+),
+(
+  '00000000-0000-0000-0000-000000004003',
+  '00000000-0000-0000-0000-000000000012',
+  '00000000-0000-0000-0000-000000000302',
+  'Fromagerie Soubirous',
+  'Fromage de brebis au lait cru, tomme et fromage frais. Petit troupeau de 40 brebis élevées en plein air sur les coteaux de Morlanne.',
+  ARRAY['fromages'],
+  'Ferme Soubirous, route de Maslacq, Morlanne',
+  false,
+  '05 59 81 XX XX',
+  'Vente à la ferme tous les jours. Marché de Morlanne le samedi.',
+  'active'
+),
+(
+  '00000000-0000-0000-0000-000000004004',
+  '00000000-0000-0000-0000-000000000010',
+  '00000000-0000-0000-0000-000000000102',
+  'Les Œufs de Jeanne',
+  'Œufs frais de poules élevées en plein air, nourries aux grains. Petit élevage familial, 50 poules sur le chemin du Moulin à Saint-Médard.',
+  ARRAY['oeufs'],
+  'Chemin du Moulin, Saint-Médard',
+  false,
+  NULL,
+  'Tous les jours, passez chercher vos œufs ! Boîte à la porte.',
+  'active'
+);

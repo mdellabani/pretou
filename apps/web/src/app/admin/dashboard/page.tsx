@@ -3,8 +3,10 @@ import { createClient } from "@/lib/supabase/server";
 import {
   getProfile,
   getPendingUsers,
+  getPendingProducers,
 } from "@rural-community-platform/shared";
 import { PendingUsers } from "@/components/admin/pending-users";
+import { PendingProducers } from "@/components/admin/pending-producers";
 import { PostManagement } from "@/components/admin/post-management";
 import { SummaryCards } from "@/components/admin/summary-cards";
 import { ThemeInjector } from "@/components/theme-injector";
@@ -35,6 +37,7 @@ export default async function AdminDashboardPage({
   if (!profile || profile.role !== "admin") redirect("/app/feed");
 
   const { data: pendingUsers } = await getPendingUsers(supabase, profile.commune_id);
+  const { data: pendingProducers } = await getPendingProducers(supabase, profile.commune_id);
 
   // Count posts this week (for summary card)
   const oneWeekAgo = new Date();
@@ -62,7 +65,8 @@ export default async function AdminDashboardPage({
   let countQuery = supabase
     .from("posts")
     .select("id", { count: "exact", head: true })
-    .eq("commune_id", profile.commune_id);
+    .eq("commune_id", profile.commune_id)
+    .or("expires_at.is.null,expires_at.gt." + new Date().toISOString());
   if (selectedTypes.length > 0) countQuery = countQuery.in("type", selectedTypes);
   if (dateSince) countQuery = countQuery.gte("created_at", dateSince);
   const { count: totalCount } = await countQuery;
@@ -74,6 +78,7 @@ export default async function AdminDashboardPage({
     .from("posts")
     .select("id, title, type, is_pinned, created_at, profiles!author_id(display_name)")
     .eq("commune_id", profile.commune_id)
+    .or("expires_at.is.null,expires_at.gt." + new Date().toISOString())
     .order("created_at", { ascending: false })
     .range(from, to);
   if (selectedTypes.length > 0) postsQuery = postsQuery.in("type", selectedTypes);
@@ -90,12 +95,13 @@ export default async function AdminDashboardPage({
       </div>
 
       <SummaryCards
-        pendingCount={pendingUsers?.length ?? 0}
+        pendingCount={(pendingUsers?.length ?? 0) + (pendingProducers?.length ?? 0)}
         postsThisWeek={postsThisWeek ?? 0}
         openReports={0}
       />
 
       <PendingUsers users={pendingUsers ?? []} />
+      <PendingProducers producers={pendingProducers ?? []} />
       <FeedFilters types={selectedTypes} date={dateFilter} />
 
       <PostManagement
