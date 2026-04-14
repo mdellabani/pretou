@@ -1044,3 +1044,61 @@ INSERT INTO poll_options (id, poll_id, label, position) VALUES
 
 INSERT INTO poll_votes (poll_option_id, user_id) VALUES
   ('00000000-0000-0000-0000-000000006004', '00000000-0000-0000-0000-000000000202');
+
+-- ================================================
+-- PRODUCERS
+-- ================================================
+
+INSERT INTO producers (id, commune_id, created_by, name, description, categories, pickup_location, delivers, contact_phone, schedule, status) VALUES
+(
+  '00000000-0000-0000-0000-000000004001',
+  '00000000-0000-0000-0000-000000000012',
+  '00000000-0000-0000-0000-000000000301',
+  'Miel du Béarn — Famille Peyret',
+  'Apiculteur depuis 3 générations, nous produisons du miel toutes fleurs, du miel de châtaignier et du miel d''acacia. Nos ruches sont installées entre Morlanne et Arthez, au cœur du Béarn.',
+  ARRAY['miel'],
+  'Ferme Peyret, chemin du Castet, Morlanne',
+  false,
+  '06 12 34 56 78',
+  'Vente à la ferme : samedi matin 9h-12h ou sur rendez-vous',
+  'active'
+),
+(
+  '00000000-0000-0000-0000-000000004002',
+  '00000000-0000-0000-0000-000000000011',
+  '00000000-0000-0000-0000-000000000201',
+  'Les Jardins d''Arthez',
+  'Maraîchage bio sur 2 hectares. Légumes de saison, herbes aromatiques. Membre du réseau AMAP Lacq-Orthez.',
+  ARRAY['legumes', 'paniers'],
+  'Route de Pau, Arthez-de-Béarn',
+  true,
+  '06 98 76 54 32',
+  'Paniers AMAP : jeudi 17h-19h au parking mairie. Marché d''Arthez : samedi matin.',
+  'active'
+),
+(
+  '00000000-0000-0000-0000-000000004003',
+  '00000000-0000-0000-0000-000000000012',
+  '00000000-0000-0000-0000-000000000302',
+  'Fromagerie Soubirous',
+  'Fromage de brebis au lait cru, tomme et fromage frais. Petit troupeau de 40 brebis élevées en plein air sur les coteaux de Morlanne.',
+  ARRAY['fromages'],
+  'Ferme Soubirous, route de Maslacq, Morlanne',
+  false,
+  '05 59 81 XX XX',
+  'Vente à la ferme tous les jours. Marché de Morlanne le samedi.',
+  'active'
+),
+(
+  '00000000-0000-0000-0000-000000004004',
+  '00000000-0000-0000-0000-000000000010',
+  '00000000-0000-0000-0000-000000000102',
+  'Les Œufs de Jeanne',
+  'Œufs frais de poules élevées en plein air, nourries aux grains. Petit élevage familial, 50 poules sur le chemin du Moulin à Saint-Médard.',
+  ARRAY['oeufs'],
+  'Chemin du Moulin, Saint-Médard',
+  false,
+  NULL,
+  'Tous les jours, passez chercher vos œufs ! Boîte à la porte.',
+  'active'
+);
