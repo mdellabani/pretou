@@ -7,6 +7,8 @@ import {
   rejectUser,
   togglePinPost,
   deletePost,
+  promoteToModerator,
+  demoteToResident,
 } from "@rural-community-platform/shared";
 
 export async function approveUserAction(
@@ -45,6 +47,26 @@ export async function deletePostAction(
 ): Promise<{ error: string | null }> {
   const supabase = await createClient();
   const { error } = await deletePost(supabase, postId);
+  if (error) return { error: error.message };
+  revalidatePath("/admin/dashboard");
+  return { error: null };
+}
+
+export async function promoteModerator(
+  userId: string,
+): Promise<{ error: string | null }> {
+  const supabase = await createClient();
+  const { error } = await promoteToModerator(supabase, userId);
+  if (error) return { error: error.message };
+  revalidatePath("/admin/dashboard");
+  return { error: null };
+}
+
+export async function demoteModerator(
+  userId: string,
+): Promise<{ error: string | null }> {
+  const supabase = await createClient();
+  const { error } = await demoteToResident(supabase, userId);
   if (error) return { error: error.message };
   revalidatePath("/admin/dashboard");
   return { error: null };

@@ -58,6 +58,16 @@ export function PostCard({ post }: { post: Post }) {
           <div className="mt-3 flex items-center justify-between gap-3 text-xs text-[var(--muted-foreground)]">
             <div className="flex items-center gap-3">
               <span className="font-medium">{post.profiles?.display_name}</span>
+              {/* TODO: Add moderator badge here when post.profiles includes role field.
+                  Currently post queries only fetch display_name, not role.
+                  Once we update all post queries to include role, add:
+                  {post.profiles?.role === 'moderator' && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold">
+                      <Shield size={12} />
+                      Modérateur
+                    </span>
+                  )}
+              */}
               <span>·</span>
               <span>
                 {new Date(post.created_at).toLocaleDateString("fr-FR", {

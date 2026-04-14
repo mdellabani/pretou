@@ -4,6 +4,8 @@ import {
   getProfile,
   getPendingUsers,
   getPendingProducers,
+  getCommuneMembers,
+  getAuditLog,
 } from "@rural-community-platform/shared";
 import { PendingUsers } from "@/components/admin/pending-users";
 import { PendingProducers } from "@/components/admin/pending-producers";
@@ -13,6 +15,8 @@ import { ThemeInjector } from "@/components/theme-injector";
 import { FeedFilters } from "@/components/feed-filters";
 import type { PostType } from "@rural-community-platform/shared";
 import { CreatePostDialog } from "@/components/create-post-dialog";
+import { CommuneMembers } from "@/components/admin/community-members";
+import { AuditLogView } from "@/app/moderation/audit-log-view";
 
 export default async function AdminDashboardPage({
   searchParams,
@@ -38,6 +42,8 @@ export default async function AdminDashboardPage({
 
   const { data: pendingUsers } = await getPendingUsers(supabase, profile.commune_id);
   const { data: pendingProducers } = await getPendingProducers(supabase, profile.commune_id);
+  const { data: communeMembers } = await getCommuneMembers(supabase, profile.commune_id);
+  const { data: auditEntries } = await getAuditLog(supabase, profile.commune_id, 50);
 
   // Count posts this week (for summary card)
   const oneWeekAgo = new Date();
@@ -102,6 +108,7 @@ export default async function AdminDashboardPage({
 
       <PendingUsers users={pendingUsers ?? []} />
       <PendingProducers producers={pendingProducers ?? []} />
+      <CommuneMembers members={(communeMembers ?? []) as any[]} />
       <FeedFilters types={selectedTypes} date={dateFilter} />
 
       <PostManagement
@@ -119,6 +126,8 @@ export default async function AdminDashboardPage({
         page={page}
         perPage={perPage}
       />
+
+      <AuditLogView entries={(auditEntries ?? []) as any[]} />
     </div>
   );
 }
