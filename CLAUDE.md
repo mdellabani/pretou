@@ -30,15 +30,13 @@ Feature scope and business context: `design.md`
 
 ## Build / Dev Commands
 
-Not yet scaffolded. Once set up:
-
 ```bash
-pnpm install              # install all dependencies
-pnpm dev                  # start all apps (via turborepo)
-pnpm dev --filter web     # start web app only
-pnpm dev --filter mobile  # start mobile app only
-pnpm build                # build all packages
-pnpm lint                 # lint all packages
+pnpm install                                        # install all dependencies
+npx supabase start                                   # start local Supabase (Docker)
+npx supabase db reset                                # apply migrations + seed (idempotent)
+pnpm --filter @rural-community-platform/web dev      # web app → http://localhost:3000
+cd apps/mobile && npx expo start --clear             # mobile app (Expo Go)
+npx supabase stop                                    # stop local Supabase
 ```
 
 ## Key Conventions
@@ -48,6 +46,18 @@ pnpm lint                 # lint all packages
 - **No UI sharing:** web uses `<div>` + Tailwind, mobile uses `<View>` + StyleSheet. The screens serve different purposes — don't force shared components.
 - **One write, multiple outputs:** admin posts once -> appears on mobile feed (Realtime), commune website (SSR), and triggers push notification (Edge Function).
 - **French context:** UI labels, error messages, and content are in French. Code (variable names, comments) stays in English.
+- **Roles:** `resident < moderator < admin`. Use `is_commune_moderator()` for moderation RLS, `is_commune_admin()` for admin-only.
+- **Post types:** `annonce` (admin only), `evenement`, `entraide`, `discussion`, `service` (7-day auto-expiry).
+- **Feed pagination:** cursor-based (`created_at`), 20 posts/page, pinned posts loaded separately.
+- **Moderation:** posts have `is_hidden` column. Reports auto-hide at 3 flags. Word filter auto-hides on match. All actions logged in `audit_log`.
+
+## Database Schema
+
+4 migrations in `supabase/migrations/`:
+- `001_initial_schema.sql` — communes, profiles, posts, comments, rsvps, RLS, helper functions
+- `002_design_fields.sql` — theme, motto, description fields on communes
+- `003_features_v2.sql` — service posts (expires_at), producers, polls (poll_options, poll_votes)
+- `004_moderation.sql` — reports, audit_log, word_filters, moderator role, is_hidden, auto-hide trigger
 
 ## Environment Variables
 
@@ -59,6 +69,12 @@ SUPABASE_SERVICE_ROLE_KEY=       # server-side only, never exposed to client
 
 ## Current Status
 
-- MVP scope: v1 (Community Board + Official Announcements)
-- Phase: architecture defined, implementation not yet started
-- Old implementation plan (`implementation-plan-v1.md`) is superseded — kept for reference on Supabase schema/RLS details
+- **v1 ~90%**: auth, feed (paginated), post detail, events (calendar), mon espace, infos pratiques (redesigned), admin panel, public commune site
+- **v2 ~90%**: service posts, polls, producers directory, reporting, moderator role, word filter, rate limiting, audit log
+- **Remaining**: push notifications, password reset, image upload, alertes tab, commune onboarding UI, map view
+
+## Design Specs & Plans
+
+- `docs/superpowers/specs/2026-04-12-architecture-design.md` — original architecture
+- `docs/superpowers/specs/2026-04-14-features-v2-design.md` — service posts, producers, polls, infos pratiques
+- `docs/superpowers/specs/2026-04-14-moderation-pagination-design.md` — reporting, moderation, word filter, pagination
