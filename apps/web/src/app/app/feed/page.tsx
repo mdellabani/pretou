@@ -3,10 +3,10 @@ import { getProfile } from "@rural-community-platform/shared";
 import type { Post } from "@rural-community-platform/shared";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { PostCard } from "@/components/post-card";
 import { CreatePostDialog } from "@/components/create-post-dialog";
 import { ThemeInjector } from "@/components/theme-injector";
 import { FeedFilters } from "@/components/feed-filters";
+import { FeedContent } from "./feed-content";
 
 export default async function FeedPage({
   searchParams,
@@ -28,16 +28,27 @@ export default async function FeedPage({
   if (!profile) redirect("/auth/signup");
   if (profile.status === "pending") redirect("/auth/pending");
 
-  // Build query
+  // Pinned posts (always shown at top, not paginated)
+  let pinnedQuery = supabase
+    .from("posts")
+    .select("*, profiles!author_id(display_name, avatar_url), post_images(id, storage_path), comments(count), rsvps(status)")
+    .eq("commune_id", profile.commune_id)
+    .eq("is_hidden", false)
+    .eq("is_pinned", true)
+    .or("expires_at.is.null,expires_at.gt." + new Date().toISOString());
+
+  const { data: pinnedPosts } = await pinnedQuery;
+
+  // First page of non-pinned posts
   let query = supabase
     .from("posts")
     .select("*, profiles!author_id(display_name, avatar_url), post_images(id, storage_path), comments(count), rsvps(status)")
     .eq("commune_id", profile.commune_id)
-    .order("is_pinned", { ascending: false })
-    .order("created_at", { ascending: false });
-
-  // Expiration filter (active service posts only)
-  query = query.or("expires_at.is.null,expires_at.gt." + new Date().toISOString());
+    .eq("is_hidden", false)
+    .eq("is_pinned", false)
+    .or("expires_at.is.null,expires_at.gt." + new Date().toISOString())
+    .order("created_at", { ascending: false })
+    .limit(20);
 
   // Type filter (multi-select)
   if (selectedTypes.length > 0) {
@@ -46,13 +57,16 @@ export default async function FeedPage({
 
   // Date filter
   if (dateFilter === "today") {
-    const d = new Date(); d.setHours(0, 0, 0, 0);
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
     query = query.gte("created_at", d.toISOString());
   } else if (dateFilter === "week") {
-    const d = new Date(); d.setDate(d.getDate() - 7);
+    const d = new Date();
+    d.setDate(d.getDate() - 7);
     query = query.gte("created_at", d.toISOString());
   } else if (dateFilter === "month") {
-    const d = new Date(); d.setDate(d.getDate() - 30);
+    const d = new Date();
+    d.setDate(d.getDate() - 30);
     query = query.gte("created_at", d.toISOString());
   }
 
@@ -113,18 +127,14 @@ export default async function FeedPage({
         </Link>
       )}
 
-      {/* Posts */}
-      {posts && posts.length > 0 ? (
-        <div className="space-y-4">
-          {(posts as Post[]).map((post) => (
-            <PostCard key={post.id} post={post} />
-          ))}
-        </div>
-      ) : (
-        <p className="py-8 text-center text-[var(--muted-foreground)]">
-          Aucune publication pour cette sélection.
-        </p>
-      )}
+      {/* Posts with pagination */}
+      <FeedContent
+        initialPosts={(posts ?? []) as Post[]}
+        pinnedPosts={(pinnedPosts ?? []) as Post[]}
+        communeId={profile.commune_id}
+        types={selectedTypes}
+        dateFilter={dateFilter}
+      />
     </div>
   );
 }
