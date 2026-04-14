@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import { Megaphone, Calendar, HeartHandshake, MessageSquare, Pin, CalendarDays, Wrench } from "lucide-react-native";
+import { Megaphone, Calendar, HeartHandshake, MessageSquare, Pin, CalendarDays, Wrench, Flag } from "lucide-react-native";
 import { useTheme } from "@/lib/theme-context";
 import { POST_TYPE_COLORS, CARD } from "@/constants/colors";
+import { ReportDialog } from "@/components/report-dialog";
 import type { Post, PostType } from "@rural-community-platform/shared";
 import { POST_TYPE_LABELS } from "@rural-community-platform/shared";
 
@@ -22,6 +24,7 @@ interface PostCardProps {
 export function PostCard({ post }: PostCardProps) {
   const router = useRouter();
   const theme = useTheme();
+  const [showReport, setShowReport] = useState(false);
   const typeColor = POST_TYPE_COLORS[post.type as keyof typeof POST_TYPE_COLORS] ?? "#6b7280";
   const typeLabel = POST_TYPE_LABELS[post.type as PostType] ?? post.type;
   const TypeIcon = TYPE_ICONS[post.type] ?? MessageSquare;
@@ -102,14 +105,27 @@ export function PostCard({ post }: PostCardProps) {
           <Text style={styles.meta}>
             {authorName} · {createdDate}
           </Text>
-          {commentCount > 0 && (
-            <View style={styles.commentMeta}>
-              <MessageSquare size={12} color={theme.muted} />
-              <Text style={styles.commentCount}>{commentCount}</Text>
-            </View>
-          )}
+          <View style={styles.metaRight}>
+            {commentCount > 0 && (
+              <View style={styles.commentMeta}>
+                <MessageSquare size={12} color={theme.muted} />
+                <Text style={styles.commentCount}>{commentCount}</Text>
+              </View>
+            )}
+            <TouchableOpacity
+              onPress={() => setShowReport(true)}
+              style={styles.reportButton}
+            >
+              <Flag size={12} color={theme.muted} />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
+      <ReportDialog
+        postId={post.id}
+        visible={showReport}
+        onClose={() => setShowReport(false)}
+      />
     </TouchableOpacity>
   );
 }
@@ -197,6 +213,12 @@ const styles = StyleSheet.create({
     fontFamily: "DMSans_400Regular",
     fontSize: 12,
     color: "#a1a1aa",
+    flex: 1,
+  },
+  metaRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
   },
   commentMeta: {
     flexDirection: "row",
@@ -207,6 +229,9 @@ const styles = StyleSheet.create({
     fontFamily: "DMSans_500Medium",
     fontSize: 12,
     color: "#a1a1aa",
+  },
+  reportButton: {
+    padding: 4,
   },
   expiryBox: {
     backgroundColor: "#fffbeb",

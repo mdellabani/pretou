@@ -27,11 +27,13 @@ import {
   CheckCircle,
   HelpCircle,
   XCircle,
+  Flag,
 } from "lucide-react-native";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
 import { PollDisplay } from "@/components/poll-display";
+import { ReportDialog } from "@/components/report-dialog";
 import {
   getPostById,
   getComments,
@@ -99,6 +101,7 @@ export default function PostDetailScreen() {
   const [commentText, setCommentText] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [showReport, setShowReport] = useState(false);
 
   const loadPost = useCallback(async () => {
     if (!id) return;
@@ -293,8 +296,17 @@ export default function PostDetailScreen() {
           </View>
         )}
 
-        {/* Body */}
-        <Text style={styles.body}>{post.body}</Text>
+        {/* Body + Report button */}
+        <View style={styles.bodySection}>
+          <Text style={styles.body}>{post.body}</Text>
+          <TouchableOpacity
+            onPress={() => setShowReport(true)}
+            style={styles.reportButtonDetail}
+          >
+            <Flag size={14} color="#ef4444" />
+            <Text style={styles.reportButtonText}>Signaler</Text>
+          </TouchableOpacity>
+        </View>
 
         {/* Images */}
         {post.post_images.length > 0 && (
@@ -448,6 +460,13 @@ export default function PostDetailScreen() {
           <Send size={16} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
+      {id && (
+        <ReportDialog
+          postId={id}
+          visible={showReport}
+          onClose={() => setShowReport(false)}
+        />
+      )}
     </KeyboardAvoidingView>
   );
 }
@@ -513,12 +532,32 @@ const styles = StyleSheet.create({
   eventRow: { flexDirection: "row", alignItems: "center", gap: 8 },
   eventInfo: { fontFamily: "DMSans_500Medium", fontSize: 13 },
 
+  bodySection: {
+    marginBottom: 16,
+  },
   body: {
     fontFamily: "DMSans_400Regular",
     fontSize: 15,
     color: "#3f3f46",
     lineHeight: 24,
-    marginBottom: 16,
+    marginBottom: 10,
+  },
+  reportButtonDetail: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#fecaca",
+    backgroundColor: "#fef2f2",
+    alignSelf: "flex-start",
+  },
+  reportButtonText: {
+    fontFamily: "DMSans_500Medium",
+    fontSize: 12,
+    color: "#ef4444",
   },
 
   imageSection: { gap: 12, marginBottom: 16 },
