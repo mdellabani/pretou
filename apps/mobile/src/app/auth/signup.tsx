@@ -29,6 +29,7 @@ export default function SignupScreen() {
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [inviteCode, setInviteCode] = useState("");
   const [communes, setCommunes] = useState<CommuneItem[]>([]);
   const [selectedCommuneId, setSelectedCommuneId] = useState<string | null>(
     null
@@ -61,6 +62,7 @@ export default function SignupScreen() {
       password,
       display_name: displayName,
       commune_id: selectedCommuneId,
+      invite_code: inviteCode || undefined,
     });
 
     if (!parsed.success) {
@@ -84,29 +86,65 @@ export default function SignupScreen() {
     }
 
     if (authData.user) {
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .insert({
-          id: authData.user.id,
-          display_name: parsed.data.display_name,
-          commune_id: parsed.data.commune_id,
-          role: "resident",
-          status: "pending",
-        });
+      // If invite code provided, validate it
+      if (parsed.data.invite_code) {
+        const { data: commune } = await supabase
+          .from("communes")
+          .select("invite_code")
+          .eq("id", parsed.data.commune_id)
+          .single();
 
-      if (profileError) {
+        if (!commune || commune.invite_code !== parsed.data.invite_code) {
+          setLoading(false);
+          Alert.alert("Erreur", "Code d'invitation invalide");
+          return;
+        }
+
+        // Valid code: create profile with active status
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .insert({
+            id: authData.user.id,
+            display_name: parsed.data.display_name,
+            commune_id: parsed.data.commune_id,
+            role: "resident",
+            status: "active",
+          });
+
+        if (profileError) {
+          setLoading(false);
+          Alert.alert("Erreur", "Impossible de créer le profil");
+          return;
+        }
+
         setLoading(false);
-        Alert.alert("Erreur", "Impossible de créer le profil");
-        return;
+        router.replace("/(tabs)/feed");
+      } else {
+        // No code: create profile with pending status
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .insert({
+            id: authData.user.id,
+            display_name: parsed.data.display_name,
+            commune_id: parsed.data.commune_id,
+            role: "resident",
+            status: "pending",
+          });
+
+        if (profileError) {
+          setLoading(false);
+          Alert.alert("Erreur", "Impossible de créer le profil");
+          return;
+        }
+
+        setLoading(false);
+        Alert.alert(
+          "Inscription réussie",
+          "Votre compte a été créé. Un administrateur doit valider votre inscription avant que vous puissiez vous connecter.",
+          [{ text: "OK", onPress: () => router.replace("/auth/login") }]
+        );
       }
     }
-
-    setLoading(false);
-    Alert.alert(
-      "Inscription réussie",
-      "Votre compte a été créé. Un administrateur doit valider votre inscription avant que vous puissiez vous connecter.",
-      [{ text: "OK", onPress: () => router.replace("/auth/login") }]
-    );
   }
 
   return (
@@ -250,6 +288,24 @@ export default function SignupScreen() {
             )}
           </View>
 
+          {/* Invite code */}
+          <View style={styles.inputGroup}>
+            <View style={styles.inputIcon}>
+              <Mail size={16} color={theme.muted} />
+            </View>
+            <TextInput
+              style={styles.input}
+              placeholder="Code d'invitation (optionnel)"
+              value={inviteCode}
+              onChangeText={(text) => setInviteCode(text.toUpperCase())}
+              autoCapitalize="characters"
+              placeholderTextColor="#a1a1aa"
+            />
+          </View>
+          <Text style={[styles.inviteHint, { color: theme.muted }]}>
+            Si vous avez un code, votre inscription sera validée automatiquement.
+          </Text>
+
           {/* Submit button */}
           <TouchableOpacity
             style={[styles.button, loading && styles.buttonDisabled]}
@@ -367,6 +423,13 @@ const styles = StyleSheet.create({
   communeLabel: {
     fontFamily: "DMSans_600SemiBold",
     fontSize: 14,
+  },
+  inviteHint: {
+    fontFamily: "DMSans_400Regular",
+    fontSize: 12,
+    marginTop: -8,
+    marginBottom: 12,
+    marginLeft: 2,
   },
   communeLoader: { marginVertical: 16 },
   communeList: { gap: 8 },

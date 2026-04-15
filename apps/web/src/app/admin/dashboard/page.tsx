@@ -17,6 +17,7 @@ import type { PostType } from "@rural-community-platform/shared";
 import { CreatePostDialog } from "@/components/create-post-dialog";
 import { CommuneMembers } from "@/components/admin/community-members";
 import { AuditLogView } from "@/app/moderation/audit-log-view";
+import { InviteCodeManager } from "@/components/admin/invite-code-manager";
 
 export default async function AdminDashboardPage({
   searchParams,
@@ -44,6 +45,12 @@ export default async function AdminDashboardPage({
   const { data: pendingProducers } = await getPendingProducers(supabase, profile.commune_id);
   const { data: communeMembers } = await getCommuneMembers(supabase, profile.commune_id);
   const { data: auditEntries } = await getAuditLog(supabase, profile.commune_id, 50);
+
+  const { data: commune } = await supabase
+    .from("communes")
+    .select("invite_code")
+    .eq("id", profile.commune_id)
+    .single();
 
   // Count posts this week (for summary card)
   const oneWeekAgo = new Date();
@@ -105,6 +112,8 @@ export default async function AdminDashboardPage({
         postsThisWeek={postsThisWeek ?? 0}
         openReports={0}
       />
+
+      <InviteCodeManager currentCode={commune?.invite_code ?? ""} />
 
       <PendingUsers users={pendingUsers ?? []} />
       <PendingProducers producers={pendingProducers ?? []} />

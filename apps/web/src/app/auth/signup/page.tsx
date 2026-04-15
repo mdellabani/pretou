@@ -32,6 +32,7 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [communeId, setCommuneId] = useState("");
+  const [inviteCode, setInviteCode] = useState("");
   const [communes, setCommunes] = useState<Commune[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -60,6 +61,7 @@ export default function SignupPage() {
       password,
       display_name: displayName,
       commune_id: communeId,
+      invite_code: inviteCode || undefined,
     });
 
     if (!result.success) {
@@ -88,19 +90,54 @@ export default function SignupPage() {
       return;
     }
 
-    const { error: profileError } = await supabase.from("profiles").insert({
-      id: userId,
-      display_name: displayName,
-      commune_id: communeId,
-    });
+    // If invite code provided, validate it
+    if (inviteCode) {
+      const { data: commune } = await supabase
+        .from("communes")
+        .select("invite_code")
+        .eq("id", communeId)
+        .single();
 
-    if (profileError) {
-      setError(profileError.message);
-      setLoading(false);
-      return;
+      if (!commune || commune.invite_code !== inviteCode) {
+        setError("Code d'invitation invalide");
+        setLoading(false);
+        return;
+      }
+
+      // Valid code: create profile with active status
+      const { error: profileError } = await supabase.from("profiles").insert({
+        id: userId,
+        display_name: displayName,
+        commune_id: communeId,
+        status: "active",
+        role: "resident",
+      });
+
+      if (profileError) {
+        setError(profileError.message);
+        setLoading(false);
+        return;
+      }
+
+      router.push("/app/feed");
+    } else {
+      // No code: create profile with pending status
+      const { error: profileError } = await supabase.from("profiles").insert({
+        id: userId,
+        display_name: displayName,
+        commune_id: communeId,
+        status: "pending",
+        role: "resident",
+      });
+
+      if (profileError) {
+        setError(profileError.message);
+        setLoading(false);
+        return;
+      }
+
+      router.push("/auth/pending");
     }
-
-    router.push("/auth/pending");
   }
 
   return (
@@ -167,6 +204,20 @@ export default function SignupPage() {
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="invite_code">Code d'invitation (optionnel)</Label>
+              <Input
+                id="invite_code"
+                type="text"
+                placeholder="Code fourni par la mairie"
+                value={inviteCode}
+                onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
+              />
+              <p className="text-xs text-muted-foreground">
+                Si vous avez un code, votre inscription sera validée automatiquement.
+              </p>
             </div>
 
             <Button type="submit" disabled={loading} className="w-full">
