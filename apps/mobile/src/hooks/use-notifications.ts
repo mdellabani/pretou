@@ -14,7 +14,11 @@ export function useNotifications() {
     notificationListener.current = Notifications.addNotificationReceivedListener((notification) => { console.log("Notification received:", notification); });
     responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
       const data = response.notification.request.content.data;
-      if (data?.url && typeof data.url === "string") router.push(data.url);
+      if (data?.url && typeof data.url === "string") {
+        router.push(data.url as any);
+      } else if (data?.postId && typeof data.postId === "string") {
+        router.push(`/post/${data.postId}` as any);
+      }
     });
     return () => {
       if (notificationListener.current) Notifications.removeNotificationSubscription(notificationListener.current);

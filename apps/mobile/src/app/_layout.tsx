@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
+import { useNotifications } from "@/hooks/use-notifications";
 import { useFonts, DMSans_400Regular, DMSans_500Medium, DMSans_600SemiBold } from "@expo-google-fonts/dm-sans";
 import * as SplashScreen from "expo-splash-screen";
 
@@ -21,6 +22,7 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   const { session, profile, loading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
+  useNotifications();
 
   useEffect(() => {
     if (loading) return;

@@ -28,7 +28,22 @@ export async function registerForPushNotifications(): Promise<string | null> {
   const token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
   const { data: { user } } = await supabase.auth.getUser();
   if (user) {
-    await supabase.from("push_tokens").upsert({ user_id: user.id, token, platform: Platform.OS }, { onConflict: "user_id,platform" });
+    await supabase.from("push_tokens").upsert(
+      { user_id: user.id, token, platform: Platform.OS },
+      { onConflict: "token" }
+    );
   }
   return token;
+}
+
+export async function unregisterPushToken(): Promise<void> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+  try {
+    const projectId = Constants.expoConfig?.extra?.eas?.projectId;
+    const token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
+    await supabase.from("push_tokens").delete().eq("user_id", user.id).eq("token", token);
+  } catch {
+    // Token cleanup is best-effort
+  }
 }

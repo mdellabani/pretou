@@ -14,6 +14,7 @@ import { ShieldCheck, LogOut, ChevronRight, Camera } from "lucide-react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import { supabase } from "@/lib/supabase";
+import { unregisterPushToken } from "@/lib/notifications";
 import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
 import { ROLE_LABELS } from "@rural-community-platform/shared";
@@ -51,6 +52,7 @@ export default function ProfileScreen() {
         text: "Se déconnecter",
         style: "destructive",
         onPress: async () => {
+          await unregisterPushToken();
           await supabase.auth.signOut();
           router.replace("/auth/login");
         },

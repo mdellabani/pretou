@@ -1,11 +1,18 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+const POST_TYPE_TITLES: Record<string, string> = {
+  annonce: "Annonce officielle",
+  evenement: "Nouvel événement",
+};
+
 serve(async (req) => {
   const { record } = await req.json();
+  const postType = record.type as string;
 
-  if (record.type !== "annonce") {
-    return new Response("Not an announcement", { status: 200 });
+  // Only send push for annonce and evenement
+  if (!POST_TYPE_TITLES[postType]) {
+    return new Response("Post type not notifiable", { status: 200 });
   }
 
   const supabase = createClient(
@@ -13,32 +20,63 @@ serve(async (req) => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
   );
 
-  const { data: profiles } = await supabase
+  // Get all active users in the commune
+  const { data: communeProfiles } = await supabase
     .from("profiles")
-    .select("push_token")
+    .select("id")
     .eq("commune_id", record.commune_id)
-    .eq("status", "active")
-    .not("push_token", "is", null);
+    .eq("status", "active");
 
-  if (!profiles || profiles.length === 0) {
-    return new Response("No tokens", { status: 200 });
+  const userIds = (communeProfiles ?? []).map((p: { id: string }) => p.id);
+  if (userIds.length === 0) {
+    return new Response("No active users", { status: 200 });
   }
 
-  const tokens = profiles.map((p) => p.push_token).filter(Boolean);
+  // Get push tokens, excluding the post author
+  const { data: tokens } = await supabase
+    .from("push_tokens")
+    .select("token")
+    .in("user_id", userIds)
+    .neq("user_id", record.author_id);
 
-  const response = await fetch("https://exp.host/--/api/v2/push/send", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(
-      tokens.map((token) => ({
-        to: token,
-        title: "Annonce officielle",
-        body: record.title,
-        data: { postId: record.id },
-      }))
-    ),
-  });
+  if (!tokens || tokens.length === 0) {
+    return new Response("No push tokens", { status: 200 });
+  }
 
-  const result = await response.json();
-  return new Response(JSON.stringify(result), { status: 200 });
+  const title = POST_TYPE_TITLES[postType];
+  const body =
+    record.title.length > 80
+      ? record.title.substring(0, 77) + "..."
+      : record.title;
+
+  // Expo push API accepts batches of up to 100
+  const pushTokens = tokens.map((t: { token: string }) => t.token);
+  const chunks: string[][] = [];
+  for (let i = 0; i < pushTokens.length; i += 100) {
+    chunks.push(pushTokens.slice(i, i + 100));
+  }
+
+  for (const chunk of chunks) {
+    await fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(
+        chunk.map((token) => ({
+          to: token,
+          title,
+          body,
+          data: { postId: record.id, url: `/post/${record.id}` },
+          sound: "default",
+        }))
+      ),
+    });
+  }
+
+  return new Response(
+    JSON.stringify({ sent: pushTokens.length }),
+    { status: 200 }
+  );
 });
