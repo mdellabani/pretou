@@ -23,6 +23,7 @@ import { CommuneInfoForm } from "@/components/admin/commune-info-form";
 import { AssociationsManager } from "@/components/admin/associations-manager";
 import { CouncilDocuments } from "@/components/admin/council-documents";
 import { DomainManager } from "@/components/admin/domain-manager";
+import { AdminTabs } from "@/components/admin/admin-tabs";
 
 export default async function AdminDashboardPage({
   searchParams,
@@ -63,7 +64,6 @@ export default async function AdminDashboardPage({
     .eq("commune_id", profile.commune_id)
     .order("document_date", { ascending: false });
 
-  // Count posts this week (for summary card)
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
   const { count: postsThisWeek } = await supabase
@@ -72,7 +72,6 @@ export default async function AdminDashboardPage({
     .eq("commune_id", profile.commune_id)
     .gte("created_at", oneWeekAgo.toISOString());
 
-  // Compute date filter boundary
   let dateSince: string | null = null;
   if (dateFilter === "today") {
     const d = new Date(); d.setHours(0, 0, 0, 0);
@@ -85,7 +84,6 @@ export default async function AdminDashboardPage({
     dateSince = d.toISOString();
   }
 
-  // Count total posts (with optional filters)
   let countQuery = supabase
     .from("posts")
     .select("id", { count: "exact", head: true })
@@ -95,7 +93,6 @@ export default async function AdminDashboardPage({
   if (dateSince) countQuery = countQuery.gte("created_at", dateSince);
   const { count: totalCount } = await countQuery;
 
-  // Fetch paginated posts
   const from = (page - 1) * perPage;
   const to = from + perPage - 1;
   let postsQuery = supabase
@@ -110,79 +107,92 @@ export default async function AdminDashboardPage({
   const { data: posts } = await postsQuery;
 
   return (
-    <div className="space-y-6">
+    <div>
       <ThemeInjector theme={profile.communes?.theme} customPrimaryColor={profile.communes?.custom_primary_color} />
 
-      <div className="flex items-center justify-between">
+      <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-[var(--foreground)]">Administration</h1>
         <CreatePostDialog isAdmin={true} />
       </div>
 
-      {/* Homepage editor link */}
-      <a href="/admin/homepage"
-        className="flex items-center justify-between rounded-[14px] border border-[#f0e8da] bg-white px-5 py-4 shadow-[0_2px_8px_rgba(140,120,80,0.08)] transition-all hover:shadow-[0_4px_16px_rgba(140,120,80,0.14)]">
-        <div>
-          <h2 className="text-sm font-semibold" style={{ color: "var(--theme-primary)" }}>
-            Éditeur de page d'accueil
-          </h2>
-          <p className="text-xs text-[var(--muted-foreground)]">
-            Personnalisez les sections de votre site communal
-          </p>
-        </div>
-        <span style={{ color: "var(--theme-primary)" }}>→</span>
-      </a>
-
-      <SummaryCards
-        pendingCount={(pendingUsers?.length ?? 0) + (pendingProducers?.length ?? 0)}
-        postsThisWeek={postsThisWeek ?? 0}
-        openReports={0}
-      />
-
-      <InviteCodeManager currentCode={commune?.invite_code ?? ""} />
-
-      <DomainManager
-        slug={commune?.slug ?? ""}
-        customDomain={commune?.custom_domain ?? null}
-        domainVerified={commune?.domain_verified ?? false}
-      />
-
-      <ThemeCustomizer
-        currentTheme={commune?.theme ?? "terre_doc"}
-        currentCustomColor={commune?.custom_primary_color ?? null}
-        currentLogoUrl={commune?.logo_url ?? null}
-      />
-
-      <CommuneInfoForm
-        address={commune?.address ?? null}
-        phone={commune?.phone ?? null}
-        email={commune?.email ?? null}
-        openingHours={(commune?.opening_hours as Record<string, string>) ?? {}}
-      />
-      <AssociationsManager associations={(commune?.associations as any[]) ?? []} />
-      <CouncilDocuments documents={(councilDocs ?? []) as any[]} />
-
-      <PendingUsers users={pendingUsers ?? []} />
-      <PendingProducers producers={pendingProducers ?? []} />
-      <CommuneMembers members={(communeMembers ?? []) as any[]} />
-      <FeedFilters types={selectedTypes} date={dateFilter} />
-
-      <PostManagement
-        posts={
-          (posts ?? []).map((p) => ({
-            id: p.id,
-            title: p.title,
-            type: p.type as PostType,
-            is_pinned: p.is_pinned ?? false,
-            created_at: p.created_at,
-            profiles: Array.isArray(p.profiles) ? p.profiles[0] ?? null : p.profiles,
-          }))
+      <AdminTabs
+        dashboardContent={
+          <>
+            <SummaryCards
+              pendingCount={(pendingUsers?.length ?? 0) + (pendingProducers?.length ?? 0)}
+              postsThisWeek={postsThisWeek ?? 0}
+              openReports={0}
+            />
+            <PendingUsers users={pendingUsers ?? []} />
+            <PendingProducers producers={pendingProducers ?? []} />
+          </>
         }
-        totalCount={totalCount ?? 0}
-        page={page}
-        perPage={perPage}
+        websiteContent={
+          <>
+            <a href="/admin/homepage"
+              className="flex items-center justify-between rounded-[14px] border border-[#f0e8da] bg-white px-5 py-4 shadow-[0_2px_8px_rgba(140,120,80,0.08)] transition-all hover:shadow-[0_4px_16px_rgba(140,120,80,0.14)]">
+              <div>
+                <h2 className="text-sm font-semibold" style={{ color: "var(--theme-primary)" }}>
+                  Éditeur de page d'accueil
+                </h2>
+                <p className="text-xs text-[var(--muted-foreground)]">
+                  Personnalisez les sections de votre site communal
+                </p>
+              </div>
+              <span style={{ color: "var(--theme-primary)" }}>→</span>
+            </a>
+            <ThemeCustomizer
+              currentTheme={commune?.theme ?? "terre_doc"}
+              currentCustomColor={commune?.custom_primary_color ?? null}
+              currentLogoUrl={commune?.logo_url ?? null}
+            />
+            <DomainManager
+              slug={commune?.slug ?? ""}
+              customDomain={commune?.custom_domain ?? null}
+              domainVerified={commune?.domain_verified ?? false}
+            />
+          </>
+        }
+        communeContent={
+          <>
+            <CommuneInfoForm
+              address={commune?.address ?? null}
+              phone={commune?.phone ?? null}
+              email={commune?.email ?? null}
+              openingHours={(commune?.opening_hours as Record<string, string>) ?? {}}
+            />
+            <AssociationsManager associations={(commune?.associations as any[]) ?? []} />
+            <InviteCodeManager currentCode={commune?.invite_code ?? ""} />
+          </>
+        }
+        membersContent={
+          <CommuneMembers members={(communeMembers ?? []) as any[]} />
+        }
+        postsContent={
+          <>
+            <FeedFilters types={selectedTypes} date={dateFilter} />
+            <PostManagement
+              posts={
+                (posts ?? []).map((p) => ({
+                  id: p.id,
+                  title: p.title,
+                  type: p.type as PostType,
+                  is_pinned: p.is_pinned ?? false,
+                  created_at: p.created_at,
+                  profiles: Array.isArray(p.profiles) ? p.profiles[0] ?? null : p.profiles,
+                }))
+              }
+              totalCount={totalCount ?? 0}
+              page={page}
+              perPage={perPage}
+            />
+            <CouncilDocuments documents={(councilDocs ?? []) as any[]} />
+          </>
+        }
+        moderationContent={
+          <AuditLogView entries={(auditEntries ?? []) as any[]} />
+        }
       />
-
-      <AuditLogView entries={(auditEntries ?? []) as any[]} />
     </div>
   );
 }
