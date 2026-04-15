@@ -118,6 +118,20 @@ export default async function AdminDashboardPage({
         <CreatePostDialog isAdmin={true} />
       </div>
 
+      {/* Homepage editor link */}
+      <a href="/admin/homepage"
+        className="flex items-center justify-between rounded-[14px] border border-[#f0e8da] bg-white px-5 py-4 shadow-[0_2px_8px_rgba(140,120,80,0.08)] transition-all hover:shadow-[0_4px_16px_rgba(140,120,80,0.14)]">
+        <div>
+          <h2 className="text-sm font-semibold" style={{ color: "var(--theme-primary)" }}>
+            Éditeur de page d'accueil
+          </h2>
+          <p className="text-xs text-[var(--muted-foreground)]">
+            Personnalisez les sections de votre site communal
+          </p>
+        </div>
+        <span style={{ color: "var(--theme-primary)" }}>→</span>
+      </a>
+
       <SummaryCards
         pendingCount={(pendingUsers?.length ?? 0) + (pendingProducers?.length ?? 0)}
         postsThisWeek={postsThisWeek ?? 0}
