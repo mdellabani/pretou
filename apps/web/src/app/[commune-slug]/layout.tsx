@@ -70,24 +70,26 @@ export default async function CommuneLayout({
               )}
             </div>
           </div>
-          <nav className="flex gap-6 text-sm font-medium">
-            <Link
-              href={`/${slug}`}
-              className="text-[var(--muted-foreground)] transition-colors hover:text-[var(--theme-primary)]"
-            >
+          <nav className="hidden gap-6 text-sm font-medium md:flex">
+            <Link href={`/${slug}`}
+              className="text-[var(--muted-foreground)] transition-colors hover:text-[var(--theme-primary)]">
               Accueil
             </Link>
-            <Link
-              href={`/${slug}/evenements`}
-              className="text-[var(--muted-foreground)] transition-colors hover:text-[var(--theme-primary)]"
-            >
-              Evenements
+            <Link href={`/${slug}/evenements`}
+              className="text-[var(--muted-foreground)] transition-colors hover:text-[var(--theme-primary)]">
+              Événements
             </Link>
-            <Link
-              href={`/${slug}/infos-pratiques`}
-              className="text-[var(--muted-foreground)] transition-colors hover:text-[var(--theme-primary)]"
-            >
+            <Link href={`/${slug}/infos-pratiques`}
+              className="text-[var(--muted-foreground)] transition-colors hover:text-[var(--theme-primary)]">
               Infos pratiques
+            </Link>
+            <Link href={`/${slug}/bulletin`}
+              className="text-[var(--muted-foreground)] transition-colors hover:text-[var(--theme-primary)]">
+              Bulletin
+            </Link>
+            <Link href={`/${slug}/conseil-municipal`}
+              className="text-[var(--muted-foreground)] transition-colors hover:text-[var(--theme-primary)]">
+              Conseil municipal
             </Link>
           </nav>
         </div>
@@ -102,11 +104,14 @@ export default async function CommuneLayout({
           <p>
             Commune de{" "}
             <span className="font-medium text-[var(--foreground)]">{commune.name}</span>
-            {commune.code_postal && (
-              <span> — {commune.code_postal}</span>
-            )}
+            {commune.code_postal && <span> — {commune.code_postal}</span>}
           </p>
-          <p className="mt-1">Plateforme communautaire rurale</p>
+          <p className="mt-1">
+            <Link href={`/${slug}/mentions-legales`} className="underline hover:text-[var(--foreground)]">
+              Mentions légales
+            </Link>
+            {" · "}Plateforme communautaire rurale
+          </p>
         </div>
       </footer>
     </div>
