@@ -127,7 +127,7 @@ export default async function InfosPratiquesPage({ params }: Props) {
 
   return (
     <div className="space-y-6">
-      <ThemeInjector theme={commune.theme} />
+      <ThemeInjector theme={commune.theme} customPrimaryColor={commune.custom_primary_color} />
 
       <h1 className="text-2xl font-semibold text-[var(--foreground)]">
         Infos pratiques — {commune.name}

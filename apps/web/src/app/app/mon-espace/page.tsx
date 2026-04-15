@@ -38,7 +38,7 @@ export default async function MonEspacePage() {
 
   return (
     <div className="space-y-4">
-      <ThemeInjector theme={profile.communes?.theme} />
+      <ThemeInjector theme={profile.communes?.theme} customPrimaryColor={profile.communes?.custom_primary_color} />
 
       <h1 className="text-2xl font-semibold text-[var(--foreground)]">Mon espace</h1>
 

@@ -18,6 +18,7 @@ import { CreatePostDialog } from "@/components/create-post-dialog";
 import { CommuneMembers } from "@/components/admin/community-members";
 import { AuditLogView } from "@/app/moderation/audit-log-view";
 import { InviteCodeManager } from "@/components/admin/invite-code-manager";
+import { ThemeCustomizer } from "@/components/admin/theme-customizer";
 
 export default async function AdminDashboardPage({
   searchParams,
@@ -48,7 +49,7 @@ export default async function AdminDashboardPage({
 
   const { data: commune } = await supabase
     .from("communes")
-    .select("invite_code")
+    .select("invite_code, theme, custom_primary_color, logo_url")
     .eq("id", profile.commune_id)
     .single();
 
@@ -100,7 +101,7 @@ export default async function AdminDashboardPage({
 
   return (
     <div className="space-y-6">
-      <ThemeInjector theme={profile.communes?.theme} />
+      <ThemeInjector theme={profile.communes?.theme} customPrimaryColor={profile.communes?.custom_primary_color} />
 
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-[var(--foreground)]">Administration</h1>
@@ -114,6 +115,12 @@ export default async function AdminDashboardPage({
       />
 
       <InviteCodeManager currentCode={commune?.invite_code ?? ""} />
+
+      <ThemeCustomizer
+        currentTheme={commune?.theme ?? "terre_doc"}
+        currentCustomColor={commune?.custom_primary_color ?? null}
+        currentLogoUrl={commune?.logo_url ?? null}
+      />
 
       <PendingUsers users={pendingUsers ?? []} />
       <PendingProducers producers={pendingProducers ?? []} />

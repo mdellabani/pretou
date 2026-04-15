@@ -81,7 +81,7 @@ export default async function FeedPage({
 
   return (
     <div className="space-y-4">
-      <ThemeInjector theme={profile.communes?.theme} />
+      <ThemeInjector theme={profile.communes?.theme} customPrimaryColor={profile.communes?.custom_primary_color} />
 
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-[var(--foreground)]">Fil de la commune</h1>

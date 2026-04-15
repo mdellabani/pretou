@@ -99,3 +99,23 @@ export function getTheme(slug: string | null | undefined): ThemeConfig {
   if (slug && slug in THEMES) return THEMES[slug as ThemeSlug];
   return THEMES[DEFAULT_THEME];
 }
+
+import { deriveThemeFromColor, isValidHexColor } from "../utils/color";
+
+/**
+ * Resolve the final theme config, applying custom primary color if set.
+ * This is the function all surfaces should call instead of getTheme().
+ */
+export function resolveTheme(
+  themeSlug: string | null | undefined,
+  customPrimaryColor: string | null | undefined
+): ThemeConfig {
+  const base = getTheme(themeSlug);
+  if (!customPrimaryColor || !isValidHexColor(customPrimaryColor)) return base;
+
+  const derived = deriveThemeFromColor(customPrimaryColor);
+  return {
+    ...base,
+    ...derived,
+  };
+}

@@ -129,7 +129,7 @@ export default async function AppInfosPratiquesPage() {
   // Fetch commune with infos_pratiques
   const { data: commune } = await supabase
     .from("communes")
-    .select("name, theme, infos_pratiques")
+    .select("name, theme, custom_primary_color, infos_pratiques")
     .eq("id", profile.commune_id)
     .single();
 
@@ -144,7 +144,7 @@ export default async function AppInfosPratiquesPage() {
 
   return (
     <div className="space-y-6">
-      <ThemeInjector theme={commune?.theme} />
+      <ThemeInjector theme={commune?.theme} customPrimaryColor={commune?.custom_primary_color} />
 
       <h1 className="text-2xl font-semibold text-[var(--foreground)]">
         Infos pratiques — {commune?.name}

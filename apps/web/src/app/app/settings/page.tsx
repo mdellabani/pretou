@@ -18,13 +18,13 @@ export default async function SettingsPage() {
 
   const { data: commune } = await supabase
     .from("communes")
-    .select("name, theme")
+    .select("name, theme, custom_primary_color")
     .eq("id", profile.commune_id)
     .single();
 
   return (
     <div className="space-y-6">
-      <ThemeInjector theme={commune?.theme} />
+      <ThemeInjector theme={commune?.theme} customPrimaryColor={commune?.custom_primary_color} />
 
       <h1 className="text-2xl font-semibold text-[var(--foreground)]">
         Paramètres du compte

@@ -25,7 +25,7 @@ export default async function ProducteursPage() {
 
   return (
     <div className="space-y-4">
-      <ThemeInjector theme={profile.communes?.theme} />
+      <ThemeInjector theme={profile.communes?.theme} customPrimaryColor={profile.communes?.custom_primary_color} />
       <h1 className="text-2xl font-semibold text-[var(--foreground)]">Producteurs locaux</h1>
       <ProducersContent producers={(producers ?? []) as Producer[]} />
     </div>

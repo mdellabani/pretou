@@ -1,7 +1,13 @@
-import { getTheme } from "@rural-community-platform/shared";
+import { resolveTheme } from "@rural-community-platform/shared";
 
-export function ThemeInjector({ theme }: { theme?: string | null }) {
-  const t = getTheme(theme);
+export function ThemeInjector({
+  theme,
+  customPrimaryColor,
+}: {
+  theme?: string | null;
+  customPrimaryColor?: string | null;
+}) {
+  const t = resolveTheme(theme, customPrimaryColor);
   return (
     <style dangerouslySetInnerHTML={{ __html: `
       :root {

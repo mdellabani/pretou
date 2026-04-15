@@ -22,7 +22,7 @@ export default async function CommuneLayout({
 
   return (
     <div className="flex min-h-screen flex-col bg-[var(--theme-background)]">
-      <ThemeInjector theme={commune.theme} />
+      <ThemeInjector theme={commune.theme} customPrimaryColor={commune.custom_primary_color} />
 
       {/* Thin gradient accent bar */}
       <div
@@ -37,7 +37,13 @@ export default async function CommuneLayout({
       <header className="border-b border-[var(--border)] bg-white">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
           <div className="flex items-center gap-3">
-            {commune.blason_url && (
+            {commune.logo_url ? (
+              <img
+                src={commune.logo_url}
+                alt={`Logo de ${commune.name}`}
+                className="h-10 w-10 object-contain"
+              />
+            ) : commune.blason_url && (
               <img
                 src={commune.blason_url}
                 alt={`Blason de ${commune.name}`}

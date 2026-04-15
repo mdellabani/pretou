@@ -52,7 +52,7 @@ export default async function ModerationDashboardPage() {
 
   return (
     <div className="space-y-6">
-      <ThemeInjector theme={profile.communes?.theme} />
+      <ThemeInjector theme={profile.communes?.theme} customPrimaryColor={profile.communes?.custom_primary_color} />
       <h1 className="text-2xl font-semibold text-[var(--foreground)]">
         Modération
       </h1>

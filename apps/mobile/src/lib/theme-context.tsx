@@ -1,10 +1,22 @@
 import { createContext, useContext } from "react";
-import { getTheme, type ThemeConfig } from "@rural-community-platform/shared";
+import { resolveTheme, type ThemeConfig } from "@rural-community-platform/shared";
 
-const ThemeContext = createContext<ThemeConfig>(getTheme(null));
+const ThemeContext = createContext<ThemeConfig>(resolveTheme(null, null));
 
-export function ThemeProvider({ theme, children }: { theme: string | null; children: React.ReactNode }) {
-  return <ThemeContext.Provider value={getTheme(theme)}>{children}</ThemeContext.Provider>;
+export function ThemeProvider({
+  theme,
+  customPrimaryColor,
+  children,
+}: {
+  theme: string | null;
+  customPrimaryColor?: string | null;
+  children: React.ReactNode;
+}) {
+  return (
+    <ThemeContext.Provider value={resolveTheme(theme, customPrimaryColor)}>
+      {children}
+    </ThemeContext.Provider>
+  );
 }
 
 export function useTheme(): ThemeConfig {
