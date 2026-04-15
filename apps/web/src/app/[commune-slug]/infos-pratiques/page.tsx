@@ -45,24 +45,6 @@ interface Lien {
   url: string;
 }
 
-function parseContact(contactStr?: string): ContactInfo {
-  if (!contactStr) return {};
-  const result: ContactInfo = {};
-  const lines = contactStr.split("\n");
-  for (const line of lines) {
-    if (/tél/i.test(line)) {
-      const match = line.match(/tél\s*:\s*(.+)$/i);
-      if (match) result.tel = match[1].trim();
-    } else if (/email/i.test(line)) {
-      const match = line.match(/email\s*:\s*(.+)$/i);
-      if (match) result.email = match[1].trim();
-    } else if (/adresse/i.test(line)) {
-      const match = line.match(/adresse\s*:\s*(.+)$/i);
-      if (match) result.adresse = match[1].trim();
-    }
-  }
-  return result;
-}
 
 function parseServices(servicesStr?: string): Service[] {
   if (!servicesStr) return [];
@@ -77,14 +59,6 @@ function parseServices(servicesStr?: string): Service[] {
     .filter((s): s is Service => s !== null);
 }
 
-function parseAssociations(assocStr?: string): Array<{ name: string; description: string }> {
-  if (!assocStr) return [];
-  const lines = assocStr.split("\n").filter((l) => l.trim());
-  return lines.map((line) => {
-    const parts = line.split(/\s*—\s*/);
-    return { name: parts[0].trim(), description: parts[1]?.trim() || "" };
-  });
-}
 
 function parseLinks(linksStr?: string): Lien[] {
   if (!linksStr) return [];
@@ -102,10 +76,6 @@ function parseLinks(linksStr?: string): Lien[] {
     .filter((l): l is Lien => l !== null);
 }
 
-function parseHours(hoursStr?: string): string[] {
-  if (!hoursStr) return [];
-  return hoursStr.split("\n").filter((l) => l.trim());
-}
 
 export default async function InfosPratiquesPage({ params }: Props) {
   const { "commune-slug": slug } = await params;
@@ -118,12 +88,19 @@ export default async function InfosPratiquesPage({ params }: Props) {
   }
 
   const infos = (commune.infos_pratiques ?? {}) as InfosPratiques;
-  const contact = parseContact(infos.contact);
+  const contact = {
+    tel: commune.phone ?? undefined,
+    email: commune.email ?? undefined,
+    adresse: commune.address ?? undefined,
+  };
+  const openingHours = (commune.opening_hours ?? {}) as Record<string, string>;
+  const hours = Object.entries(openingHours)
+    .filter(([, v]) => v.trim())
+    .map(([day, time]) => `${day.charAt(0).toUpperCase() + day.slice(1)} : ${time}`);
+  const associations = ((commune.associations ?? []) as Array<{ name: string; description?: string; contact?: string; schedule?: string }>);
   const services = parseServices(infos.services);
-  const associations = parseAssociations(infos.associations);
   const commerces = infos.commerces ?? [];
   const links = parseLinks(infos.liens);
-  const hours = parseHours(infos.horaires);
 
   return (
     <div className="space-y-6">
@@ -226,24 +203,16 @@ export default async function InfosPratiquesPage({ params }: Props) {
       {/* Associations */}
       {associations.length > 0 && (
         <div className="rounded-[14px] border border-[#f0e8da] bg-white p-5 shadow-[0_2px_8px_rgba(140,120,80,0.08)]">
-          <h2
-            className="mb-4 flex items-center gap-2 text-lg font-semibold"
-            style={{ color: "var(--theme-primary)" }}
-          >
+          <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold" style={{ color: "var(--theme-primary)" }}>
             🤝 Associations
           </h2>
-          <div className="flex flex-wrap gap-3">
+          <div className="space-y-3">
             {associations.map((assoc, idx) => (
-              <div
-                key={idx}
-                className="rounded-full px-4 py-2 text-sm font-medium"
-                style={{
-                  backgroundColor: "var(--theme-pin-bg)",
-                  color: "var(--theme-primary)",
-                }}
-                title={assoc.description}
-              >
-                {assoc.name}
+              <div key={idx} className="rounded-lg p-3" style={{ backgroundColor: "var(--theme-background)" }}>
+                <div className="font-semibold text-[var(--foreground)]">{assoc.name}</div>
+                {assoc.description && <p className="text-sm text-[var(--muted-foreground)]">{assoc.description}</p>}
+                {assoc.contact && <p className="text-xs text-[var(--muted-foreground)]">Contact : {assoc.contact}</p>}
+                {assoc.schedule && <p className="text-xs text-[var(--muted-foreground)]">Horaires : {assoc.schedule}</p>}
               </div>
             ))}
           </div>

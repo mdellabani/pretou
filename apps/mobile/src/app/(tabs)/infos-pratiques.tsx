@@ -17,10 +17,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
 
 interface InfosPratiques {
-  horaires?: string;
-  contact?: string;
   services?: string;
-  associations?: string;
   commerces?: Array<{ nom: string; horaires?: string; tel?: string; emoji?: string }>;
   liens?: string;
 }
@@ -49,28 +46,6 @@ interface Lien {
   url: string;
 }
 
-function parseContact(contactStr?: string): ContactInfo {
-  if (!contactStr) return {};
-
-  const result: ContactInfo = {};
-  const lines = contactStr.split("\n");
-
-  for (const line of lines) {
-    if (/tél/i.test(line)) {
-      const match = line.match(/tél\s*:\s*(.+)$/i);
-      if (match) result.tel = match[1].trim();
-    } else if (/email/i.test(line)) {
-      const match = line.match(/email\s*:\s*(.+)$/i);
-      if (match) result.email = match[1].trim();
-    } else if (/adresse/i.test(line)) {
-      const match = line.match(/adresse\s*:\s*(.+)$/i);
-      if (match) result.adresse = match[1].trim();
-    }
-  }
-
-  return result;
-}
-
 function parseServices(servicesStr?: string): Service[] {
   if (!servicesStr) return [];
 
@@ -88,20 +63,6 @@ function parseServices(servicesStr?: string): Service[] {
       };
     })
     .filter((s): s is Service => s !== null);
-}
-
-function parseAssociations(assocStr?: string): Array<{ name: string; description: string }> {
-  if (!assocStr) return [];
-
-  const lines = assocStr.split("\n").filter((l) => l.trim());
-
-  return lines.map((line) => {
-    const parts = line.split(/\s*—\s*/);
-    return {
-      name: parts[0].trim(),
-      description: parts[1]?.trim() || "",
-    };
-  });
 }
 
 function parseLinks(linksStr?: string): Lien[] {
@@ -122,16 +83,14 @@ function parseLinks(linksStr?: string): Lien[] {
     .filter((l): l is Lien => l !== null);
 }
 
-function parseHours(hoursStr?: string): string[] {
-  if (!hoursStr) return [];
-  return hoursStr.split("\n").filter((l) => l.trim());
-}
-
 export default function InfosPratiquesScreen() {
   const { profile } = useAuth();
   const theme = useTheme();
   const [infos, setInfos] = useState<InfosPratiques>({});
   const [communeName, setCommuneName] = useState<string>("");
+  const [contact, setContact] = useState<ContactInfo>({});
+  const [openingHours, setOpeningHours] = useState<Record<string, string>>({});
+  const [associations, setAssociations] = useState<Array<{ name: string; description?: string; contact?: string; schedule?: string }>>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -140,12 +99,19 @@ export default function InfosPratiquesScreen() {
 
     const { data } = await supabase
       .from("communes")
-      .select("name, infos_pratiques")
+      .select("name, address, phone, email, opening_hours, associations, infos_pratiques")
       .eq("id", profile.commune_id)
       .single();
 
     if (data) {
       setCommuneName(data.name ?? "");
+      setContact({
+        tel: data.phone ?? undefined,
+        email: data.email ?? undefined,
+        adresse: data.address ?? undefined,
+      });
+      setOpeningHours((data.opening_hours ?? {}) as Record<string, string>);
+      setAssociations((data.associations ?? []) as Array<{ name: string; description?: string; contact?: string; schedule?: string }>);
       setInfos((data.infos_pratiques as InfosPratiques) ?? {});
     }
   }, [profile?.commune_id]);
@@ -160,12 +126,12 @@ export default function InfosPratiquesScreen() {
     setRefreshing(false);
   }
 
-  const contact = parseContact(infos.contact);
   const services = parseServices(infos.services);
-  const associations = parseAssociations(infos.associations);
   const commerces = infos.commerces ?? [];
   const links = parseLinks(infos.liens);
-  const hours = parseHours(infos.horaires);
+  const hours = Object.entries(openingHours)
+    .filter(([, v]) => v.trim())
+    .map(([day, time]) => `${day.charAt(0).toUpperCase() + day.slice(1)} : ${time}`);
 
   const hasHeroContent = hours.length > 0 || contact.tel || contact.email || contact.adresse;
 
@@ -290,16 +256,30 @@ export default function InfosPratiquesScreen() {
             <Text style={[styles.sectionHeader, { color: theme.primary }]}>
               🤝 Associations
             </Text>
-            <View style={styles.pillContainer}>
+            <View style={styles.sectionContent}>
               {associations.map((assoc, idx) => (
                 <View
                   key={idx}
-                  style={[styles.pill, { backgroundColor: theme.pinBg }]}
-                  title={assoc.description}
+                  style={[styles.serviceRow, { backgroundColor: theme.background }]}
                 >
-                  <Text style={[styles.pillText, { color: theme.primary }]}>
-                    {assoc.name}
-                  </Text>
+                  <View style={styles.serviceInfo}>
+                    <Text style={styles.serviceName}>{assoc.name}</Text>
+                    {assoc.description && (
+                      <Text style={[styles.serviceLocation, { color: theme.muted }]}>
+                        {assoc.description}
+                      </Text>
+                    )}
+                    {assoc.contact && (
+                      <Text style={[styles.serviceLocation, { color: theme.muted, marginTop: 4 }]}>
+                        Contact : {assoc.contact}
+                      </Text>
+                    )}
+                    {assoc.schedule && (
+                      <Text style={[styles.serviceLocation, { color: theme.muted }]}>
+                        Horaires : {assoc.schedule}
+                      </Text>
+                    )}
+                  </View>
                 </View>
               ))}
             </View>
