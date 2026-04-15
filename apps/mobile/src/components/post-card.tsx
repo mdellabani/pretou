@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { Megaphone, Calendar, HeartHandshake, MessageSquare, Pin, CalendarDays, Wrench, Flag } from "lucide-react-native";
@@ -8,6 +8,11 @@ import { POST_TYPE_COLORS, CARD } from "@/constants/colors";
 import { ReportDialog } from "@/components/report-dialog";
 import type { Post, PostType } from "@rural-community-platform/shared";
 import { POST_TYPE_LABELS } from "@rural-community-platform/shared";
+
+function getImageUrl(storagePath: string): string {
+  const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || "";
+  return `${supabaseUrl}/storage/v1/object/public/post-images/${storagePath}`;
+}
 
 const TYPE_ICONS: Record<string, typeof Megaphone> = {
   annonce: Megaphone,
@@ -48,6 +53,14 @@ export function PostCard({ post }: PostCardProps) {
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={styles.pinnedBar}
+        />
+      )}
+
+      {/* Image display */}
+      {post.post_images && post.post_images.length > 0 && (
+        <Image
+          source={{ uri: getImageUrl(post.post_images[0].storage_path) }}
+          style={styles.postImage}
         />
       )}
 
@@ -145,6 +158,11 @@ const styles = StyleSheet.create({
   },
   pinnedBar: {
     height: 2.5,
+  },
+  postImage: {
+    width: "100%",
+    height: 200,
+    resizeMode: "cover",
   },
   inner: {
     padding: 14,

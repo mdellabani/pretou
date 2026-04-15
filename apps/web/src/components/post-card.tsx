@@ -1,8 +1,18 @@
 import Link from "next/link";
+import Image from "next/image";
 import { PostTypeBadge } from "@/components/post-type-badge";
 import { ReportDialog } from "@/components/report-dialog";
 import type { Post, PostType } from "@rural-community-platform/shared";
 import { Pin, MessageCircle } from "lucide-react";
+
+function getImageUrl(storagePath: string, transforms?: string): string {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+  const baseUrl = `${supabaseUrl}/storage/v1/object/public/post-images/${storagePath}`;
+  if (transforms) {
+    return `${baseUrl}?${transforms}`;
+  }
+  return baseUrl;
+}
 
 export function PostCard({ post }: { post: Post }) {
   const commentCount = post.comments?.[0]?.count ?? 0;
@@ -29,6 +39,17 @@ export function PostCard({ post }: { post: Post }) {
           borderTopWidth: "3px",
         } : undefined}
       >
+        {post.post_images && post.post_images.length > 0 && (
+          <div className="relative w-full h-48 bg-gray-200">
+            <Image
+              src={getImageUrl(post.post_images[0].storage_path)}
+              alt="Post image"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 600px"
+            />
+          </div>
+        )}
         <div className="px-5 py-4">
           {/* Top row: title left, badge right */}
           <div className="flex items-start justify-between gap-3">

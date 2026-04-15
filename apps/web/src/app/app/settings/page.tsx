@@ -70,6 +70,7 @@ export default async function SettingsPage() {
       <SettingsForm
         userId={profile.id}
         initialDisplayName={profile.display_name ?? ""}
+        initialAvatarUrl={profile.avatar_url}
       />
     </div>
   );

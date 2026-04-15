@@ -123,6 +123,20 @@ export async function createPostAction(formData: FormData) {
         await createPoll(supabase, post.id, pollData);
       }
 
+      // Handle image upload
+      const imageFile = formData.get("image") as File | null;
+      if (imageFile && imageFile.size > 0) {
+        const ext = imageFile.name.split(".").pop() ?? "webp";
+        const storagePath = `posts/${post.id}/${Date.now()}.${ext}`;
+        const arrayBuffer = await imageFile.arrayBuffer();
+        const { error: uploadError } = await supabase.storage
+          .from("post-images")
+          .upload(storagePath, arrayBuffer, { contentType: imageFile.type });
+        if (!uploadError) {
+          await supabase.from("post_images").insert({ post_id: post.id, storage_path: storagePath });
+        }
+      }
+
       revalidatePath("/app/feed");
       return { error: null, warning: "Votre publication est en cours de vérification." };
     }
@@ -150,6 +164,20 @@ export async function createPostAction(formData: FormData) {
       // Post was created but poll failed — still return success
       // (post is visible, poll creation failed)
       console.error("Poll creation error:", pollError);
+    }
+  }
+
+  // Handle image upload
+  const imageFile = formData.get("image") as File | null;
+  if (imageFile && imageFile.size > 0) {
+    const ext = imageFile.name.split(".").pop() ?? "webp";
+    const storagePath = `posts/${post.id}/${Date.now()}.${ext}`;
+    const arrayBuffer = await imageFile.arrayBuffer();
+    const { error: uploadError } = await supabase.storage
+      .from("post-images")
+      .upload(storagePath, arrayBuffer, { contentType: imageFile.type });
+    if (!uploadError) {
+      await supabase.from("post_images").insert({ post_id: post.id, storage_path: storagePath });
     }
   }
 

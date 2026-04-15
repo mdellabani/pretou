@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
+import * as ImageManipulator from "expo-image-manipulator";
 import {
   Megaphone,
   Calendar,
@@ -169,6 +170,29 @@ export default function CreatePostScreen() {
           }
         }
 
+        // Upload image if selected
+        if (image) {
+          const resized = await ImageManipulator.manipulateAsync(
+            image.uri,
+            [{ resize: { width: 800 } }],
+            { compress: 0.85, format: ImageManipulator.SaveFormat.WEBP }
+          );
+
+          const path = `posts/${hiddenPost.id}/${Date.now()}.webp`;
+          const response = await fetch(resized.uri);
+          const blob = await response.blob();
+
+          const { error: uploadError } = await supabase.storage
+            .from("post-images")
+            .upload(path, blob, { contentType: "image/webp" });
+
+          if (!uploadError) {
+            await supabase
+              .from("post_images")
+              .insert({ post_id: hiddenPost.id, storage_path: path });
+          }
+        }
+
         setLoading(false);
         Alert.alert("En cours de vérification", "Votre publication est en cours de vérification par un modérateur.");
         setTitle(""); setBody(""); setEventDate(""); setEventLocation("");
@@ -198,15 +222,19 @@ export default function CreatePostScreen() {
 
     // Upload image if selected
     if (image) {
-      const ext = image.uri.split(".").pop() ?? "jpg";
-      const path = `posts/${post.id}/${Date.now()}.${ext}`;
+      const resized = await ImageManipulator.manipulateAsync(
+        image.uri,
+        [{ resize: { width: 800 } }],
+        { compress: 0.85, format: ImageManipulator.SaveFormat.WEBP }
+      );
 
-      const response = await fetch(image.uri);
+      const path = `posts/${post.id}/${Date.now()}.webp`;
+      const response = await fetch(resized.uri);
       const blob = await response.blob();
 
       const { error: uploadError } = await supabase.storage
         .from("post-images")
-        .upload(path, blob, { contentType: image.mimeType ?? "image/jpeg" });
+        .upload(path, blob, { contentType: "image/webp" });
 
       if (!uploadError) {
         await supabase

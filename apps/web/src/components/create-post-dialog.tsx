@@ -48,8 +48,69 @@ export function CreatePostDialog({ isAdmin }: { isAdmin: boolean }) {
   const [loading, setLoading] = useState(false);
   const [includePoll, setIncludePoll] = useState(false);
   const [pollData, setPollData] = useState<PollFormData | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const availableTypes = isAdmin ? ALL_POST_TYPES : POST_TYPES_FOR_RESIDENTS;
+
+  async function resizeImage(file: File): Promise<File> {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+          const maxWidth = 800;
+
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+          }
+
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                const resizedFile = new File([blob], file.name, { type: "image/webp" });
+                resolve(resizedFile);
+              } else {
+                resolve(file);
+              }
+            },
+            "image/webp",
+            0.85
+          );
+        };
+        img.src = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function handleImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImagePreview(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function removeImage() {
+    setImageFile(null);
+    setImagePreview(null);
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -60,6 +121,13 @@ export function CreatePostDialog({ isAdmin }: { isAdmin: boolean }) {
     if (includePoll && pollData) {
       formData.set("poll_data", JSON.stringify(pollData));
     }
+
+    // Resize and add image if selected
+    if (imageFile && imageFile.size > 0) {
+      const resizedFile = await resizeImage(imageFile);
+      formData.set("image", resizedFile);
+    }
+
     const result = await createPostAction(formData);
     if (result.error) {
       setError(result.error);
@@ -67,12 +135,20 @@ export function CreatePostDialog({ isAdmin }: { isAdmin: boolean }) {
       return;
     }
     setOpen(false);
+    setImageFile(null);
+    setImagePreview(null);
     setLoading(false);
     router.refresh();
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(newOpen) => {
+      setOpen(newOpen);
+      if (!newOpen) {
+        setImageFile(null);
+        setImagePreview(null);
+      }
+    }}>
       <DialogTrigger asChild>
         <Button>Nouvelle publication</Button>
       </DialogTrigger>
@@ -156,6 +232,55 @@ export function CreatePostDialog({ isAdmin }: { isAdmin: boolean }) {
               Les annonces de service expirent automatiquement après 7 jours.
             </p>
           )}
+
+          {/* Image upload */}
+          <div className="space-y-2">
+            <Label>Photo (optionnel)</Label>
+            {imagePreview ? (
+              <div className="relative">
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="h-32 w-full rounded-lg object-cover"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-2 top-2 bg-black/50 text-white hover:bg-black/70"
+                  onClick={removeImage}
+                >
+                  ✕
+                </Button>
+              </div>
+            ) : (
+              <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 px-6 py-8 text-center hover:border-gray-400">
+                <svg
+                  className="h-8 w-8 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                <span className="text-sm text-gray-600">
+                  Cliquez pour ajouter une photo
+                </span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageSelect}
+                />
+              </label>
+            )}
+          </div>
+
           <input type="hidden" name="epci_visible" value="false" />
           {error && <p className="text-sm text-red-600">{error}</p>}
           <Button type="submit" className="w-full" disabled={loading}>

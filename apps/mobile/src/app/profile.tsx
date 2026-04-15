@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   Alert,
+  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -9,7 +10,9 @@ import {
   View,
 } from "react-native";
 import { Stack, useRouter } from "expo-router";
-import { ShieldCheck, LogOut, ChevronRight } from "lucide-react-native";
+import { ShieldCheck, LogOut, ChevronRight, Camera } from "lucide-react-native";
+import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
@@ -23,6 +26,8 @@ export default function ProfileScreen() {
   const [displayName, setDisplayName] = useState(profile?.display_name ?? "");
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "success" | "error">("idle");
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || null);
 
   async function handleSaveName() {
     if (!profile || !displayName.trim()) return;
@@ -53,6 +58,74 @@ export default function ProfileScreen() {
     ]);
   }
 
+  async function handleAvatarUpload() {
+    if (!profile) return;
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Permission refusée", "Nous avons besoin d'accéder à vos photos.");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (result.canceled) return;
+
+    const asset = result.assets[0];
+    if (!asset.uri) return;
+
+    setUploadingAvatar(true);
+    try {
+      const manipulated = await ImageManipulator.manipulateAsync(
+        asset.uri,
+        [{ resize: { width: 400, height: 400 } }],
+        { compress: 0.85, format: ImageManipulator.SaveFormat.WEBP }
+      );
+
+      const file = await fetch(manipulated.uri);
+      const blob = await file.blob();
+      const arrayBuffer = await blob.arrayBuffer();
+
+      const ext = "webp";
+      const storagePath = `avatars/${profile.id}/${Date.now()}.${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(storagePath, arrayBuffer, { contentType: "image/webp" });
+
+      if (uploadError) {
+        Alert.alert("Erreur", "Impossible d'uploader l'avatar");
+        setUploadingAvatar(false);
+        return;
+      }
+
+      const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+      const publicUrl = `${supabaseUrl}/storage/v1/object/public/avatars/${storagePath}`;
+
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ avatar_url: publicUrl })
+        .eq("id", profile.id);
+
+      if (updateError) {
+        Alert.alert("Erreur", "Impossible de mettre à jour l'avatar");
+        setUploadingAvatar(false);
+        return;
+      }
+
+      setAvatarUrl(publicUrl);
+      setUploadingAvatar(false);
+      Alert.alert("Succès", "Avatar mis à jour");
+    } catch (error) {
+      Alert.alert("Erreur", "Une erreur est survenue");
+      setUploadingAvatar(false);
+    }
+  }
+
   if (!profile) {
     return (
       <View style={[styles.center, { backgroundColor: theme.background }]}>
@@ -76,19 +149,38 @@ export default function ProfileScreen() {
       <Stack.Screen options={{ title: "Mon profil", headerBackTitle: "Retour" }} />
       {/* Profile section */}
       <View style={styles.profileSection}>
-        {/* Avatar with theme border */}
-        <View
-          style={[
-            styles.avatarRing,
-            { borderColor: theme.primary + "50" },
-          ]}
+        {/* Avatar with theme border — tap to change */}
+        <TouchableOpacity
+          onPress={handleAvatarUpload}
+          disabled={uploadingAvatar}
+          activeOpacity={0.7}
         >
           <View
-            style={[styles.avatar, { backgroundColor: theme.primary }]}
+            style={[
+              styles.avatarRing,
+              { borderColor: theme.primary + "50" },
+            ]}
           >
-            <Text style={styles.avatarText}>{initial}</Text>
+            {avatarUrl ? (
+              <Image
+                source={{ uri: avatarUrl }}
+                style={styles.avatarImage}
+              />
+            ) : (
+              <View
+                style={[styles.avatar, { backgroundColor: theme.primary }]}
+              >
+                <Text style={styles.avatarText}>{initial}</Text>
+              </View>
+            )}
           </View>
-        </View>
+          <View style={styles.changePhotoRow}>
+            <Camera size={13} color={theme.primary} />
+            <Text style={[styles.changePhotoText, { color: theme.primary }]}>
+              {uploadingAvatar ? "Envoi..." : "Changer la photo"}
+            </Text>
+          </View>
+        </TouchableOpacity>
 
         <Text style={styles.name}>{profile.display_name}</Text>
         <Text style={[styles.commune, { color: theme.muted }]}>
@@ -193,6 +285,22 @@ const styles = StyleSheet.create({
     borderRadius: 36,
     justifyContent: "center",
     alignItems: "center",
+  },
+  avatarImage: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+  },
+  changePhotoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 4,
+    marginBottom: 8,
+  },
+  changePhotoText: {
+    fontFamily: "DMSans_500Medium",
+    fontSize: 13,
   },
   avatarText: {
     fontFamily: "DMSans_600SemiBold",
