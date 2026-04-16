@@ -47,6 +47,9 @@ npx supabase stop                                    # stop local Supabase
 - **One write, multiple outputs:** admin posts once -> appears on mobile feed (Realtime), commune website (SSR), and triggers push notification (Edge Function).
 - **French context:** UI labels, error messages, and content are in French. Code (variable names, comments) stays in English.
 - **Roles:** `resident < moderator < admin`. Use `is_commune_moderator()` for moderation RLS, `is_commune_admin()` for admin-only.
+- **Super-admin:** platform-level admin (hardcoded email in `apps/web/src/app/super-admin/actions.ts`). Approves commune registrations at `/super-admin`.
+- **Commune onboarding:** mairie secretary registers at `/auth/register-commune` → pending until super-admin approves → becomes commune admin.
+- **Database types:** generated from local Supabase via `npx supabase gen types typescript --local`. Stored in `packages/shared/src/types/database.ts`. Regenerate after schema changes.
 - **Post types:** `annonce` (admin only), `evenement`, `entraide`, `discussion`, `service` (7-day auto-expiry).
 - **Feed pagination:** cursor-based (`created_at`), 20 posts/page, pinned posts loaded separately.
 - **Moderation:** posts have `is_hidden` column. Reports auto-hide at 3 flags. Word filter auto-hides on match. All actions logged in `audit_log`.
@@ -71,8 +74,9 @@ NEXT_PUBLIC_PLATFORM_DOMAIN=app.example.fr  # same, exposed to client for displa
 
 - **v1 complete**: auth (with password reset, invite codes), feed (paginated with images), post detail, events (calendar), mon espace, infos pratiques, admin panel, public commune site, image upload with resize (posts + avatars), push notifications (Expo, annonce + evenement), moderation
 - **v2 complete**: commune website (bulletin municipal, conseil municipal, mentions légales), theme customization (custom colors with WCAG check, logo upload), structured contact data, associations management, admin panel, data cleanup, custom domain support, homepage customization (9 section types, toggleable, reorderable)
-- **Ops complete**: PostHog monitoring (web + mobile), feedback via GitHub Issues API, deployment guide (Supabase/Vercel/EAS), quota-check cron
+- **Ops complete**: PostHog monitoring (web + mobile), feedback via GitHub Issues API, deployment guide (Supabase/Vercel/EAS), quota-check cron, dual environments (demo + prod)
 - **UX complete**: unified feed filtering (type/date/commune), mobile admin hub (4 sections), EPCI feed with commune labels, show password toggle, filter bottom sheet (mobile)
+- **Onboarding complete**: commune registration (`/auth/register-commune`) with super-admin approval (`/super-admin`), generated database types
 - **Remaining**: custom pages (Phase 2 of website customization), AI council document summaries
 - **Not started**: v3 (mairie tools), v4 (services directory), v5 (group buying), v6 (carpooling)
 
