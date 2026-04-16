@@ -100,6 +100,8 @@ All accounts use password **`demo1234`**. Each commune has its own theme, users,
 |---|---|
 | Login | `/auth/login` |
 | Signup | `/auth/signup` |
+| Register a commune | `/auth/register-commune` |
+| Super admin | `/super-admin` |
 | Community feed | `/app/feed` |
 | Admin panel | `/admin/dashboard` |
 | Infos pratiques | `/app/infos-pratiques` |
