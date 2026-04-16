@@ -11,8 +11,16 @@ export async function createClient() {
       cookies: {
         getAll() { return cookieStore.getAll(); },
         setAll(cookiesToSet) {
-          for (const { name, value, options } of cookiesToSet) {
-            cookieStore.set(name, value, options);
+          // In Server Components, cookieStore.set throws — Next.js only
+          // allows cookie writes from Server Actions or Route Handlers.
+          // The middleware refreshes cookies on every request, so swallowing
+          // the error here is safe.
+          try {
+            for (const { name, value, options } of cookiesToSet) {
+              cookieStore.set(name, value, options);
+            }
+          } catch {
+            // intentional no-op
           }
         },
       },
