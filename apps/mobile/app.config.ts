@@ -7,6 +7,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   name: IS_DEMO ? "Ma Commune (Demo)" : "Ma Commune",
   slug: "rural-community-platform",
   version: "1.0.0",
+  owner: "mdellabani",
   orientation: "portrait",
   icon: "./assets/icon.png",
   scheme: IS_DEMO ? "rural-community-platform-demo" : "rural-community-platform",
@@ -44,4 +45,15 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     "expo-image-picker",
     "expo-location",
   ],
+  updates: {
+    url: "https://u.expo.dev/7618b9c8-3d4d-4bc8-b7df-e2e18cf25b70",
+  },
+  runtimeVersion: {
+    policy: "appVersion",
+  },
+  extra: {
+    eas: {
+      projectId: "7618b9c8-3d4d-4bc8-b7df-e2e18cf25b70",
+    },
+  },
 });
