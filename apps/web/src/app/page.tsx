@@ -1,10 +1,25 @@
+import { Hero } from "@/components/landing/hero";
+import { Features } from "@/components/landing/features";
+import { HowItWorks } from "@/components/landing/how-it-works";
+import { CommunesGrid } from "@/components/landing/communes-grid";
+import { Footer } from "@/components/landing/footer";
+
+export const revalidate = 3600;
+
+export const metadata = {
+  title: "Ma Commune — L'application des villages",
+  description:
+    "Une plateforme simple pour les petites communes rurales : annonces de la mairie, agenda local, entraide entre voisins. Pour les mairies et les habitants.",
+};
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-8">
-      <h1 className="text-4xl font-bold mb-4">rural-community-platform</h1>
-      <p className="text-muted-foreground text-lg">
-        Scaffolded with Forge. Start editing <code className="font-mono bg-muted px-1.5 py-0.5 rounded">src/app/page.tsx</code>.
-      </p>
+    <main>
+      <Hero />
+      <Features />
+      <HowItWorks />
+      <CommunesGrid />
+      <Footer />
     </main>
   );
 }
