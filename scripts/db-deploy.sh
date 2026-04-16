@@ -10,12 +10,8 @@
 #   demo: reset schema + reapply seed.sql (data is throwaway)
 #   prod: dump public.* + storage.objects -> reset schema -> restore the dump
 #
-# Requirements:
-#   - supabase CLI logged in (`supabase login`)
-#   - optional env vars (only needed for unattended/CI runs — interactive
-#     runs will be prompted by the supabase CLI and cached after first use):
-#       SUPABASE_DB_PASSWORD_DEMO   db password for demo
-#       SUPABASE_DB_PASSWORD_PROD   db password for prod
+# Requirement: `supabase login` already done (personal access token gives the
+# CLI everything it needs — no DB passwords required).
 #
 # Backups land in ./db-backups/<env>-<timestamp>.sql (gitignored).
 
@@ -24,7 +20,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-# Project refs (not secret — visible in dashboard URLs).
+# Project refs (visible in dashboard URLs — not secret).
 SUPABASE_DEMO_REF="${SUPABASE_DEMO_REF:-vdfyugekbtanrlveihlm}"
 SUPABASE_PROD_REF="${SUPABASE_PROD_REF:-tsfmyrtmuravhzearntn}"
 
@@ -38,14 +34,6 @@ log()  { printf '\033[0;36m▶\033[0m %s\n' "$*"; }
 ok()   { printf '\033[0;32m✓\033[0m %s\n' "$*"; }
 warn() { printf '\033[0;33m⚠\033[0m %s\n' "$*"; }
 
-require_env() {
-  local name="$1"
-  if [ -z "${!name:-}" ]; then
-    err "missing env var: $name"
-    exit 1
-  fi
-}
-
 confirm() {
   local prompt="$1"
   read -rp "$prompt [y/N] " reply
@@ -53,21 +41,16 @@ confirm() {
 }
 
 link_project() {
-  local env="$1" ref="$2" password="${3:-}"
+  local env="$1" ref="$2"
   log "linking to $env (project-ref: $ref)"
-  if [ -n "$password" ]; then
-    SUPABASE_DB_PASSWORD="$password" npx supabase link --project-ref "$ref" >/dev/null
-  else
-    # No password in env — let supabase CLI prompt (and cache it).
-    npx supabase link --project-ref "$ref"
-  fi
+  npx supabase link --project-ref "$ref" >/dev/null
 }
 
 # ---------- per-env handlers ----------
 
 deploy_demo() {
   log "DEMO: reset schema + reapply seed"
-  link_project demo "$SUPABASE_DEMO_REF" "${SUPABASE_DB_PASSWORD_DEMO:-}"
+  link_project demo "$SUPABASE_DEMO_REF"
 
   if ! confirm "About to RESET the demo database (all data lost, seed reapplied). Continue?"; then
     warn "demo skipped"
@@ -84,7 +67,7 @@ deploy_prod() {
   local backup="$BACKUP_DIR/prod-${stamp}.sql"
 
   log "PROD: backup -> reset schema -> restore"
-  link_project prod "$SUPABASE_PROD_REF" "${SUPABASE_DB_PASSWORD_PROD:-}"
+  link_project prod "$SUPABASE_PROD_REF"
 
   log "dumping public + storage.objects to $backup"
   npx supabase db dump --linked --data-only \
