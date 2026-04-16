@@ -1,21 +1,23 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 import { SUPER_ADMIN_EMAILS } from "@/lib/super-admin";
 
 async function requireSuperAdmin() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // Auth check with user's session
+  const authClient = await createClient();
+  const { data: { user } } = await authClient.auth.getUser();
   if (!user || !SUPER_ADMIN_EMAILS.includes(user.email ?? "")) {
     throw new Error("Unauthorized");
   }
-  return { supabase, user };
+  // Return service client for data queries (bypasses RLS)
+  return { supabase: createServiceClient(), user };
 }
 
 export async function getPendingCommunes() {
   const { supabase } = await requireSuperAdmin();
 
-  // Find profiles that are admin + pending (these are commune registration requests)
   const { data, error } = await supabase
     .from("profiles")
     .select("id, display_name, created_at, status, commune_id, communes!commune_id(id, name, slug, code_postal, created_at)")
@@ -44,7 +46,6 @@ export async function approveCommuneAction(profileId: string) {
 export async function rejectCommuneAction(profileId: string, communeId: string) {
   const { supabase } = await requireSuperAdmin();
 
-  // Reject the profile
   const { error: profileError } = await supabase
     .from("profiles")
     .update({ status: "rejected" })
@@ -52,7 +53,6 @@ export async function rejectCommuneAction(profileId: string, communeId: string) 
 
   if (profileError) return { error: profileError.message };
 
-  // Delete the commune (no other users should be attached yet)
   await supabase.from("communes").delete().eq("id", communeId);
 
   return { success: true };
