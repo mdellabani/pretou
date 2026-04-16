@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import { Stack, useRouter } from "expo-router";
-import { ShieldCheck, LogOut, ChevronRight, Camera } from "lucide-react-native";
+import { LogOut, Camera } from "lucide-react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import { supabase } from "@/lib/supabase";
@@ -231,25 +231,6 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </View>
       </View>
-
-      {/* Admin section */}
-      {isAdmin && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Administration</Text>
-          <TouchableOpacity
-            style={[styles.menuItem, { backgroundColor: "#FFFFFF" }]}
-            onPress={() => router.push("/admin/moderation")}
-          >
-            <View style={[styles.menuIconBox, { backgroundColor: theme.pinBg }]}>
-              <ShieldCheck size={16} color={theme.primary} />
-            </View>
-            <Text style={styles.menuItemText}>
-              Modération des inscriptions
-            </Text>
-            <ChevronRight size={16} color="#a1a1aa" />
-          </TouchableOpacity>
-        </View>
-      )}
 
       {/* Logout */}
       <View style={[styles.section, { marginBottom: 40 }]}>

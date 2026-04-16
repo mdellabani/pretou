@@ -1,0 +1,19 @@
+{
+  "forgeVersion": "0.0.0",
+  "scaffoldedAt": "2026-04-16T10:09:48.310Z",
+  "mode": "monorepo",
+  "modules": [
+    "db-supabase",
+    "push-notifications",
+    "camera",
+    "geolocation",
+    "secure-store",
+    "auth-supabase",
+    "monitoring",
+    "feedback"
+  ],
+  "generatedFileHashes": {
+    "src/app/layout.tsx": "sha256:417161b2df422afebba2ddae958d7abe0cef0dd8f67f56db45044cdfbbb59425",
+    "next.config.ts": "sha256:ab4c61f6ee100ae43610a18512f1ebcec842bb2405431e1009266173f21cf772"
+  }
+}

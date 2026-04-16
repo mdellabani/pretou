@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import { User, Mail, Lock, MapPin, Check } from "lucide-react-native";
+import { User, Mail, Lock, MapPin, Check, Eye, EyeOff } from "lucide-react-native";
 import { supabase } from "@/lib/supabase";
 import { useTheme } from "@/lib/theme-context";
 import { signupSchema } from "@rural-community-platform/shared";
@@ -34,6 +34,7 @@ export default function SignupScreen() {
   const [selectedCommuneId, setSelectedCommuneId] = useState<string | null>(
     null
   );
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [communesLoading, setCommunesLoading] = useState(true);
   const theme = useTheme();
@@ -215,9 +216,12 @@ export default function SignupScreen() {
               placeholder="8 caractères minimum"
               value={password}
               onChangeText={setPassword}
-              secureTextEntry
+              secureTextEntry={!showPassword}
               placeholderTextColor="#a1a1aa"
             />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+              {showPassword ? <EyeOff size={18} color={theme.muted} /> : <Eye size={18} color={theme.muted} />}
+            </TouchableOpacity>
           </View>
 
           {/* Commune selection */}
@@ -405,6 +409,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
   },
   inputIcon: { marginRight: 10 },
+  eyeIcon: { padding: 4 },
   input: {
     flex: 1,
     paddingVertical: 14,

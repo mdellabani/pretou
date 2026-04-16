@@ -10,6 +10,7 @@ export type Post = PostRow & {
   post_images: { id: string; storage_path: string }[];
   comments: { count: number }[];
   rsvps: { status: string }[];
+  communes?: { name: string };
 };
 
 export type CreatePostInput = Pick<PostInsert, "title" | "body" | "type" | "event_date" | "event_location" | "epci_visible" | "expires_at">;

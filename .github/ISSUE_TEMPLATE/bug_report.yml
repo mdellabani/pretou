@@ -1,0 +1,48 @@
+name: Bug Report
+description: Report a bug
+labels: [bug]
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - UI/Display
+        - Performance
+        - Crash/Error
+        - Data/Content
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: How can we reproduce this issue?
+    validations:
+      required: false
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen?
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Any additional context (browser, device, screenshots)
+    validations:
+      required: false

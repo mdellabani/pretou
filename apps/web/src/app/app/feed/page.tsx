@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { getProfile } from "@rural-community-platform/shared";
+import { getProfile, getEpciPosts, getCommunesByEpci } from "@rural-community-platform/shared";
 import type { Post } from "@rural-community-platform/shared";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -11,13 +11,15 @@ import { FeedContent } from "./feed-content";
 export default async function FeedPage({
   searchParams,
 }: {
-  searchParams: Promise<{ scope?: string; date?: string; types?: string }>;
+  searchParams: Promise<{ scope?: string; date?: string; types?: string; communes?: string }>;
 }) {
   const params = await searchParams;
   const scope = params.scope === "epci" ? "epci" : "commune";
   const dateFilter = params.date ?? "";
   const typesParam = params.types ?? "";
   const selectedTypes = typesParam ? typesParam.split(",").filter(Boolean) : [];
+  const communesParam = params.communes ?? "";
+  const selectedCommuneIds = communesParam ? communesParam.split(",").filter(Boolean) : [];
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -28,49 +30,67 @@ export default async function FeedPage({
   if (!profile) redirect("/auth/signup");
   if (profile.status === "pending") redirect("/auth/pending");
 
-  // Pinned posts (always shown at top, not paginated)
-  let pinnedQuery = supabase
-    .from("posts")
-    .select("*, profiles!author_id(display_name, avatar_url), post_images(id, storage_path), comments(count), rsvps(status)")
-    .eq("commune_id", profile.commune_id)
-    .eq("is_hidden", false)
-    .eq("is_pinned", true)
-    .or("expires_at.is.null,expires_at.gt." + new Date().toISOString());
+  let posts: Post[] = [];
+  let pinnedPosts: Post[] = [];
 
-  const { data: pinnedPosts } = await pinnedQuery;
-
-  // First page of non-pinned posts
-  let query = supabase
-    .from("posts")
-    .select("*, profiles!author_id(display_name, avatar_url), post_images(id, storage_path), comments(count), rsvps(status)")
-    .eq("commune_id", profile.commune_id)
-    .eq("is_hidden", false)
-    .eq("is_pinned", false)
-    .or("expires_at.is.null,expires_at.gt." + new Date().toISOString())
-    .order("created_at", { ascending: false })
-    .limit(20);
-
-  // Type filter (multi-select)
-  if (selectedTypes.length > 0) {
-    query = query.in("type", selectedTypes);
+  // Fetch EPCI communes for filter (only when in EPCI scope)
+  let epciCommunes: { id: string; name: string }[] = [];
+  if (scope === "epci" && profile.communes?.epci_id) {
+    const { data: ec } = await getCommunesByEpci(supabase, profile.communes.epci_id);
+    epciCommunes = (ec ?? []).map((c) => ({ id: c.id, name: c.name }));
   }
 
-  // Date filter
-  if (dateFilter === "today") {
-    const d = new Date();
-    d.setHours(0, 0, 0, 0);
-    query = query.gte("created_at", d.toISOString());
-  } else if (dateFilter === "week") {
-    const d = new Date();
-    d.setDate(d.getDate() - 7);
-    query = query.gte("created_at", d.toISOString());
-  } else if (dateFilter === "month") {
-    const d = new Date();
-    d.setDate(d.getDate() - 30);
-    query = query.gte("created_at", d.toISOString());
-  }
+  if (scope === "epci" && profile.communes?.epci_id) {
+    // EPCI scope: all posts chronologically, no pinning
+    const { data: epciPosts } = await getEpciPosts(
+      supabase,
+      profile.communes.epci_id,
+      selectedCommuneIds.length > 0 ? selectedCommuneIds : undefined
+    );
+    posts = ((epciPosts ?? []) as Post[]).map((p) => ({ ...p, is_pinned: false }));
+  } else {
+    // Commune scope: pinned + paginated
+    const { data: pinned } = await supabase
+      .from("posts")
+      .select("*, profiles!author_id(display_name, avatar_url), post_images(id, storage_path), comments(count), rsvps(status), communes!commune_id(name)")
+      .eq("commune_id", profile.commune_id)
+      .eq("is_hidden", false)
+      .eq("is_pinned", true)
+      .or("expires_at.is.null,expires_at.gt." + new Date().toISOString());
 
-  const { data: posts } = await query;
+    pinnedPosts = (pinned ?? []) as Post[];
+
+    let query = supabase
+      .from("posts")
+      .select("*, profiles!author_id(display_name, avatar_url), post_images(id, storage_path), comments(count), rsvps(status)")
+      .eq("commune_id", profile.commune_id)
+      .eq("is_hidden", false)
+      .eq("is_pinned", false)
+      .or("expires_at.is.null,expires_at.gt." + new Date().toISOString())
+      .order("created_at", { ascending: false })
+      .limit(20);
+
+    if (selectedTypes.length > 0) {
+      query = query.in("type", selectedTypes);
+    }
+
+    if (dateFilter === "today") {
+      const d = new Date();
+      d.setHours(0, 0, 0, 0);
+      query = query.gte("created_at", d.toISOString());
+    } else if (dateFilter === "week") {
+      const d = new Date();
+      d.setDate(d.getDate() - 7);
+      query = query.gte("created_at", d.toISOString());
+    } else if (dateFilter === "month") {
+      const d = new Date();
+      d.setDate(d.getDate() - 30);
+      query = query.gte("created_at", d.toISOString());
+    }
+
+    const { data } = await query;
+    posts = (data ?? []) as Post[];
+  }
 
   // Fetch producer count for banner
   const { count: producerCount } = await supabase
@@ -109,10 +129,15 @@ export default async function FeedPage({
       </div>
 
       {/* Filters */}
-      <FeedFilters types={selectedTypes} date={dateFilter} />
+      <FeedFilters
+        types={selectedTypes}
+        date={dateFilter}
+        communes={scope === "epci" ? epciCommunes : undefined}
+        selectedCommunes={selectedCommuneIds}
+      />
 
       {/* Producers banner */}
-      {scope === "commune" && (producerCount ?? 0) > 0 && (
+      {(producerCount ?? 0) > 0 && (
         <Link
           href="/app/producteurs"
           className="flex items-center justify-between rounded-xl border border-green-200 bg-gradient-to-r from-green-50 to-emerald-50 px-5 py-3.5 transition-shadow hover:shadow-md"
@@ -129,8 +154,8 @@ export default async function FeedPage({
 
       {/* Posts with pagination */}
       <FeedContent
-        initialPosts={(posts ?? []) as Post[]}
-        pinnedPosts={(pinnedPosts ?? []) as Post[]}
+        initialPosts={posts}
+        pinnedPosts={pinnedPosts}
         communeId={profile.commune_id}
         types={selectedTypes}
         dateFilter={dateFilter}

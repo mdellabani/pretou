@@ -13,13 +13,14 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import { Mail, Lock } from "lucide-react-native";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react-native";
 import { supabase } from "@/lib/supabase";
 import { useTheme } from "@/lib/theme-context";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const theme = useTheme();
   const router = useRouter();
@@ -100,9 +101,12 @@ export default function LoginScreen() {
               placeholder="Mot de passe"
               value={password}
               onChangeText={setPassword}
-              secureTextEntry
+              secureTextEntry={!showPassword}
               placeholderTextColor="#a1a1aa"
             />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+              {showPassword ? <EyeOff size={18} color={theme.muted} /> : <Eye size={18} color={theme.muted} />}
+            </TouchableOpacity>
           </View>
 
           {/* Submit button */}
@@ -215,6 +219,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
   },
   inputIcon: { marginRight: 10 },
+  eyeIcon: { padding: 4 },
   input: {
     flex: 1,
     paddingVertical: 14,

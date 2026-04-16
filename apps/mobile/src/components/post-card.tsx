@@ -116,6 +116,10 @@ export function PostCard({ post }: PostCardProps) {
         {/* Meta */}
         <View style={styles.footer}>
           <Text style={styles.meta}>
+            {post.communes?.name && (
+              <Text style={[styles.communeLabel, { color: theme.primary }]}>
+                {post.communes.name} · </Text>
+            )}
             {authorName} · {createdDate}
           </Text>
           <View style={styles.metaRight}>
@@ -232,6 +236,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#a1a1aa",
     flex: 1,
+  },
+  communeLabel: {
+    fontFamily: "DMSans_600SemiBold",
+    fontSize: 12,
   },
   metaRight: {
     flexDirection: "row",

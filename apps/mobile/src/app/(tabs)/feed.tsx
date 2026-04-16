@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   FlatList,
   RefreshControl,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -11,33 +10,17 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import { Plus, Leaf } from "lucide-react-native";
+import { Plus, Leaf, SlidersHorizontal } from "lucide-react-native";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
 import { PostCard } from "@/components/post-card";
 import { FeedHeader } from "@/components/feed-header";
-import { getPosts, getEpciPosts, getPostsPaginated, getPinnedPosts, POST_TYPE_LABELS, getProducers } from "@rural-community-platform/shared";
+import { FeedFilterSheet } from "@/components/feed-filter-sheet";
+import { getPosts, getEpciPosts, getPostsPaginated, getPinnedPosts, getCommunesByEpci, POST_TYPE_LABELS, getProducers } from "@rural-community-platform/shared";
 import type { Post, PostType } from "@rural-community-platform/shared";
 
-// --- Filter options ---
-
-const TYPE_OPTIONS: { value: PostType; label: string }[] = [
-  { value: "annonce", label: POST_TYPE_LABELS.annonce },
-  { value: "evenement", label: POST_TYPE_LABELS.evenement },
-  { value: "entraide", label: POST_TYPE_LABELS.entraide },
-  { value: "discussion", label: POST_TYPE_LABELS.discussion },
-  { value: "service", label: POST_TYPE_LABELS.service },
-];
-
 type DateFilter = "" | "today" | "week" | "month";
-
-const DATE_OPTIONS: { value: DateFilter; label: string }[] = [
-  { value: "", label: "Toutes" },
-  { value: "today", label: "Aujourd'hui" },
-  { value: "week", label: "Cette semaine" },
-  { value: "month", label: "Ce mois" },
-];
 
 function isWithinDate(dateFilter: DateFilter, createdAt: string): boolean {
   if (!dateFilter) return true;
@@ -77,6 +60,10 @@ export default function FeedScreen() {
   // Multi-select type filter (empty set = all)
   const [activeTypes, setActiveTypes] = useState<Set<PostType>>(new Set());
   const [dateFilter, setDateFilter] = useState<DateFilter>("");
+  const [filterSheetOpen, setFilterSheetOpen] = useState(false);
+  // Commune filtering (EPCI only)
+  const [epciCommunes, setEpciCommunes] = useState<{ id: string; name: string }[]>([]);
+  const [selectedCommunes, setSelectedCommunes] = useState<Set<string>>(new Set());
   // Pagination
   const [cursor, setCursor] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
@@ -86,12 +73,21 @@ export default function FeedScreen() {
     if (!profile?.commune_id) return;
 
     if (scope === "epci" && profile.communes?.epci_id) {
-      // For EPCI scope, use the old approach (load all)
-      const { data } = await getEpciPosts(supabase, profile.communes.epci_id);
-      if (data) setPosts(data as Post[]);
+      // Load EPCI commune list for filter
+      if (epciCommunes.length === 0) {
+        const { data: ec } = await getCommunesByEpci(supabase, profile.communes.epci_id);
+        if (ec) setEpciCommunes(ec.map((c) => ({ id: c.id, name: c.name })));
+      }
+      // EPCI scope: all posts chronologically, no pinning
+      const { data } = await getEpciPosts(
+        supabase,
+        profile.communes.epci_id,
+        selectedCommunes.size > 0 ? Array.from(selectedCommunes) : undefined
+      );
+      setPosts(((data ?? []) as Post[]).map((p) => ({ ...p, is_pinned: false })));
       setHasMore(false);
     } else {
-      // For commune scope, use pagination
+      // Commune scope: pinned + paginated
       const { data: pinnedData } = await getPinnedPosts(supabase, profile.commune_id);
       const { data: paginatedData } = await getPostsPaginated(supabase, profile.commune_id, null, 20);
 
@@ -106,7 +102,7 @@ export default function FeedScreen() {
     // Load producer count
     const { data: producers } = await getProducers(supabase);
     if (producers) setProducerCount(producers.length);
-  }, [profile?.commune_id, profile?.communes?.epci_id, scope]);
+  }, [profile?.commune_id, profile?.communes?.epci_id, scope, selectedCommunes]);
 
   const loadMore = useCallback(async () => {
     if (loadingMore || !hasMore || !cursor || !profile?.commune_id || scope === "epci") return;
@@ -158,11 +154,17 @@ export default function FeedScreen() {
   function toggleType(type: PostType) {
     setActiveTypes((prev) => {
       const next = new Set(prev);
-      if (next.has(type)) {
-        next.delete(type);
-      } else {
-        next.add(type);
-      }
+      if (next.has(type)) next.delete(type);
+      else next.add(type);
+      return next;
+    });
+  }
+
+  function toggleCommune(communeId: string) {
+    setSelectedCommunes((prev) => {
+      const next = new Set(prev);
+      if (next.has(communeId)) next.delete(communeId);
+      else next.add(communeId);
       return next;
     });
   }
@@ -263,90 +265,25 @@ export default function FeedScreen() {
               </TouchableOpacity>
             </View>
 
-            {/* Filter pills */}
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.pillsRow}
-            >
-              {/* "Tout" clears type selection */}
-              <TouchableOpacity
-                style={[
-                  styles.pill,
-                  activeTypes.size === 0 && {
-                    backgroundColor: theme.primary,
-                    borderColor: theme.primary,
-                  },
-                ]}
-                onPress={() => setActiveTypes(new Set())}
-                activeOpacity={0.7}
-              >
-                <Text
-                  style={[
-                    styles.pillText,
-                    activeTypes.size === 0 && styles.pillTextActive,
-                  ]}
-                >
-                  Tout
-                </Text>
-              </TouchableOpacity>
-
-              {TYPE_OPTIONS.map((opt) => {
-                const isActive = activeTypes.has(opt.value);
+            {/* Filter button */}
+            <View style={styles.filterRow}>
+              {(() => {
+                const filterCount = activeTypes.size + (dateFilter ? 1 : 0) + selectedCommunes.size;
+                const hasFilters = filterCount > 0;
                 return (
                   <TouchableOpacity
-                    key={opt.value}
-                    style={[
-                      styles.pill,
-                      isActive && {
-                        backgroundColor: theme.primary,
-                        borderColor: theme.primary,
-                      },
-                    ]}
-                    onPress={() => toggleType(opt.value)}
+                    style={[styles.filterButton, hasFilters && { borderColor: theme.primary }]}
+                    onPress={() => setFilterSheetOpen(true)}
                     activeOpacity={0.7}
                   >
-                    <Text
-                      style={[
-                        styles.pillText,
-                        isActive && styles.pillTextActive,
-                      ]}
-                    >
-                      {opt.label}
+                    <SlidersHorizontal size={14} color={hasFilters ? theme.primary : "#71717a"} />
+                    <Text style={[styles.filterButtonText, hasFilters && { color: theme.primary }]}>
+                      Filtres{hasFilters ? ` (${filterCount})` : ""}
                     </Text>
                   </TouchableOpacity>
                 );
-              })}
-
-              <View style={styles.pillSeparator} />
-
-              {DATE_OPTIONS.map((opt) => {
-                const isActive = dateFilter === opt.value;
-                return (
-                  <TouchableOpacity
-                    key={opt.value}
-                    style={[
-                      styles.pill,
-                      isActive && {
-                        backgroundColor: theme.primary,
-                        borderColor: theme.primary,
-                      },
-                    ]}
-                    onPress={() => setDateFilter(opt.value)}
-                    activeOpacity={0.7}
-                  >
-                    <Text
-                      style={[
-                        styles.pillText,
-                        isActive && styles.pillTextActive,
-                      ]}
-                    >
-                      {opt.label}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
+              })()}
+            </View>
           </>
         }
         ListEmptyComponent={
@@ -377,6 +314,20 @@ export default function FeedScreen() {
           <Text style={styles.fabText}>Publier</Text>
         </LinearGradient>
       </TouchableOpacity>
+
+      <FeedFilterSheet
+        visible={filterSheetOpen}
+        activeTypes={activeTypes}
+        dateFilter={dateFilter}
+        onToggleType={toggleType}
+        onClearTypes={() => setActiveTypes(new Set())}
+        onSetDate={setDateFilter}
+        onClose={() => setFilterSheetOpen(false)}
+        communes={scope === "epci" ? epciCommunes : undefined}
+        selectedCommunes={selectedCommunes}
+        onToggleCommune={toggleCommune}
+        onClearCommunes={() => setSelectedCommunes(new Set())}
+      />
     </View>
   );
 }
@@ -433,35 +384,26 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontFamily: "DMSans_600SemiBold",
   },
-  pillsRow: {
-    flexDirection: "row",
-    alignItems: "center",
+  filterRow: {
     paddingHorizontal: 16,
     paddingBottom: 12,
-    gap: 8,
   },
-  pill: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+  filterButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    alignSelf: "flex-start",
+    paddingHorizontal: 14,
+    paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "#e8dfd0",
     backgroundColor: "#FFFFFF",
   },
-  pillText: {
+  filterButtonText: {
     fontFamily: "DMSans_500Medium",
-    fontSize: 12,
+    fontSize: 13,
     color: "#71717a",
-  },
-  pillTextActive: {
-    fontFamily: "DMSans_600SemiBold",
-    color: "#FFFFFF",
-  },
-  pillSeparator: {
-    width: 1,
-    height: 20,
-    backgroundColor: "#e8dfd0",
-    marginHorizontal: 4,
   },
   fab: {
     position: "absolute",

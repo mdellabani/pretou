@@ -78,6 +78,12 @@ export function PostCard({ post }: { post: Post }) {
 
           <div className="mt-3 flex items-center justify-between gap-3 text-xs text-[var(--muted-foreground)]">
             <div className="flex items-center gap-3">
+              {post.communes?.name && (
+                <>
+                  <span className="font-medium text-[var(--theme-primary)]">{post.communes.name}</span>
+                  <span>·</span>
+                </>
+              )}
               <span className="font-medium">{post.profiles?.display_name}</span>
               {/* TODO: Add moderator badge here when post.profiles includes role field.
                   Currently post queries only fetch display_name, not role.

@@ -167,7 +167,7 @@ CREATE TABLE IF NOT EXISTS "public"."posts" (
     "title" "text" NOT NULL,
     "body" "text" NOT NULL,
     "is_pinned" boolean DEFAULT false NOT NULL,
-    "epci_visible" boolean DEFAULT false NOT NULL,
+    "epci_visible" boolean DEFAULT true NOT NULL,
     "event_date" timestamp with time zone,
     "event_location" "text",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,

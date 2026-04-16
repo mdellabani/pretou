@@ -68,7 +68,7 @@ export async function getPostsPaginated(client: Client, communeId: string, curso
 export async function getPinnedPosts(client: Client, communeId: string) {
   return client
     .from("posts")
-    .select("*, profiles!author_id(display_name, avatar_url), post_images(id, storage_path), comments(count), rsvps(status)")
+    .select("*, profiles!author_id(display_name, avatar_url), post_images(id, storage_path), comments(count), rsvps(status), communes!commune_id(name)")
     .eq("commune_id", communeId)
     .eq("is_hidden", false)
     .eq("is_pinned", true)
