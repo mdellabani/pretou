@@ -71,6 +71,8 @@ NEXT_PUBLIC_PLATFORM_DOMAIN=app.example.fr  # same, exposed to client for displa
 
 - **v1 complete**: auth (with password reset, invite codes), feed (paginated with images), post detail, events (calendar), mon espace, infos pratiques, admin panel, public commune site, image upload with resize (posts + avatars), push notifications (Expo, annonce + evenement), moderation
 - **v2 complete**: commune website (bulletin municipal, conseil municipal, mentions légales), theme customization (custom colors with WCAG check, logo upload), structured contact data, associations management, admin panel, data cleanup, custom domain support, homepage customization (9 section types, toggleable, reorderable)
+- **Ops complete**: PostHog monitoring (web + mobile), feedback via GitHub Issues API, deployment guide (Supabase/Vercel/EAS), quota-check cron
+- **UX complete**: unified feed filtering (type/date/commune), mobile admin hub (4 sections), EPCI feed with commune labels, show password toggle, filter bottom sheet (mobile)
 - **Remaining**: custom pages (Phase 2 of website customization), AI council document summaries
 - **Not started**: v3 (mairie tools), v4 (services directory), v5 (group buying), v6 (carpooling)
 
