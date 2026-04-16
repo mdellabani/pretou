@@ -13,3 +13,4 @@ web-build/
 .superpowers/
 supabase/.branches/
 supabase/.temp/
+*.png
