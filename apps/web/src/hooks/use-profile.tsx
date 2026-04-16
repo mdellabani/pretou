@@ -43,11 +43,14 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
         return;
       }
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("profiles")
         .select("*, communes(name, slug, epci_id, code_postal, theme, motto)")
         .eq("id", user.id)
         .single();
+      if (error) {
+        console.error("[useProfile] failed to load profile:", error);
+      }
       setProfile(data as ProfileWithCommune | null);
       setLoading(false);
     }

@@ -19,12 +19,14 @@ CREATE EXTENSION IF NOT EXISTS "supabase_vault" WITH SCHEMA "vault";
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA "extensions";
 CREATE OR REPLACE FUNCTION "public"."auth_commune_id"() RETURNS "uuid"
     LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
     AS $$
   SELECT commune_id FROM profiles WHERE id = auth.uid()
 $$;
 ALTER FUNCTION "public"."auth_commune_id"() OWNER TO "postgres";
 CREATE OR REPLACE FUNCTION "public"."check_report_threshold"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
     AS $$
 BEGIN
   IF (SELECT count(*) FROM reports WHERE post_id = NEW.post_id AND status = 'pending') >= 3 THEN
@@ -39,6 +41,7 @@ $$;
 ALTER FUNCTION "public"."check_report_threshold"() OWNER TO "postgres";
 CREATE OR REPLACE FUNCTION "public"."is_approved"() RETURNS boolean
     LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
     AS $$
   SELECT EXISTS (
     SELECT 1 FROM profiles
@@ -48,6 +51,7 @@ $$;
 ALTER FUNCTION "public"."is_approved"() OWNER TO "postgres";
 CREATE OR REPLACE FUNCTION "public"."is_commune_admin"() RETURNS boolean
     LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
     AS $$
   SELECT EXISTS (
     SELECT 1 FROM profiles
@@ -57,6 +61,7 @@ $$;
 ALTER FUNCTION "public"."is_commune_admin"() OWNER TO "postgres";
 CREATE OR REPLACE FUNCTION "public"."is_commune_moderator"() RETURNS boolean
     LANGUAGE "sql" STABLE SECURITY DEFINER
+    SET "search_path" TO 'public', 'pg_temp'
     AS $$
   SELECT EXISTS (
     SELECT 1 FROM profiles
@@ -473,6 +478,10 @@ CREATE POLICY "Users can view post images in own commune" ON "public"."post_imag
 CREATE POLICY "Users can view posts in own commune" ON "public"."posts" FOR SELECT TO "authenticated" USING (("commune_id" = "public"."auth_commune_id"()));
 
 CREATE POLICY "Users can view profiles in own commune" ON "public"."profiles" FOR SELECT TO "authenticated" USING (("commune_id" = "public"."auth_commune_id"()));
+
+CREATE POLICY "Users can view own profile" ON "public"."profiles"
+  FOR SELECT TO "authenticated"
+  USING (("id" = "auth"."uid"()));
 
 CREATE POLICY "audit_insert" ON "public"."audit_log" FOR INSERT WITH CHECK (("public"."is_commune_moderator"() OR ("actor_id" IS NULL)));
 
