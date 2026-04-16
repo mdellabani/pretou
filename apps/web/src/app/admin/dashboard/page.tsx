@@ -123,6 +123,7 @@ export default async function AdminDashboardPage({
               postsThisWeek={postsThisWeek ?? 0}
               openReports={0}
             />
+            <InviteCodeManager currentCode={commune?.invite_code ?? ""} />
             <PendingUsers users={pendingUsers ?? []} />
             <PendingProducers producers={pendingProducers ?? []} />
           </>

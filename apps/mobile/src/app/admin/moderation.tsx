@@ -9,7 +9,8 @@ import {
   View,
 } from "react-native";
 import { Stack } from "expo-router";
-import { Check, X, UserCheck, Users, ShoppingBag, Pin, Trash2, ShieldCheck, FileText } from "lucide-react-native";
+import { Check, X, UserCheck, Users, ShoppingBag, ShieldCheck, FileText, Copy, Key } from "lucide-react-native";
+import * as Clipboard from "expo-clipboard";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
@@ -17,7 +18,7 @@ import {
   getPendingUsers, approveUser, rejectUser,
   getPendingProducers, approveProducer, rejectProducer,
   getCommuneMembers, promoteToModerator, demoteToResident,
-  getAuditLog,
+  getAuditLog, getCommune,
 } from "@rural-community-platform/shared";
 import { ROLE_LABELS } from "@rural-community-platform/shared";
 import type { Role } from "@rural-community-platform/shared";
@@ -37,21 +38,25 @@ export default function AdminHub() {
   const [pendingProducers, setPendingProducers] = useState<PendingProducer[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
   const [auditEntries, setAuditEntries] = useState<AuditEntry[]>([]);
+  const [inviteCode, setInviteCode] = useState<string>("");
+  const [codeCopied, setCodeCopied] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const loadData = useCallback(async () => {
     if (!profile?.commune_id) return;
-    const [usersRes, producersRes, membersRes, auditRes] = await Promise.all([
+    const [usersRes, producersRes, membersRes, auditRes, communeRes] = await Promise.all([
       getPendingUsers(supabase, profile.commune_id),
       getPendingProducers(supabase, profile.commune_id),
       getCommuneMembers(supabase, profile.commune_id),
       getAuditLog(supabase, profile.commune_id, 30),
+      getCommune(supabase, profile.commune_id),
     ]);
     if (usersRes.data) setPendingUsers(usersRes.data as PendingUser[]);
     if (producersRes.data) setPendingProducers(producersRes.data as PendingProducer[]);
     if (membersRes.data) setMembers(membersRes.data as Member[]);
     if (auditRes.data) setAuditEntries(auditRes.data as AuditEntry[]);
+    if (communeRes.data) setInviteCode(communeRes.data.invite_code);
   }, [profile?.commune_id]);
 
   useEffect(() => {
@@ -246,6 +251,33 @@ export default function AdminHub() {
           </View>
         )}
         ListHeaderComponent={
+          <>
+          {/* Invite code card */}
+          {inviteCode ? (
+            <View style={styles.inviteCard}>
+              <View style={styles.inviteHeader}>
+                <Key size={14} color={theme.primary} />
+                <Text style={[styles.inviteLabel, { color: theme.primary }]}>Code d'invitation</Text>
+              </View>
+              <View style={styles.inviteCodeRow}>
+                <Text style={styles.inviteCodeText}>{inviteCode}</Text>
+                <TouchableOpacity
+                  style={[styles.copyButton, { borderColor: theme.primary + "40" }]}
+                  onPress={async () => {
+                    await Clipboard.setStringAsync(inviteCode);
+                    setCodeCopied(true);
+                    setTimeout(() => setCodeCopied(false), 2000);
+                  }}
+                  activeOpacity={0.7}
+                >
+                  <Copy size={14} color={theme.primary} />
+                  <Text style={[styles.copyText, { color: theme.primary }]}>{codeCopied ? "Copié !" : "Copier"}</Text>
+                </TouchableOpacity>
+              </View>
+              <Text style={styles.inviteHint}>Partagez ce code pour que vos habitants s'inscrivent sans validation.</Text>
+            </View>
+          ) : null}
+
           <View style={styles.tabsRow}>
             {sections.map((s) => {
               const isActive = activeSection === s.key;
@@ -268,6 +300,7 @@ export default function AdminHub() {
               );
             })}
           </View>
+          </>
         }
       />
     </>
@@ -278,6 +311,26 @@ const styles = StyleSheet.create({
   center: { flex: 1, justifyContent: "center", alignItems: "center", padding: 24 },
   loadingText: { fontFamily: "DMSans_400Regular", fontSize: 16 },
   emptyText: { fontFamily: "DMSans_500Medium", fontSize: 15, textAlign: "center", paddingVertical: 32 },
+
+  inviteCard: {
+    marginHorizontal: 16,
+    marginTop: 16,
+    backgroundColor: "#fff",
+    borderRadius: 14,
+    padding: 14,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  inviteHeader: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 8 },
+  inviteLabel: { fontFamily: "DMSans_600SemiBold", fontSize: 13 },
+  inviteCodeRow: { flexDirection: "row", alignItems: "center", gap: 10 },
+  inviteCodeText: { fontFamily: "DMSans_600SemiBold", fontSize: 20, letterSpacing: 3, color: "#18181b", flex: 1 },
+  copyButton: { flexDirection: "row", alignItems: "center", gap: 4, borderWidth: 1, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6 },
+  copyText: { fontFamily: "DMSans_500Medium", fontSize: 12 },
+  inviteHint: { fontFamily: "DMSans_400Regular", fontSize: 11, color: "#a1a1aa", marginTop: 8 },
 
   tabsRow: {
     flexDirection: "row",
