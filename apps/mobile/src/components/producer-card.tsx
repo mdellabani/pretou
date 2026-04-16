@@ -83,7 +83,7 @@ export function ProducerCard({ producer }: ProducerCardProps) {
       {/* Schedule */}
       {producer.schedule && (
         <View style={styles.scheduleRow}>
-          <Clock size={12} color={theme.mutedForeground} />
+          <Clock size={12} color="#71717a" />
           <Text style={styles.scheduleText} numberOfLines={2}>
             {producer.schedule}
           </Text>

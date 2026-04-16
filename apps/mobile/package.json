@@ -9,7 +9,9 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "eslint .",
-    "test": "jest"
+    "test": "jest",
+    "typecheck": "tsc --noEmit",
+    "eas-build-post-install": "tsc --noEmit"
   },
   "dependencies": {
     "@expo-google-fonts/dm-sans": "^0.4.2",
@@ -20,6 +22,7 @@
     "@tanstack/react-query": "^5.62.0",
     "expo": "~54.0.33",
     "expo-camera": "~17.0.10",
+    "expo-clipboard": "~8.0.8",
     "expo-constants": "~18.0.13",
     "expo-device": "~8.0.10",
     "expo-image-manipulator": "~14.0.8",
@@ -36,6 +39,7 @@
     "expo-updates": "~29.0.16",
     "lucide-react-native": "^1.8.0",
     "phosphor-react-native": "^3.0.4",
+    "posthog-react-native": "^4.42.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-native": "~0.81.5",

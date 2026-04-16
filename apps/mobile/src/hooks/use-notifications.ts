@@ -27,8 +27,8 @@ export function useNotifications() {
         }
       });
       subRemove = () => {
-        Notifications.removeNotificationSubscription(notifSub);
-        Notifications.removeNotificationSubscription(responseSub);
+        notifSub.remove();
+        responseSub.remove();
       };
     });
 

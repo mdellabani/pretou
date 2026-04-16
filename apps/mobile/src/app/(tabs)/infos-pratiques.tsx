@@ -53,7 +53,7 @@ function parseServices(servicesStr?: string): Service[] {
   const regex = /^(.+?)(?:\s*\((.+?)\))?\s*:\s*(.+)$/;
 
   return lines
-    .map((line) => {
+    .map((line): Service | null => {
       const match = line.match(regex);
       if (!match) return null;
       return {

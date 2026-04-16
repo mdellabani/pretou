@@ -24,7 +24,7 @@ import { ROLE_LABELS } from "@rural-community-platform/shared";
 import type { Role } from "@rural-community-platform/shared";
 
 type PendingUser = { id: string; display_name: string; created_at: string };
-type PendingProducer = { id: string; name: string; category: string; created_at: string };
+type PendingProducer = { id: string; name: string; categories: string[]; created_at: string };
 type Member = { id: string; display_name: string; role: string; status: string; created_at: string };
 type AuditEntry = { id: string; action: string; target_type: string; created_at: string; profiles: { display_name: string } | null };
 
@@ -170,7 +170,7 @@ export default function AdminHub() {
             <View style={[styles.iconBox, { backgroundColor: "#ecfdf5" }]}><ShoppingBag size={16} color="#16a34a" /></View>
             <View style={styles.cardInfo}>
               <Text style={styles.cardTitle}>{p.name}</Text>
-              <Text style={styles.cardSubtitle}>{p.category} · {formatDate(p.created_at)}</Text>
+              <Text style={styles.cardSubtitle}>{p.categories?.join(", ")} · {formatDate(p.created_at)}</Text>
             </View>
           </View>
           <View style={styles.actions}>

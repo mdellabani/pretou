@@ -9,7 +9,8 @@ if (!isExpoGo) {
   import("expo-notifications").then((Notifications) => {
     Notifications.setNotificationHandler({
       handleNotification: async () => ({
-        shouldShowAlert: true,
+        shouldShowBanner: true,
+        shouldShowList: true,
         shouldPlaySound: true,
         shouldSetBadge: true,
       }),

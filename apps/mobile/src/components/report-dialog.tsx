@@ -97,7 +97,7 @@ export function ReportDialog({ postId, visible, onClose }: ReportDialogProps) {
       <View style={[styles.container, { backgroundColor: theme.background }]}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={[styles.title, { color: theme.foreground }]}>
+          <Text style={[styles.title, { color: "#27272a" }]}>
             Signaler cette publication
           </Text>
           <TouchableOpacity
@@ -105,7 +105,7 @@ export function ReportDialog({ postId, visible, onClose }: ReportDialogProps) {
             disabled={loading}
             style={styles.closeButton}
           >
-            <X size={24} color={theme.foreground} />
+            <X size={24} color="#27272a" />
           </TouchableOpacity>
         </View>
 
@@ -121,9 +121,9 @@ export function ReportDialog({ postId, visible, onClose }: ReportDialogProps) {
                 style={[
                   styles.categoryButton,
                   {
-                    borderColor: category === cat.value ? theme.primary : theme.border,
+                    borderColor: category === cat.value ? theme.primary : "#e4e4e7",
                     backgroundColor:
-                      category === cat.value ? theme.primary + "15" : theme.card,
+                      category === cat.value ? theme.primary + "15" : "#FFFFFF",
                   },
                 ]}
                 onPress={() => setCategory(cat.value)}
@@ -137,7 +137,7 @@ export function ReportDialog({ postId, visible, onClose }: ReportDialogProps) {
                       color:
                         category === cat.value
                           ? theme.primary
-                          : theme.foreground,
+                          : "#27272a",
                     },
                   ]}
                 >
@@ -153,7 +153,7 @@ export function ReportDialog({ postId, visible, onClose }: ReportDialogProps) {
               <Text
                 style={[
                   styles.reasonLabel,
-                  { color: theme.foreground },
+                  { color: "#27272a" },
                 ]}
               >
                 {category === "autre"
@@ -164,13 +164,13 @@ export function ReportDialog({ postId, visible, onClose }: ReportDialogProps) {
                 style={[
                   styles.reasonInput,
                   {
-                    color: theme.foreground,
-                    borderColor: theme.border,
-                    backgroundColor: theme.card,
+                    color: "#27272a",
+                    borderColor: "#e4e4e7",
+                    backgroundColor: "#FFFFFF",
                   },
                 ]}
                 placeholder="Expliquez ou précisez..."
-                placeholderTextColor={theme.muted}
+                placeholderTextColor="#71717a"
                 value={reason}
                 onChangeText={setReason}
                 editable={!loading}
@@ -185,12 +185,12 @@ export function ReportDialog({ postId, visible, onClose }: ReportDialogProps) {
             <TouchableOpacity
               style={[
                 styles.cancelButton,
-                { borderColor: theme.border },
+                { borderColor: "#e4e4e7" },
               ]}
               onPress={onClose}
               disabled={loading}
             >
-              <Text style={[styles.buttonText, { color: theme.foreground }]}>
+              <Text style={[styles.buttonText, { color: "#27272a" }]}>
                 Annuler
               </Text>
             </TouchableOpacity>

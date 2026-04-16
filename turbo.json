@@ -27,6 +27,16 @@
     "lint": {
       "dependsOn": ["^build"]
     },
+    "typecheck": {
+      "dependsOn": ["^typecheck"],
+      "inputs": [
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "tsconfig.json",
+        "package.json"
+      ],
+      "outputs": []
+    },
     "test": {
       "dependsOn": ["^build"]
     },
