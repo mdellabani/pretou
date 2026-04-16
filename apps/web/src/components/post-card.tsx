@@ -39,96 +39,88 @@ export function PostCard({ post }: { post: Post }) {
           borderTopWidth: "3px",
         } : undefined}
       >
-        {post.post_images && post.post_images.length > 0 && (
-          <div className="relative w-full h-48 bg-gray-200">
-            <Image
-              src={getImageUrl(post.post_images[0].storage_path)}
-              alt="Post image"
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 600px"
-            />
-          </div>
-        )}
-        <div className="px-5 py-4">
-          {/* Top row: title left, badge right */}
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0 flex-1">
-              {post.is_pinned && (
-                <span
-                  className="inline-flex items-center gap-1 text-[10px] font-semibold mb-1"
-                  style={{ color: "var(--theme-primary)" }}
-                >
-                  <Pin size={11} />
-                  Épinglé
+        <div className="flex gap-4 px-5 py-4">
+          {post.post_images && post.post_images.length > 0 && (
+            <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-gray-100">
+              <Image
+                src={getImageUrl(post.post_images[0].storage_path, "width=192&height=192&resize=cover")}
+                alt=""
+                fill
+                className="object-cover"
+                sizes="96px"
+              />
+            </div>
+          )}
+          <div className="min-w-0 flex-1">
+            {/* Top row: title left, badge right */}
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0 flex-1">
+                {post.is_pinned && (
+                  <span
+                    className="inline-flex items-center gap-1 text-[10px] font-semibold mb-1"
+                    style={{ color: "var(--theme-primary)" }}
+                  >
+                    <Pin size={11} />
+                    Épinglé
+                  </span>
+                )}
+                <h3 className="font-semibold leading-tight text-[var(--foreground)]">
+                  {post.title}
+                </h3>
+              </div>
+              <div className="shrink-0 mt-0.5">
+                <PostTypeBadge type={post.type as PostType} />
+              </div>
+            </div>
+
+            <p className="mt-2 line-clamp-2 text-sm text-[var(--muted-foreground)]">
+              {post.body}
+            </p>
+
+            <div className="mt-3 flex items-center justify-between gap-3 text-xs text-[var(--muted-foreground)]">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                {post.communes?.name && (
+                  <>
+                    <span className="font-medium text-[var(--theme-primary)]">{post.communes.name}</span>
+                    <span>·</span>
+                  </>
+                )}
+                <span className="font-medium">{post.profiles?.display_name}</span>
+                <span>·</span>
+                <span>
+                  {new Date(post.created_at).toLocaleDateString("fr-FR", {
+                    day: "numeric",
+                    month: "short",
+                  })}
                 </span>
-              )}
-              <h3 className="font-semibold leading-tight text-[var(--foreground)]">
-                {post.title}
-              </h3>
-            </div>
-            <div className="shrink-0 mt-0.5">
-              <PostTypeBadge type={post.type as PostType} />
-            </div>
-          </div>
-
-          <p className="mt-2 line-clamp-2 text-sm text-[var(--muted-foreground)]">
-            {post.body}
-          </p>
-
-          <div className="mt-3 flex items-center justify-between gap-3 text-xs text-[var(--muted-foreground)]">
-            <div className="flex items-center gap-3">
-              {post.communes?.name && (
-                <>
-                  <span className="font-medium text-[var(--theme-primary)]">{post.communes.name}</span>
-                  <span>·</span>
-                </>
-              )}
-              <span className="font-medium">{post.profiles?.display_name}</span>
-              {/* TODO: Add moderator badge here when post.profiles includes role field.
-                  Currently post queries only fetch display_name, not role.
-                  Once we update all post queries to include role, add:
-                  {post.profiles?.role === 'moderator' && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold">
-                      <Shield size={12} />
-                      Modérateur
+                {commentCount > 0 && (
+                  <>
+                    <span>·</span>
+                    <span className="inline-flex items-center gap-1">
+                      <MessageCircle size={12} />
+                      {commentCount}
                     </span>
-                  )}
-              */}
-              <span>·</span>
-              <span>
-                {new Date(post.created_at).toLocaleDateString("fr-FR", {
-                  day: "numeric",
-                  month: "short",
-                })}
-              </span>
-              {commentCount > 0 && (
-                <>
-                  <span>·</span>
-                  <span className="inline-flex items-center gap-1">
-                    <MessageCircle size={12} />
-                    {commentCount}
-                  </span>
-                </>
-              )}
-              {post.type === "evenement" && rsvpCount > 0 && (
-                <>
-                  <span>·</span>
-                  <span>
-                    {rsvpCount} participant{rsvpCount > 1 ? "s" : ""}
-                  </span>
-                </>
-              )}
-              {post.type === "service" && post.expires_at && (
-                <>
-                  <span>·</span>
-                  <span className="inline-flex items-center rounded bg-amber-100 px-2 py-0.5 font-medium text-amber-700">
-                    {getExpiryText()}
-                  </span>
-                </>
-              )}
+                  </>
+                )}
+                {post.type === "evenement" && rsvpCount > 0 && (
+                  <>
+                    <span>·</span>
+                    <span>
+                      {rsvpCount} participant{rsvpCount > 1 ? "s" : ""}
+                    </span>
+                  </>
+                )}
+                {post.type === "service" && post.expires_at && (
+                  <>
+                    <span>·</span>
+                    <span className="inline-flex items-center rounded bg-amber-100 px-2 py-0.5 font-medium text-amber-700">
+                      {getExpiryText()}
+                    </span>
+                  </>
+                )}
+              </div>
+              <ReportDialog postId={post.id} />
             </div>
-            <ReportDialog postId={post.id} />
           </div>
         </div>
       </div>

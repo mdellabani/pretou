@@ -56,85 +56,87 @@ export function PostCard({ post }: PostCardProps) {
         />
       )}
 
-      {/* Image display */}
-      {post.post_images && post.post_images.length > 0 && (
-        <Image
-          source={{ uri: getImageUrl(post.post_images[0].storage_path) }}
-          style={styles.postImage}
-        />
-      )}
+      <View style={styles.container}>
+        {/* Thumbnail */}
+        {post.post_images && post.post_images.length > 0 && (
+          <Image
+            source={{ uri: getImageUrl(post.post_images[0].storage_path) }}
+            style={styles.thumbnail}
+          />
+        )}
 
-      <View style={styles.inner}>
-        {/* Header: badge + pinned label */}
-        <View style={styles.header}>
-          <View style={[styles.badge, { backgroundColor: typeColor + "18" }]}>
-            <TypeIcon size={12} color={typeColor} />
-            <Text style={[styles.badgeText, { color: typeColor }]}>{typeLabel}</Text>
-          </View>
-          {post.is_pinned && (
-            <View style={styles.pinnedLabel}>
-              <Pin size={11} color={theme.primary} />
-              <Text style={[styles.pinnedText, { color: theme.primary }]}>Épinglé</Text>
+        <View style={styles.inner}>
+          {/* Header: badge + pinned label */}
+          <View style={styles.header}>
+            <View style={[styles.badge, { backgroundColor: typeColor + "18" }]}>
+              <TypeIcon size={12} color={typeColor} />
+              <Text style={[styles.badgeText, { color: typeColor }]}>{typeLabel}</Text>
             </View>
-          )}
-        </View>
-
-        {/* Title */}
-        <Text style={styles.title} numberOfLines={2}>{post.title}</Text>
-
-        {/* Excerpt */}
-        <Text style={styles.body} numberOfLines={2}>{post.body}</Text>
-
-        {/* Event info */}
-        {post.type === "evenement" && post.event_date && (
-          <View style={styles.eventBox}>
-            <CalendarDays size={13} color={theme.primary} />
-            <Text style={[styles.eventText, { color: theme.primary }]}>
-              {new Date(post.event_date).toLocaleDateString("fr-FR", {
-                day: "numeric",
-                month: "long",
-              })}
-              {post.event_location ? ` · ${post.event_location}` : ""}
-            </Text>
-          </View>
-        )}
-
-        {/* Expiry badge for service posts */}
-        {post.expires_at && (
-          <View style={styles.expiryBox}>
-            <Text style={styles.expiryText}>
-              {(() => {
-                const days = Math.ceil((new Date(post.expires_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
-                if (days <= 0) return "Expiré";
-                if (days === 1) return "Expire aujourd'hui";
-                return `Expire dans ${days}j`;
-              })()}
-            </Text>
-          </View>
-        )}
-
-        {/* Meta */}
-        <View style={styles.footer}>
-          <Text style={styles.meta}>
-            {post.communes?.name && (
-              <Text style={[styles.communeLabel, { color: theme.primary }]}>
-                {post.communes.name} · </Text>
-            )}
-            {authorName} · {createdDate}
-          </Text>
-          <View style={styles.metaRight}>
-            {commentCount > 0 && (
-              <View style={styles.commentMeta}>
-                <MessageSquare size={12} color={theme.muted} />
-                <Text style={styles.commentCount}>{commentCount}</Text>
+            {post.is_pinned && (
+              <View style={styles.pinnedLabel}>
+                <Pin size={11} color={theme.primary} />
+                <Text style={[styles.pinnedText, { color: theme.primary }]}>Épinglé</Text>
               </View>
             )}
-            <TouchableOpacity
-              onPress={() => setShowReport(true)}
-              style={styles.reportButton}
-            >
-              <Flag size={12} color={theme.muted} />
-            </TouchableOpacity>
+          </View>
+
+          {/* Title */}
+          <Text style={styles.title} numberOfLines={2}>{post.title}</Text>
+
+          {/* Excerpt */}
+          <Text style={styles.body} numberOfLines={2}>{post.body}</Text>
+
+          {/* Event info */}
+          {post.type === "evenement" && post.event_date && (
+            <View style={styles.eventBox}>
+              <CalendarDays size={13} color={theme.primary} />
+              <Text style={[styles.eventText, { color: theme.primary }]}>
+                {new Date(post.event_date).toLocaleDateString("fr-FR", {
+                  day: "numeric",
+                  month: "long",
+                })}
+                {post.event_location ? ` · ${post.event_location}` : ""}
+              </Text>
+            </View>
+          )}
+
+          {/* Expiry badge for service posts */}
+          {post.expires_at && (
+            <View style={styles.expiryBox}>
+              <Text style={styles.expiryText}>
+                {(() => {
+                  const days = Math.ceil((new Date(post.expires_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+                  if (days <= 0) return "Expiré";
+                  if (days === 1) return "Expire aujourd'hui";
+                  return `Expire dans ${days}j`;
+                })()}
+              </Text>
+            </View>
+          )}
+
+          {/* Meta */}
+          <View style={styles.footer}>
+            <Text style={styles.meta}>
+              {post.communes?.name && (
+                <Text style={[styles.communeLabel, { color: theme.primary }]}>
+                  {post.communes.name} · </Text>
+              )}
+              {authorName} · {createdDate}
+            </Text>
+            <View style={styles.metaRight}>
+              {commentCount > 0 && (
+                <View style={styles.commentMeta}>
+                  <MessageSquare size={12} color={theme.muted} />
+                  <Text style={styles.commentCount}>{commentCount}</Text>
+                </View>
+              )}
+              <TouchableOpacity
+                onPress={() => setShowReport(true)}
+                style={styles.reportButton}
+              >
+                <Flag size={12} color={theme.muted} />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>
@@ -163,13 +165,20 @@ const styles = StyleSheet.create({
   pinnedBar: {
     height: 2.5,
   },
-  postImage: {
-    width: "100%",
-    height: 200,
+  container: {
+    flexDirection: "row",
+    gap: 12,
+    padding: 14,
+  },
+  thumbnail: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
     resizeMode: "cover",
   },
   inner: {
-    padding: 14,
+    flex: 1,
+    minWidth: 0,
   },
   header: {
     flexDirection: "row",
