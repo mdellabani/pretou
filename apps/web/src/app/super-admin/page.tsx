@@ -1,8 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { SUPER_ADMIN_EMAILS } from "@/lib/super-admin";
 import { SuperAdminDashboard } from "./dashboard";
-
-const SUPER_ADMIN_EMAILS = ["mdellabani@gmail.com"];
 
 export default async function SuperAdminPage() {
   const supabase = await createClient();

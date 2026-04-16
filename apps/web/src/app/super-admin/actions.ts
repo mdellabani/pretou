@@ -1,8 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-
-const SUPER_ADMIN_EMAILS = ["mdellabani@gmail.com"];
+import { SUPER_ADMIN_EMAILS } from "@/lib/super-admin";
 
 async function requireSuperAdmin() {
   const supabase = await createClient();

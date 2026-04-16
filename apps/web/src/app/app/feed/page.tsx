@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { isSuperAdmin } from "@/lib/super-admin";
 import { getProfile, getEpciPosts, getCommunesByEpci } from "@rural-community-platform/shared";
 import type { Post } from "@rural-community-platform/shared";
 import { redirect } from "next/navigation";
@@ -27,7 +28,10 @@ export default async function FeedPage({
   if (!user) redirect("/auth/login");
 
   const { data: profile } = await getProfile(supabase, user.id);
-  if (!profile) redirect("/auth/signup");
+  if (!profile) {
+    if (isSuperAdmin(user.email)) redirect("/super-admin");
+    redirect("/auth/signup");
+  }
   if (profile.status === "pending") redirect("/auth/pending");
 
   let posts: Post[] = [];
