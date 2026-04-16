@@ -12,4 +12,4 @@ For each Supabase project (demo + prod):
    - **Refresh token reuse interval**: 10 seconds
    - **JWT expiry**: 3600 seconds (1 hour)
 
-The web middleware (`apps/web/src/lib/supabase/middleware.ts`) makes one explicit `refreshSession()` attempt when an expired access-token cookie is detected, so users never see a sudden bounce to `/auth/login` mid-session.
+The web middleware (`apps/web/src/lib/supabase/middleware.ts`) makes one explicit `refreshSession()` attempt when a refresh-token cookie is detected, so users never see a sudden bounce to `/auth/login` mid-session.

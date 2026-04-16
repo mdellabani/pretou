@@ -30,10 +30,15 @@ export async function updateSession(request: NextRequest) {
   // Belt-and-suspenders: if no user but a refresh token cookie exists,
   // make one explicit attempt to refresh before bouncing to login.
   if (!user) {
-    const hasRefreshCookie = request.cookies.getAll().some(c => c.name.includes("auth-token"));
+    const hasRefreshCookie = request.cookies.getAll().some(c => c.name.startsWith("sb-") && c.name.endsWith("-auth-token"));
     if (hasRefreshCookie) {
-      const { data: refreshed } = await supabase.auth.refreshSession();
-      user = refreshed.user ?? null;
+      try {
+        const { data: refreshed } = await supabase.auth.refreshSession();
+        user = refreshed.user ?? null;
+      } catch {
+        // Network or token errors: leave user as null and let the existing
+        // redirect-to-login fallback handle it.
+      }
     }
   }
 
