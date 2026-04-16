@@ -689,15 +689,21 @@ GRANT ALL ON TABLE "public"."push_tokens" TO "service_role";
 -- Storage buckets and policies
 -- ============================================================
 
-INSERT INTO "storage"."buckets" ("id", "name", "public") VALUES ('post-images', 'post-images', true);
-INSERT INTO "storage"."buckets" ("id", "name", "public") VALUES ('avatars', 'avatars', true);
+INSERT INTO "storage"."buckets" ("id", "name", "public") VALUES ('post-images', 'post-images', true) ON CONFLICT ("id") DO NOTHING;
+INSERT INTO "storage"."buckets" ("id", "name", "public") VALUES ('avatars', 'avatars', true) ON CONFLICT ("id") DO NOTHING;
 
+DROP POLICY IF EXISTS "Authenticated users can upload post images" ON "storage"."objects";
 CREATE POLICY "Authenticated users can upload post images" ON "storage"."objects" FOR INSERT TO "authenticated" WITH CHECK (("bucket_id" = 'post-images'));
+DROP POLICY IF EXISTS "Anyone can view post images" ON "storage"."objects";
 CREATE POLICY "Anyone can view post images" ON "storage"."objects" FOR SELECT USING (("bucket_id" = 'post-images'));
 
+DROP POLICY IF EXISTS "Authenticated users can upload avatars" ON "storage"."objects";
 CREATE POLICY "Authenticated users can upload avatars" ON "storage"."objects" FOR INSERT TO "authenticated" WITH CHECK (("bucket_id" = 'avatars'));
+DROP POLICY IF EXISTS "Anyone can view avatars" ON "storage"."objects";
 CREATE POLICY "Anyone can view avatars" ON "storage"."objects" FOR SELECT USING (("bucket_id" = 'avatars'));
+DROP POLICY IF EXISTS "Users can update own avatars" ON "storage"."objects";
 CREATE POLICY "Users can update own avatars" ON "storage"."objects" FOR UPDATE TO "authenticated" USING (("bucket_id" = 'avatars'));
+DROP POLICY IF EXISTS "Users can delete own avatars" ON "storage"."objects";
 CREATE POLICY "Users can delete own avatars" ON "storage"."objects" FOR DELETE TO "authenticated" USING (("bucket_id" = 'avatars'));
 
 -- ============================================================
@@ -775,12 +781,18 @@ CREATE INDEX "idx_communes_custom_domain" ON "public"."communes" USING "btree" (
 INSERT INTO "storage"."buckets" ("id", "name", "public") VALUES ('council-documents', 'council-documents', true) ON CONFLICT ("id") DO NOTHING;
 INSERT INTO "storage"."buckets" ("id", "name", "public") VALUES ('website-images', 'website-images', true) ON CONFLICT ("id") DO NOTHING;
 
+DROP POLICY IF EXISTS "Authenticated users can upload council documents" ON "storage"."objects";
 CREATE POLICY "Authenticated users can upload council documents" ON "storage"."objects" FOR INSERT TO "authenticated" WITH CHECK (("bucket_id" = 'council-documents'));
+DROP POLICY IF EXISTS "Anyone can view council documents files" ON "storage"."objects";
 CREATE POLICY "Anyone can view council documents files" ON "storage"."objects" FOR SELECT USING (("bucket_id" = 'council-documents'));
+DROP POLICY IF EXISTS "Admins can delete council documents files" ON "storage"."objects";
 CREATE POLICY "Admins can delete council documents files" ON "storage"."objects" FOR DELETE TO "authenticated" USING (("bucket_id" = 'council-documents'));
 
+DROP POLICY IF EXISTS "Authenticated users can upload website images" ON "storage"."objects";
 CREATE POLICY "Authenticated users can upload website images" ON "storage"."objects" FOR INSERT TO "authenticated" WITH CHECK (("bucket_id" = 'website-images'));
+DROP POLICY IF EXISTS "Anyone can view website images" ON "storage"."objects";
 CREATE POLICY "Anyone can view website images" ON "storage"."objects" FOR SELECT USING (("bucket_id" = 'website-images'));
+DROP POLICY IF EXISTS "Authenticated users can delete website images" ON "storage"."objects";
 CREATE POLICY "Authenticated users can delete website images" ON "storage"."objects" FOR DELETE TO "authenticated" USING (("bucket_id" = 'website-images'));
 
 -- Restore search_path so seed.sql can use unqualified table names
