@@ -1,6 +1,6 @@
 export type PostFilters = {
   types?: string[];
-  date?: string;
+  dateFilter?: "today" | "week" | "month" | "";
   communeIds?: string[];
   scope?: "commune" | "epci";
 };
