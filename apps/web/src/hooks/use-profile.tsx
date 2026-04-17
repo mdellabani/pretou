@@ -49,7 +49,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
         .from("profiles")
         .select("*, communes(name, slug, epci_id, code_postal, theme, motto)")
         .eq("id", user.id)
-        .single();
+        .maybeSingle();
       if (error) {
         console.error("[useProfile] failed to load profile:", error);
       }

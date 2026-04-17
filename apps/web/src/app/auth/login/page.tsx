@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { isSuperAdmin } from "@/lib/super-admin";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,13 +29,14 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       setError("Email ou mot de passe incorrect");
       setLoading(false);
       return;
     }
-    router.push("/app/feed");
+    const target = isSuperAdmin(data.user?.email) ? "/super-admin" : "/app/feed";
+    router.push(target);
     router.refresh();
   }
 

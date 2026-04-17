@@ -1,7 +1,14 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { SUPER_ADMIN_EMAILS } from "@/lib/super-admin";
 
 const PLATFORM_DOMAIN = process.env.PLATFORM_DOMAIN ?? "localhost:3000";
+
+const AUTH_PAGES_REQUIRING_ANON = [
+  "/auth/login",
+  "/auth/signup",
+  "/auth/register-commune",
+];
 
 // Hostnames that should pass through without domain resolution
 function isPlatformHost(hostname: string): boolean {
@@ -26,12 +33,43 @@ function extractSubdomain(hostname: string): string | null {
   return sub;
 }
 
+async function getSessionUser(request: NextRequest) {
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll() {
+          // Read-only path; we don't refresh tokens here.
+        },
+      },
+    },
+  );
+  const { data: { user } } = await supabase.auth.getUser();
+  return user;
+}
+
 export async function middleware(request: NextRequest) {
   const hostname = request.headers.get("host") ?? "";
   const { pathname } = request.nextUrl;
 
-  // 1. Platform host — pass through
+  // 1. Platform host — pass through (with auth-page redirect for signed-in users)
   if (isPlatformHost(hostname)) {
+    if (AUTH_PAGES_REQUIRING_ANON.some((p) => pathname.startsWith(p))) {
+      const user = await getSessionUser(request);
+      if (user) {
+        const target = SUPER_ADMIN_EMAILS.includes(user.email ?? "")
+          ? "/super-admin"
+          : "/app/feed";
+        const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = target;
+        redirectUrl.search = "";
+        return NextResponse.redirect(redirectUrl);
+      }
+    }
     return NextResponse.next();
   }
 
