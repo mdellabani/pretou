@@ -39,3 +39,12 @@ export async function rejectProducer(client: Client, producerId: string) {
 export async function deleteProducer(client: Client, producerId: string) {
   return client.from("producers").delete().eq("id", producerId);
 }
+
+export async function getActiveProducersByCommune(client: Client, communeId: string) {
+  return client
+    .from("producers")
+    .select("*, communes(name), profiles!created_by(display_name)")
+    .eq("status", "active")
+    .eq("commune_id", communeId)
+    .order("name", { ascending: true });
+}

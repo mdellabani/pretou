@@ -1,4 +1,4 @@
-export { getPosts, getPostById, createPost, deletePost, togglePinPost, getPostsByType, getPostsPaginated, getPinnedPosts } from "./posts";
+export { getPosts, getPostById, createPost, deletePost, togglePinPost, getPostsByType, getPostsPaginated, getPinnedPosts, getEventsByCommune } from "./posts";
 export type { PostListFilters } from "./posts";
 export { getCommune, getCommuneBySlug, getCommunesByEpci, getAllCommunes, getCommuneByInviteCode, getCommuneByDomain, createCommune } from "./communes";
 export { getProfile, createProfile, updateProfile, getMyPosts, getMyComments, getMyRsvps } from "./profiles";
@@ -7,7 +7,7 @@ export { getComments, createComment, deleteComment } from "./comments";
 export { getRsvps, setRsvp, removeRsvp, getRsvpCounts } from "./rsvps";
 export type { RsvpStatus } from "./rsvps";
 export { getEpciPosts } from "./epci";
-export { getProducers, getPendingProducers, createProducer, approveProducer, rejectProducer, deleteProducer } from "./producers";
+export { getProducers, getPendingProducers, createProducer, approveProducer, rejectProducer, deleteProducer, getActiveProducersByCommune } from "./producers";
 export { getPollByPostId, createPoll, vote, removeVote } from "./polls";
 export { createReport, getPendingReports, getReportsByPost, dismissReport, actionReport, getReporterStats, hasUserReported } from "./reports";
 export { logAction, getAuditLog, getMyAuditLog } from "./audit";

@@ -112,3 +112,12 @@ export async function getPinnedPosts(client: Client, communeId: string) {
     .or("expires_at.is.null,expires_at.gt." + new Date().toISOString())
     .order("created_at", { ascending: false });
 }
+
+export async function getEventsByCommune(client: Client, communeId: string) {
+  return client
+    .from("posts")
+    .select("id, title, body, type, event_date, event_location, created_at, profiles!author_id(display_name), rsvps(status)")
+    .eq("commune_id", communeId)
+    .eq("type", "evenement")
+    .order("event_date", { ascending: true, nullsFirst: false });
+}
