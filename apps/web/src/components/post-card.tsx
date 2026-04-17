@@ -5,13 +5,9 @@ import { ReportDialog } from "@/components/report-dialog";
 import type { Post, PostType } from "@rural-community-platform/shared";
 import { Pin, MessageCircle } from "lucide-react";
 
-function getImageUrl(storagePath: string, transforms?: string): string {
+function getImageUrl(storagePath: string): string {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-  const baseUrl = `${supabaseUrl}/storage/v1/object/public/post-images/${storagePath}`;
-  if (transforms) {
-    return `${baseUrl}?${transforms}`;
-  }
-  return baseUrl;
+  return `${supabaseUrl}/storage/v1/object/public/post-images/${storagePath}`;
 }
 
 export function PostCard({ post }: { post: Post }) {
@@ -43,7 +39,7 @@ export function PostCard({ post }: { post: Post }) {
           {post.post_images && post.post_images.length > 0 && (
             <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-gray-100">
               <Image
-                src={getImageUrl(post.post_images[0].storage_path, "width=192&height=192&resize=cover")}
+                src={getImageUrl(post.post_images[0].storage_path)}
                 alt=""
                 fill
                 className="object-cover"
