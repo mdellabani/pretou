@@ -13,6 +13,7 @@ import { usePosts } from "@/hooks/queries/use-posts";
 import { useEpciPosts } from "@/hooks/queries/use-epci-posts";
 import { useEpciCommunes } from "@/hooks/queries/use-epci-communes";
 import { useProducerCount } from "@/hooks/queries/use-producer-count";
+import { useRealtimePosts } from "@/hooks/use-realtime-posts";
 
 function parseCsv(value: string | null): string[] {
   if (!value) return [];
@@ -41,6 +42,11 @@ export function FeedClient({ userId }: { userId: string }) {
   );
   const epciCommunes = useEpciCommunes(scope === "epci" ? epciId : null);
   const producerCount = useProducerCount(communeId);
+
+  useRealtimePosts(scope === "commune" ? communeId : "", {
+    types: selectedTypes,
+    dateFilter: dateFilter as PostListFilters["dateFilter"],
+  });
 
   const infiniteQuery = scope === "commune" ? communePosts : epciPosts;
 

@@ -10,6 +10,9 @@ vi.mock("next/navigation", () => ({
   usePathname: () => "/app/feed",
 }));
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
+vi.mock("@/hooks/use-realtime-posts", () => ({ useRealtimePosts: vi.fn() }));
+
+import { useRealtimePosts } from "@/hooks/use-realtime-posts";
 
 const profile = (role: "admin" | "resident") => ({
   id: "u-1",
@@ -67,6 +70,24 @@ describe("FeedClient", () => {
       ],
     });
     expect(screen.getByText(/Aucune publication/i)).toBeInTheDocument();
+  });
+
+  it("subscribes to realtime with communeId and active filters in commune scope", () => {
+    renderWithQuery(<FeedClient userId="u-1" />, {
+      cache: [
+        { key: queryKeys.profile("u-1"), data: profile("resident") },
+        { key: queryKeys.posts.pinned("c-1"), data: [] },
+        {
+          key: queryKeys.posts.list("c-1", { types: [], dateFilter: "" }),
+          data: { pages: [[]], pageParams: [null] },
+        },
+        { key: ["producer-count", "c-1"], data: 0 },
+      ],
+    });
+    expect(useRealtimePosts).toHaveBeenCalledWith(
+      "c-1",
+      expect.objectContaining({ types: [], dateFilter: "" }),
+    );
   });
 
   it("renders producers banner when producer count > 0", () => {
