@@ -1,14 +1,16 @@
 "use client";
 
 import { useTransition } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@rural-community-platform/shared";
 import { Button } from "@/components/ui/button";
 import { setRsvpAction, removeRsvpAction } from "@/app/app/posts/[id]/actions";
 import type { RsvpStatus } from "@rural-community-platform/shared";
+import { useRsvps } from "@/hooks/queries/use-rsvps";
 
 interface RsvpButtonsProps {
   postId: string;
-  currentStatus: RsvpStatus | null;
-  counts: { going: number; maybe: number; not_going: number };
+  userId: string;
 }
 
 const OPTIONS: { status: RsvpStatus; label: string }[] = [
@@ -17,19 +19,21 @@ const OPTIONS: { status: RsvpStatus; label: string }[] = [
   { status: "not_going", label: "Pas dispo" },
 ];
 
-export function RsvpButtons({
-  postId,
-  currentStatus,
-  counts,
-}: RsvpButtonsProps) {
+export function RsvpButtons({ postId, userId }: RsvpButtonsProps) {
+  const qc = useQueryClient();
   const [isPending, startTransition] = useTransition();
+  const { data } = useRsvps(postId, userId);
+  const counts = data?.counts ?? { going: 0, maybe: 0, not_going: 0 };
+  const currentStatus = data?.myStatus ?? null;
 
   function handleClick(status: RsvpStatus) {
     startTransition(async () => {
-      if (currentStatus === status) {
-        await removeRsvpAction(postId);
-      } else {
-        await setRsvpAction(postId, status);
+      const result =
+        currentStatus === status
+          ? await removeRsvpAction(postId)
+          : await setRsvpAction(postId, status);
+      if (!result.error) {
+        qc.invalidateQueries({ queryKey: queryKeys.rsvps(postId) });
       }
     });
   }
