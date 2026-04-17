@@ -153,6 +153,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.49.0
         version: 2.103.0
+      '@tanstack/react-query':
+        specifier: ^5.62.0
+        version: 5.99.0(react@19.2.5)
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.1
@@ -10454,6 +10457,11 @@ snapshots:
     dependencies:
       '@tanstack/query-core': 5.99.0
       react: 19.1.0
+
+  '@tanstack/react-query@5.99.0(react@19.2.5)':
+    dependencies:
+      '@tanstack/query-core': 5.99.0
+      react: 19.2.5
 
   '@testing-library/dom@10.4.1':
     dependencies:
