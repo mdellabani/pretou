@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Eye, EyeOff, ChevronDown, ChevronUp, Trash2, Plus } from "lucide-react";
 import { SectionEditor } from "@/components/admin/section-editors/section-editor";
+import { queryKeys } from "@rural-community-platform/shared";
 import {
   updateSectionAction,
   addSectionAction,
@@ -34,15 +36,22 @@ interface Section {
   content: Record<string, unknown>;
 }
 
-export function HomepageEditor({ initialSections }: { initialSections: Section[] }) {
+interface HomepageEditorProps {
+  initialSections: Section[];
+  communeId: string;
+}
+
+export function HomepageEditor({ initialSections, communeId }: HomepageEditorProps) {
   const [sections, setSections] = useState(initialSections);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [seeding, setSeeding] = useState(false);
+  const qc = useQueryClient();
 
   async function handleSeedDefaults() {
     setSeeding(true);
     await seedDefaultSectionsAction();
-    window.location.reload();
+    await qc.invalidateQueries({ queryKey: queryKeys.admin.homepageSections(communeId) });
+    setSeeding(false);
   }
 
   async function handleToggleVisibility(id: string, currentVisible: boolean) {

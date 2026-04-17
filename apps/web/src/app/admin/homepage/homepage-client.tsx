@@ -25,7 +25,7 @@ export function HomepageClient({ communeId }: HomepageClientProps) {
           ← Retour au tableau de bord
         </a>
       </div>
-      <HomepageEditor initialSections={sections as any[]} />
+      <HomepageEditor initialSections={sections as any[]} communeId={communeId} />
     </div>
   );
 }
