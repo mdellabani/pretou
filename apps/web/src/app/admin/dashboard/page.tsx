@@ -1,199 +1,85 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { HydrationBoundary } from "@tanstack/react-query";
 import {
   getProfile,
   getPendingUsers,
   getPendingProducers,
   getCommuneMembers,
   getAuditLog,
+  getCommune,
+  getCouncilDocsByCommune,
+  getPostsThisWeekCount,
+  queryKeys,
 } from "@rural-community-platform/shared";
-import { PendingUsers } from "@/components/admin/pending-users";
-import { PendingProducers } from "@/components/admin/pending-producers";
-import { PostManagement } from "@/components/admin/post-management";
-import { SummaryCards } from "@/components/admin/summary-cards";
-import { ThemeInjector } from "@/components/theme-injector";
-import { FeedFilters } from "@/components/feed-filters";
-import type { PostType } from "@rural-community-platform/shared";
-import { CreatePostDialog } from "@/components/create-post-dialog";
-import { CommuneMembers } from "@/components/admin/community-members";
-import { AuditLogView } from "@/app/moderation/audit-log-view";
-import { InviteCodeManager } from "@/components/admin/invite-code-manager";
-import { ThemeCustomizer } from "@/components/admin/theme-customizer";
-import { CommuneInfoForm } from "@/components/admin/commune-info-form";
-import { AssociationsManager } from "@/components/admin/associations-manager";
-import { CouncilDocuments } from "@/components/admin/council-documents";
-import { DomainManager } from "@/components/admin/domain-manager";
-import { AdminTabs } from "@/components/admin/admin-tabs";
+import { createClient } from "@/lib/supabase/server";
+import { prefetchAndDehydrate } from "@/lib/query/prefetch";
+import { DashboardClient } from "./dashboard-client";
 
-export default async function AdminDashboardPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string; perPage?: string; types?: string; date?: string }>;
-}) {
-  const params = await searchParams;
-  const page = Math.max(1, parseInt(params.page ?? "1", 10) || 1);
-  const perPage = [10, 25, 50].includes(Number(params.perPage)) ? Number(params.perPage) : 10;
-  const typesParam = params.types ?? "";
-  const selectedTypes = typesParam ? typesParam.split(",").filter(Boolean) : [];
-  const dateFilter = params.date ?? "";
-
+export default async function AdminDashboardPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
 
   const { data: profile } = await getProfile(supabase, user.id);
   if (!profile || profile.role !== "admin") redirect("/app/feed");
 
-  const { data: pendingUsers } = await getPendingUsers(supabase, profile.commune_id);
-  const { data: pendingProducers } = await getPendingProducers(supabase, profile.commune_id);
-  const { data: communeMembers } = await getCommuneMembers(supabase, profile.commune_id);
-  const { data: auditEntries } = await getAuditLog(supabase, profile.commune_id, 50);
+  const communeId = profile.commune_id;
 
-  const { data: commune } = await supabase
-    .from("communes")
-    .select("slug, invite_code, theme, custom_primary_color, logo_url, address, phone, email, opening_hours, associations, custom_domain, domain_verified")
-    .eq("id", profile.commune_id)
-    .single();
-
-  const { data: councilDocs } = await supabase
-    .from("council_documents")
-    .select("id, title, category, document_date, storage_path")
-    .eq("commune_id", profile.commune_id)
-    .order("document_date", { ascending: false });
-
-  const oneWeekAgo = new Date();
-  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-  const { count: postsThisWeek } = await supabase
-    .from("posts")
-    .select("id", { count: "exact", head: true })
-    .eq("commune_id", profile.commune_id)
-    .gte("created_at", oneWeekAgo.toISOString());
-
-  let dateSince: string | null = null;
-  if (dateFilter === "today") {
-    const d = new Date(); d.setHours(0, 0, 0, 0);
-    dateSince = d.toISOString();
-  } else if (dateFilter === "week") {
-    const d = new Date(); d.setDate(d.getDate() - 7);
-    dateSince = d.toISOString();
-  } else if (dateFilter === "month") {
-    const d = new Date(); d.setDate(d.getDate() - 30);
-    dateSince = d.toISOString();
-  }
-
-  let countQuery = supabase
-    .from("posts")
-    .select("id", { count: "exact", head: true })
-    .eq("commune_id", profile.commune_id)
-    .or("expires_at.is.null,expires_at.gt." + new Date().toISOString());
-  if (selectedTypes.length > 0) countQuery = countQuery.in("type", selectedTypes);
-  if (dateSince) countQuery = countQuery.gte("created_at", dateSince);
-  const { count: totalCount } = await countQuery;
-
-  const from = (page - 1) * perPage;
-  const to = from + perPage - 1;
-  let postsQuery = supabase
-    .from("posts")
-    .select("id, title, type, is_pinned, created_at, profiles!author_id(display_name)")
-    .eq("commune_id", profile.commune_id)
-    .or("expires_at.is.null,expires_at.gt." + new Date().toISOString())
-    .order("created_at", { ascending: false })
-    .range(from, to);
-  if (selectedTypes.length > 0) postsQuery = postsQuery.in("type", selectedTypes);
-  if (dateSince) postsQuery = postsQuery.gte("created_at", dateSince);
-  const { data: posts } = await postsQuery;
+  const dehydratedState = await prefetchAndDehydrate(async (qc) => {
+    qc.setQueryData(queryKeys.profile(user.id), profile);
+    await Promise.all([
+      qc.prefetchQuery({
+        queryKey: queryKeys.admin.pendingUsers(communeId),
+        queryFn: async () => {
+          const { data } = await getPendingUsers(supabase, communeId);
+          return data ?? [];
+        },
+      }),
+      qc.prefetchQuery({
+        queryKey: queryKeys.admin.pendingProducers(communeId),
+        queryFn: async () => {
+          const { data } = await getPendingProducers(supabase, communeId);
+          return data ?? [];
+        },
+      }),
+      qc.prefetchQuery({
+        queryKey: queryKeys.admin.members(communeId),
+        queryFn: async () => {
+          const { data } = await getCommuneMembers(supabase, communeId);
+          return data ?? [];
+        },
+      }),
+      qc.prefetchQuery({
+        queryKey: queryKeys.audit(communeId),
+        queryFn: async () => {
+          const { data } = await getAuditLog(supabase, communeId, 50);
+          return data ?? [];
+        },
+      }),
+      qc.prefetchQuery({
+        queryKey: queryKeys.commune(communeId),
+        queryFn: async () => {
+          const { data } = await getCommune(supabase, communeId);
+          return data;
+        },
+      }),
+      qc.prefetchQuery({
+        queryKey: queryKeys.councilDocs(communeId),
+        queryFn: async () => {
+          const { data } = await getCouncilDocsByCommune(supabase, communeId);
+          return data ?? [];
+        },
+      }),
+      qc.prefetchQuery({
+        queryKey: queryKeys.admin.postsThisWeek(communeId),
+        queryFn: async () => getPostsThisWeekCount(supabase, communeId),
+      }),
+    ]);
+  });
 
   return (
-    <div>
-      <ThemeInjector theme={profile.communes?.theme} customPrimaryColor={profile.communes?.custom_primary_color} />
-
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-[var(--foreground)]">Administration</h1>
-        <CreatePostDialog isAdmin={true} communeId={profile.commune_id} />
-      </div>
-
-      <AdminTabs
-        dashboardContent={
-          <>
-            <SummaryCards
-              pendingCount={(pendingUsers?.length ?? 0) + (pendingProducers?.length ?? 0)}
-              postsThisWeek={postsThisWeek ?? 0}
-              openReports={0}
-            />
-            <InviteCodeManager currentCode={commune?.invite_code ?? ""} />
-            <PendingUsers users={pendingUsers ?? []} />
-            <PendingProducers producers={pendingProducers ?? []} />
-          </>
-        }
-        websiteContent={
-          <>
-            <a href="/admin/homepage"
-              className="flex items-center justify-between rounded-[14px] border border-[#f0e8da] bg-white px-5 py-4 shadow-[0_2px_8px_rgba(140,120,80,0.08)] transition-all hover:shadow-[0_4px_16px_rgba(140,120,80,0.14)]">
-              <div>
-                <h2 className="text-sm font-semibold" style={{ color: "var(--theme-primary)" }}>
-                  Éditeur de page d'accueil
-                </h2>
-                <p className="text-xs text-[var(--muted-foreground)]">
-                  Personnalisez les sections de votre site communal
-                </p>
-              </div>
-              <span style={{ color: "var(--theme-primary)" }}>→</span>
-            </a>
-            <ThemeCustomizer
-              currentTheme={commune?.theme ?? "terre_doc"}
-              currentCustomColor={commune?.custom_primary_color ?? null}
-              currentLogoUrl={commune?.logo_url ?? null}
-            />
-            <DomainManager
-              slug={commune?.slug ?? ""}
-              customDomain={commune?.custom_domain ?? null}
-              domainVerified={commune?.domain_verified ?? false}
-            />
-          </>
-        }
-        communeContent={
-          <>
-            <CommuneInfoForm
-              address={commune?.address ?? null}
-              phone={commune?.phone ?? null}
-              email={commune?.email ?? null}
-              openingHours={(commune?.opening_hours as Record<string, string>) ?? {}}
-            />
-            <AssociationsManager associations={(commune?.associations as any[]) ?? []} />
-            <InviteCodeManager currentCode={commune?.invite_code ?? ""} />
-          </>
-        }
-        membersContent={
-          <CommuneMembers members={(communeMembers ?? []) as any[]} />
-        }
-        postsContent={
-          <>
-            <FeedFilters types={selectedTypes} date={dateFilter} />
-            <PostManagement
-              posts={
-                (posts ?? []).map((p) => ({
-                  id: p.id,
-                  title: p.title,
-                  type: p.type as PostType,
-                  is_pinned: p.is_pinned ?? false,
-                  created_at: p.created_at,
-                  profiles: Array.isArray(p.profiles) ? p.profiles[0] ?? null : p.profiles,
-                }))
-              }
-              totalCount={totalCount ?? 0}
-              page={page}
-              perPage={perPage}
-            />
-            <CouncilDocuments documents={(councilDocs ?? []) as any[]} />
-          </>
-        }
-        moderationContent={
-          <AuditLogView entries={(auditEntries ?? []) as any[]} />
-        }
-      />
-    </div>
+    <HydrationBoundary state={dehydratedState}>
+      <DashboardClient communeId={communeId} />
+    </HydrationBoundary>
   );
 }
