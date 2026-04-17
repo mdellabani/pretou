@@ -2,6 +2,8 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+> **Important — Next 16 API correction (2026-04-18):** Throughout this plan, every reference to `revalidateTag(\`commune:\${slug}\`)` or `revalidateTag(tag, "default")` must be implemented as **`updateTag(\`commune:\${slug}\`)`** — single-argument, immediate-invalidation primitive that requires server-action context. The P5a smoke test verified this is the correct primitive for read-your-own-writes admin mutations; `revalidateTag` in Next 16 is lazy/scheduled and inappropriate here. See the spec addendum at `docs/superpowers/specs/2026-04-18-p5-admin-migration-design.md` for the full reasoning.
+
 **Goal:** Drop all 32 `revalidatePath` calls across 7 admin action files. Replace each with surgical client-side `qc.invalidateQueries(...)` (so the admin's own dashboard cache refreshes) plus targeted `revalidateTag(\`commune:\${slug}\`)` for the four mutation paths that affect the public commune site (theme, commune metadata, council docs, homepage sections, custom domain).
 
 **Architecture:** Same pattern P4 established. Server actions stop calling `revalidatePath` and (where applicable) call `revalidateTag`. The component that triggered the action calls `qc.invalidateQueries({ queryKey: ... })` after success — partial-prefix matches let one invalidate hit multiple cached variants of the same data.

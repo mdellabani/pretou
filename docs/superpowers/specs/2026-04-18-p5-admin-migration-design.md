@@ -1,10 +1,21 @@
 # P5 — `/admin/*` Migration Design
 
 **Date:** 2026-04-18
-**Status:** approved
+**Status:** approved (with 2026-04-18 addendum on cache API)
 **Phase:** P5 of the client-side data architecture migration (P0–P6)
 **Predecessors:** P0 foundation, P1a/b/c feed, P2 identity + simple reads, P3 events + producers, P4 post detail
 **Successor:** P6 — optimistic updates polish
+
+## Addendum (2026-04-18) — verified Next 16 cache API
+
+P5a Task 1 (smoke test) was run against a production build and revealed two things:
+
+1. **`unstable_cache` works correctly in prod.** Cached values stick across requests. Dev mode is much looser; only the prod build accurately reflects runtime behavior.
+2. **`revalidateTag(tag, profile)` is lazy** — it schedules invalidation per the `cacheLife` profile (e.g. minutes/hours), it does NOT immediately bust the cache. The new immediate-invalidation primitive is **`updateTag(tag)`**, which is **only callable from server actions** (this enables read-your-own-writes semantics).
+
+**Decision:** Throughout this spec and the P5b plan, every reference to `revalidateTag(\`commune:\${slug}\`)` should be read as **`updateTag(\`commune:\${slug}\`)`**. The mutation flow stays identical; only the function name changes. All 5 mutation paths affected (theme, commune, council, homepage, domain) are server actions, which is exactly what `updateTag` requires.
+
+`unstable_cache` is still the right read-side primitive (no change to P5a's `getCommuneBySlugCached` design). `"use cache"` directive + `cacheTag()` is the newer alternative but is still flagged experimental in Next 16.2.3 — defer that migration to a future cleanup phase.
 
 ## Goal
 

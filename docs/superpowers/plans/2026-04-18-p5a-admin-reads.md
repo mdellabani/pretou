@@ -14,6 +14,8 @@
 
 **Out of scope for P5a:** dropping any `revalidatePath` calls in admin actions (P5b), optimistic updates (P6), realtime for audit log (rejected during brainstorm), `/[commune-slug]/*` migration to React Query (stays SSR with tag-based invalidation).
 
+**Status update on Task 1 (smoke test):** Already executed on 2026-04-18 as part of the spec verification. Result: `unstable_cache` works correctly in production. `revalidateTag(tag, profile)` is lazy (schedule-based); the immediate-invalidation primitive is **`updateTag(tag)`**, server-action-only. P5b (and any code in P5a that demonstrates invalidation) must use `updateTag`. Task 1 is therefore considered complete — no additional work needed for it.
+
 **User-visible outcome:** Dashboard and homepage editor load instantly on return navigation within `staleTime` window. Skeleton flashes on first visit. No mutation behavior changes yet — admins keep seeing the same `revalidatePath`-driven full-page rerenders for now.
 
 ---
