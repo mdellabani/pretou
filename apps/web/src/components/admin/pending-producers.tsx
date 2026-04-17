@@ -1,8 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { approveProducerAction, rejectProducerAction } from "@/app/admin/producer-actions";
-import { PRODUCER_CATEGORIES } from "@rural-community-platform/shared";
+import { PRODUCER_CATEGORIES, queryKeys } from "@rural-community-platform/shared";
 import { Check, X } from "lucide-react";
 
 interface PendingProducer {
@@ -15,19 +15,20 @@ interface PendingProducer {
 
 interface PendingProducersProps {
   producers: PendingProducer[];
+  communeId: string;
 }
 
-export function PendingProducers({ producers }: PendingProducersProps) {
-  const router = useRouter();
+export function PendingProducers({ producers, communeId }: PendingProducersProps) {
+  const qc = useQueryClient();
 
   async function handleApprove(producerId: string) {
     await approveProducerAction(producerId);
-    router.refresh();
+    qc.invalidateQueries({ queryKey: queryKeys.admin.pendingProducers(communeId) });
   }
 
   async function handleReject(producerId: string) {
     await rejectProducerAction(producerId);
-    router.refresh();
+    qc.invalidateQueries({ queryKey: queryKeys.admin.pendingProducers(communeId) });
   }
 
   return (

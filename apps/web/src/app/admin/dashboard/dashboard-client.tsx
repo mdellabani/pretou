@@ -74,7 +74,7 @@ export function DashboardClient({ communeId }: { communeId: string }) {
             />
             <InviteCodeManager currentCode={commune?.invite_code ?? ""} communeId={communeId} />
             <PendingUsers users={pendingUsers ?? []} />
-            <PendingProducers producers={pendingProducers ?? []} />
+            <PendingProducers producers={pendingProducers ?? []} communeId={communeId} />
           </>
         }
         websiteContent={
