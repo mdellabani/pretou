@@ -49,7 +49,40 @@ export async function getPostsByType(client: Client, communeId: string, type: st
     .order("created_at", { ascending: false });
 }
 
-export async function getPostsPaginated(client: Client, communeId: string, cursor: string | null, limit = 20) {
+export type PostListFilters = {
+  types?: string[];
+  dateFilter?: "today" | "week" | "month" | "";
+};
+
+function applyDateFilter<Q extends { gte: (col: string, v: string) => Q }>(
+  query: Q,
+  dateFilter: PostListFilters["dateFilter"],
+): Q {
+  if (dateFilter === "today") {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return query.gte("created_at", d.toISOString());
+  }
+  if (dateFilter === "week") {
+    const d = new Date();
+    d.setDate(d.getDate() - 7);
+    return query.gte("created_at", d.toISOString());
+  }
+  if (dateFilter === "month") {
+    const d = new Date();
+    d.setDate(d.getDate() - 30);
+    return query.gte("created_at", d.toISOString());
+  }
+  return query;
+}
+
+export async function getPostsPaginated(
+  client: Client,
+  communeId: string,
+  cursor: string | null,
+  limit = 20,
+  filters: PostListFilters = {},
+) {
   let query = client
     .from("posts")
     .select("*, profiles!author_id(display_name, avatar_url), post_images(id, storage_path), comments(count), rsvps(status)")
@@ -62,6 +95,10 @@ export async function getPostsPaginated(client: Client, communeId: string, curso
   if (cursor) {
     query = query.lt("created_at", cursor);
   }
+  if (filters.types && filters.types.length > 0) {
+    query = query.in("type", filters.types);
+  }
+  query = applyDateFilter(query, filters.dateFilter);
   return query;
 }
 

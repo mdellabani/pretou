@@ -1,4 +1,5 @@
 export { getPosts, getPostById, createPost, deletePost, togglePinPost, getPostsByType, getPostsPaginated, getPinnedPosts } from "./posts";
+export type { PostListFilters } from "./posts";
 export { getCommune, getCommuneBySlug, getCommunesByEpci, getAllCommunes, getCommuneByInviteCode, getCommuneByDomain, createCommune } from "./communes";
 export { getProfile, createProfile, updateProfile } from "./profiles";
 export { getPendingUsers, approveUser, rejectUser, promoteToAdmin, demoteToResident, promoteToModerator, getCommuneMembers } from "./admin";
