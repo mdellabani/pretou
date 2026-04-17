@@ -65,6 +65,7 @@ npx supabase stop                                    # stop local Supabase
 - **Run `pnpm --filter @rural-community-platform/web test:components` before committing UI changes.** Catches NavBar/PostCard/ThemeCustomizer regressions in <5s.
 - **Run `pnpm --filter @rural-community-platform/web test:integration` before merging anything that touches DB schema, RLS, or server actions.** Requires `npx supabase start` running locally.
 - **Every new server-action write path needs an integration test** asserting (a) it persists for the intended role and (b) it's silently blocked for an unauthorized role. RLS denies by default and PostgREST swallows the failure — the test is the only thing that catches it.
+- **Client-side data (authed routes):** `/app/*` and `/admin/*` are wrapped in `QueryProvider` (React Query). Shared query keys live in `packages/shared/src/query-keys.ts`; use `prefetchAndDehydrate()` from `apps/web/src/lib/query/prefetch.ts` in server components to hydrate the client cache. Public routes (`/`, `/[commune-slug]/*`) stay pure SSR.
 
 ## Database Schema
 
