@@ -26,7 +26,6 @@ describe("communes update — theme-actions equivalent", () => {
 
   it("admin clears logo_url to null", async () => {
     const { supabase } = await signInAs(SEED_EMAILS.admin);
-    // Seed it first via service.
     const before = await getCommune(SEED_IDS.commune);
     expect(before).toBeTruthy();
     const { error } = await supabase
@@ -51,10 +50,11 @@ describe("communes update — theme-actions equivalent", () => {
 
   it("resident update is silently blocked", async () => {
     const { supabase } = await signInAs(SEED_EMAILS.resident);
-    await supabase
+    const { error } = await supabase
       .from("communes")
       .update({ theme: "alpin" })
       .eq("id", SEED_IDS.commune);
+    expect(error).toBeNull();
     const after = await getCommune(SEED_IDS.commune);
     expect(after?.theme).toBe("terre_doc");
   });
