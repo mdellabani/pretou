@@ -1,17 +1,21 @@
 "use client";
 
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Copy, RefreshCw } from "lucide-react";
+import { queryKeys } from "@rural-community-platform/shared";
 import { regenerateInviteCodeAction } from "@/app/admin/dashboard/invite-actions";
 
 interface InviteCodeManagerProps {
   currentCode: string;
+  communeId: string;
 }
 
-export function InviteCodeManager({ currentCode }: InviteCodeManagerProps) {
+export function InviteCodeManager({ currentCode, communeId }: InviteCodeManagerProps) {
   const [code, setCode] = useState(currentCode);
   const [copied, setCopied] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
+  const qc = useQueryClient();
 
   async function handleCopy() {
     await navigator.clipboard.writeText(code);
@@ -23,10 +27,11 @@ export function InviteCodeManager({ currentCode }: InviteCodeManagerProps) {
     if (!confirm("Régénérer le code ? L'ancien code ne fonctionnera plus.")) return;
     setRegenerating(true);
     const result = await regenerateInviteCodeAction();
+    setRegenerating(false);
     if (result.newCode) {
       setCode(result.newCode);
+      qc.invalidateQueries({ queryKey: queryKeys.commune(communeId) });
     }
-    setRegenerating(false);
   }
 
   return (

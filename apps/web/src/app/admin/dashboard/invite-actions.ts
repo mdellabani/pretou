@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 export async function regenerateInviteCodeAction(): Promise<{ newCode: string | null; error: string | null }> {
@@ -28,6 +27,5 @@ export async function regenerateInviteCodeAction(): Promise<{ newCode: string | 
 
   if (error) return { newCode: null, error: error.message };
 
-  revalidatePath("/admin/dashboard");
   return { newCode, error: null };
 }

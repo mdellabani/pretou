@@ -72,7 +72,7 @@ export function DashboardClient({ communeId }: { communeId: string }) {
               postsThisWeek={postsThisWeek ?? 0}
               openReports={0}
             />
-            <InviteCodeManager currentCode={commune?.invite_code ?? ""} />
+            <InviteCodeManager currentCode={commune?.invite_code ?? ""} communeId={communeId} />
             <PendingUsers users={pendingUsers ?? []} />
             <PendingProducers producers={pendingProducers ?? []} />
           </>
@@ -114,7 +114,7 @@ export function DashboardClient({ communeId }: { communeId: string }) {
               openingHours={(commune?.opening_hours as Record<string, string>) ?? {}}
             />
             <AssociationsManager communeId={communeId} associations={(commune?.associations as any[]) ?? []} />
-            <InviteCodeManager currentCode={commune?.invite_code ?? ""} />
+            <InviteCodeManager currentCode={commune?.invite_code ?? ""} communeId={communeId} />
           </>
         }
         membersContent={
