@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Upload } from "lucide-react";
+import { Upload, Trash2 } from "lucide-react";
 import {
   THEMES,
   type ThemeSlug,
@@ -10,7 +10,12 @@ import {
   suggestAccessibleShade,
   isValidHexColor,
 } from "@rural-community-platform/shared";
-import { updateThemeAction, uploadLogoAction } from "@/app/admin/dashboard/theme-actions";
+import {
+  updateThemeAction,
+  uploadLogoAction,
+  removeLogoAction,
+} from "@/app/admin/dashboard/theme-actions";
+import { ThemePreviewOverride } from "@/components/admin/theme-preview-override";
 
 interface ThemeCustomizerProps {
   currentTheme: string;
@@ -22,10 +27,25 @@ export function ThemeCustomizer({ currentTheme, currentCustomColor, currentLogoU
   const router = useRouter();
   const [theme, setTheme] = useState(currentTheme);
   const [customColor, setCustomColor] = useState(currentCustomColor ?? "");
+  const [savedTheme, setSavedTheme] = useState(currentTheme);
+  const [savedCustomColor, setSavedCustomColor] = useState(currentCustomColor ?? "");
   const [contrastWarning, setContrastWarning] = useState<string | null>(null);
   const [suggestedColor, setSuggestedColor] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [removingLogo, setRemovingLogo] = useState(false);
+
+  const isDirty = theme !== savedTheme || customColor !== savedCustomColor;
+
+  // Warn on tab close / hard reload only when the picker has unsaved changes.
+  useEffect(() => {
+    if (!isDirty) return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [isDirty]);
 
   function handleColorChange(hex: string) {
     setCustomColor(hex);
@@ -46,8 +66,14 @@ export function ThemeCustomizer({ currentTheme, currentCustomColor, currentLogoU
 
   async function handleSave() {
     setSaving(true);
-    await updateThemeAction(theme, customColor || null);
+    const result = await updateThemeAction(theme, customColor || null);
     setSaving(false);
+    if (result.error) {
+      alert(result.error);
+      return;
+    }
+    setSavedTheme(theme);
+    setSavedCustomColor(customColor);
     router.refresh();
   }
 
@@ -62,8 +88,18 @@ export function ThemeCustomizer({ currentTheme, currentCustomColor, currentLogoU
     router.refresh();
   }
 
+  async function handleLogoRemove() {
+    if (!confirm("Supprimer le logo de la commune ?")) return;
+    setRemovingLogo(true);
+    await removeLogoAction();
+    setRemovingLogo(false);
+    router.refresh();
+  }
+
   return (
     <div className="rounded-[14px] border border-[#f0e8da] bg-white p-5 shadow-[0_2px_8px_rgba(140,120,80,0.08)]">
+      {isDirty && <ThemePreviewOverride theme={theme} customPrimaryColor={customColor || null} />}
+
       <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide" style={{ color: "var(--theme-primary)" }}>
         Personnalisation
       </h2>
@@ -133,18 +169,35 @@ export function ThemeCustomizer({ currentTheme, currentCustomColor, currentLogoU
           )}
           <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-[#e8dfd0] px-3 py-2 text-sm hover:bg-[#fafaf9]">
             <Upload size={14} />
-            {uploadingLogo ? "Envoi..." : "Changer le logo"}
-            <input type="file" accept="image/*" className="hidden" onChange={handleLogoUpload} disabled={uploadingLogo} />
+            {uploadingLogo ? "Envoi..." : currentLogoUrl ? "Changer le logo" : "Ajouter un logo"}
+            <input type="file" accept="image/*" className="hidden" onChange={handleLogoUpload} disabled={uploadingLogo || removingLogo} />
           </label>
+          {currentLogoUrl && (
+            <button
+              onClick={handleLogoRemove}
+              disabled={removingLogo || uploadingLogo}
+              className="flex items-center gap-1.5 rounded-lg border border-[#e8dfd0] px-3 py-2 text-sm text-red-700 hover:bg-red-50 disabled:opacity-50"
+            >
+              <Trash2 size={14} />
+              {removingLogo ? "Suppression..." : "Supprimer"}
+            </button>
+          )}
         </div>
       </div>
 
       {/* Save */}
-      <button onClick={handleSave} disabled={saving}
-        className="rounded-lg px-4 py-2 text-sm font-medium text-white transition-opacity disabled:opacity-50"
-        style={{ backgroundColor: "var(--theme-primary)" }}>
-        {saving ? "Enregistrement..." : "Enregistrer le thème"}
-      </button>
+      <div className="flex items-center gap-3">
+        <button onClick={handleSave} disabled={saving || !isDirty}
+          className="rounded-lg px-4 py-2 text-sm font-medium text-white transition-opacity disabled:opacity-50"
+          style={{ backgroundColor: "var(--theme-primary)" }}>
+          {saving ? "Enregistrement..." : "Enregistrer le thème"}
+        </button>
+        {isDirty && !saving && (
+          <span className="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700">
+            Aperçu non sauvegardé
+          </span>
+        )}
+      </div>
     </div>
   );
 }

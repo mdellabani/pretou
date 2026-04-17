@@ -51,3 +51,30 @@ export async function uploadLogoAction(formData: FormData) {
   revalidatePath("/", "layout");
   return { error: null };
 }
+
+export async function removeLogoAction() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Non authentifié" };
+
+  const { data: profile } = await supabase
+    .from("profiles").select("commune_id, role").eq("id", user.id).single();
+  if (!profile || profile.role !== "admin") return { error: "Non autorisé" };
+
+  // Best-effort storage cleanup. We list whatever's under logos/<commune_id>/
+  // and remove it — the URL stored in DB has a cache-busting query string,
+  // so deriving the file name from it is brittle.
+  const { data: files } = await supabase.storage
+    .from("avatars").list(`logos/${profile.commune_id}`);
+  if (files && files.length > 0) {
+    const paths = files.map((f) => `logos/${profile.commune_id}/${f.name}`);
+    await supabase.storage.from("avatars").remove(paths);
+  }
+
+  const { error } = await supabase.from("communes")
+    .update({ logo_url: null }).eq("id", profile.commune_id);
+
+  if (error) return { error: error.message };
+  revalidatePath("/", "layout");
+  return { error: null };
+}
