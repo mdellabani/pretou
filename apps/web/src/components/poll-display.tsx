@@ -1,25 +1,30 @@
 "use client";
 
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@rural-community-platform/shared";
 import { voteAction, removeVoteAction } from "@/app/app/posts/[id]/poll-actions";
-import type { Poll, PollOption } from "@rural-community-platform/shared";
+import { usePoll } from "@/hooks/queries/use-poll";
 
 interface PollDisplayProps {
-  poll: Poll;
+  postId: string;
   userId: string;
 }
 
-export function PollDisplay({ poll, userId }: PollDisplayProps) {
+export function PollDisplay({ postId, userId }: PollDisplayProps) {
+  const qc = useQueryClient();
+  const { data: poll } = usePoll(postId);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  if (!poll) return null;
+
   const userVotes = new Set(
-    poll.poll_options
-      .flatMap((opt) =>
-        (opt.poll_votes ?? [])
-          .filter((v) => v.user_id === userId)
-          .map(() => opt.id)
-      )
+    poll.poll_options.flatMap((opt) =>
+      (opt.poll_votes ?? [])
+        .filter((v) => v.user_id === userId)
+        .map(() => opt.id),
+    ),
   );
 
   const handleVote = async (optionId: string) => {
@@ -27,21 +32,18 @@ export function PollDisplay({ poll, userId }: PollDisplayProps) {
     setError(null);
 
     const isAlreadyVoted = userVotes.has(optionId);
-
+    let result: { error: string | null } = { error: null };
     if (isAlreadyVoted && poll.allow_multiple) {
-      // Remove vote for multi-choice
-      const result = await removeVoteAction(optionId);
-      if (result.error) {
-        setError(result.error);
-      }
+      result = await removeVoteAction(optionId);
     } else if (!isAlreadyVoted) {
-      // Add or replace vote
-      const result = await voteAction(optionId, poll.id, poll.allow_multiple);
-      if (result.error) {
-        setError(result.error);
-      }
+      result = await voteAction(optionId, poll.id, poll.allow_multiple);
     }
 
+    if (result.error) {
+      setError(result.error);
+    } else {
+      qc.invalidateQueries({ queryKey: queryKeys.poll(postId) });
+    }
     setIsLoading(false);
   };
 

@@ -141,7 +141,7 @@ export default async function PostDetailPage({
             </div>
           )}
 
-          {poll && <PollDisplay poll={poll} userId={user.id} />}
+          <PollDisplay postId={id} userId={user.id} />
         </CardContent>
       </Card>
 
