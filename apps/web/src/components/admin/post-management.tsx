@@ -1,9 +1,11 @@
 "use client";
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { PostTypeBadge } from "@/components/post-type-badge";
 import { togglePinAction, deletePostAction } from "@/app/admin/dashboard/actions";
 import type { PostType } from "@rural-community-platform/shared";
+import { queryKeys } from "@rural-community-platform/shared";
 import { Pin, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface PostItem {
@@ -28,6 +30,7 @@ export function PostManagement({ posts, totalCount, page, perPage }: PostManagem
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const qc = useQueryClient();
 
   function buildUrl(params: Record<string, string | number | null>) {
     const sp = new URLSearchParams(searchParams.toString());
@@ -44,14 +47,18 @@ export function PostManagement({ posts, totalCount, page, perPage }: PostManagem
   }
 
   async function handleTogglePin(postId: string, isPinned: boolean) {
-    await togglePinAction(postId, isPinned);
-    router.refresh();
+    const result = await togglePinAction(postId, isPinned);
+    if (!result.error) {
+      qc.invalidateQueries({ queryKey: ["posts"] });
+    }
   }
 
   async function handleDelete(postId: string) {
     if (!confirm("Supprimer cette publication ? Cette action est irréversible.")) return;
-    await deletePostAction(postId);
-    router.refresh();
+    const result = await deletePostAction(postId);
+    if (!result.error) {
+      qc.invalidateQueries({ queryKey: ["posts"] });
+    }
   }
 
   const totalPages = Math.max(1, Math.ceil(totalCount / perPage));
