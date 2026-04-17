@@ -7,11 +7,12 @@ export default defineConfig({
     environment: "node",
     include: ["tests/integration/**/*.test.ts"],
     pool: "forks",
+    // @ts-expect-error — singleFork is top-level in Vitest 4, types in this version haven't caught up yet
     singleFork: true,
     testTimeout: 15_000,
     hookTimeout: 15_000,
     passWithNoTests: true,
-  } as any,
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
