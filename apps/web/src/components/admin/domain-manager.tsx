@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { Globe, CheckCircle2, AlertCircle, Trash2 } from "lucide-react";
+import { queryKeys } from "@rural-community-platform/shared";
 import {
   setCustomDomainAction,
   verifyDomainAction,
@@ -15,10 +17,12 @@ interface DomainManagerProps {
   slug: string;
   customDomain: string | null;
   domainVerified: boolean;
+  communeId: string;
 }
 
-export function DomainManager({ slug, customDomain, domainVerified }: DomainManagerProps) {
+export function DomainManager({ slug, customDomain, domainVerified, communeId }: DomainManagerProps) {
   const router = useRouter();
+  const qc = useQueryClient();
   const [domain, setDomain] = useState("");
   const [saving, setSaving] = useState(false);
   const [verifying, setVerifying] = useState(false);
@@ -37,7 +41,7 @@ export function DomainManager({ slug, customDomain, domainVerified }: DomainMana
       setError(result.error);
     } else {
       setDomain("");
-      router.refresh();
+      qc.invalidateQueries({ queryKey: queryKeys.commune(communeId) });
     }
   }
 
@@ -51,7 +55,7 @@ export function DomainManager({ slug, customDomain, domainVerified }: DomainMana
       setError(result.error);
     } else if (result.verified) {
       setVerifyResult("success");
-      router.refresh();
+      qc.invalidateQueries({ queryKey: queryKeys.commune(communeId) });
     } else {
       setVerifyResult("not_found");
     }
@@ -62,7 +66,7 @@ export function DomainManager({ slug, customDomain, domainVerified }: DomainMana
     setRemoving(true);
     await removeDomainAction();
     setRemoving(false);
-    router.refresh();
+    qc.invalidateQueries({ queryKey: queryKeys.commune(communeId) });
   }
 
   return (

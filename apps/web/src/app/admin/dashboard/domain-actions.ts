@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { updateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 const PLATFORM_DOMAIN = process.env.PLATFORM_DOMAIN ?? "localhost:3000";
@@ -33,7 +33,8 @@ export async function setCustomDomainAction(domain: string): Promise<{ error: st
     return { error: error.message };
   }
 
-  revalidatePath("/admin/dashboard");
+  const { data: commune } = await ctx.supabase.from("communes").select("slug").eq("id", ctx.communeId).single();
+  if (commune) updateTag(`commune:${commune.slug}`);
   return { error: null };
 }
 
@@ -69,7 +70,8 @@ export async function verifyDomainAction(): Promise<{ verified: boolean; error: 
         .update({ domain_verified: true })
         .eq("id", ctx.communeId);
 
-      revalidatePath("/admin/dashboard");
+      const { data: commune } = await ctx.supabase.from("communes").select("slug").eq("id", ctx.communeId).single();
+      if (commune) updateTag(`commune:${commune.slug}`);
       return { verified: true, error: null };
     }
 
@@ -89,6 +91,7 @@ export async function removeDomainAction(): Promise<{ error: string | null }> {
     .eq("id", ctx.communeId);
 
   if (error) return { error: error.message };
-  revalidatePath("/admin/dashboard");
+  const { data: commune } = await ctx.supabase.from("communes").select("slug").eq("id", ctx.communeId).single();
+  if (commune) updateTag(`commune:${commune.slug}`);
   return { error: null };
 }

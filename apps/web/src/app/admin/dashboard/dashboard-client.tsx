@@ -100,6 +100,7 @@ export function DashboardClient({ communeId }: { communeId: string }) {
               slug={commune?.slug ?? ""}
               customDomain={commune?.custom_domain ?? null}
               domainVerified={commune?.domain_verified ?? false}
+              communeId={communeId}
             />
           </>
         }
