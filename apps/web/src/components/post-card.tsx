@@ -44,6 +44,7 @@ export function PostCard({ post }: { post: Post }) {
                 fill
                 className="object-cover"
                 sizes="96px"
+                unoptimized={process.env.NODE_ENV === "development"}
               />
             </div>
           )}
