@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createPostSchema, createPoll } from "@rural-community-platform/shared";
 import type { CreatePollInput } from "@rural-community-platform/shared";
@@ -137,7 +136,6 @@ export async function createPostAction(formData: FormData) {
         }
       }
 
-      revalidatePath("/app/feed");
       return { error: null, warning: "Votre publication est en cours de vérification." };
     }
   }
@@ -181,6 +179,5 @@ export async function createPostAction(formData: FormData) {
     }
   }
 
-  revalidatePath("/app/feed");
   return { error: null, warning: undefined };
 }
