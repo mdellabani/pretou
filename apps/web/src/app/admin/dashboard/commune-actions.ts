@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { updateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 async function getAdminProfile() {
@@ -24,7 +24,11 @@ export async function updateCommuneInfoAction(data: {
   const { error } = await ctx.supabase.from("communes")
     .update(data).eq("id", ctx.profile.commune_id);
   if (error) return { error: error.message };
-  revalidatePath("/admin/dashboard");
+  const { data: commune } = await ctx.supabase
+    .from("communes").select("slug").eq("id", ctx.profile.commune_id).single();
+  if (commune?.slug) {
+    updateTag(`commune:${commune.slug}`);
+  }
   return { error: null };
 }
 
@@ -39,6 +43,10 @@ export async function updateAssociationsAction(associations: Array<{
   const { error } = await ctx.supabase.from("communes")
     .update({ associations }).eq("id", ctx.profile.commune_id);
   if (error) return { error: error.message };
-  revalidatePath("/admin/dashboard");
+  const { data: commune } = await ctx.supabase
+    .from("communes").select("slug").eq("id", ctx.profile.commune_id).single();
+  if (commune?.slug) {
+    updateTag(`commune:${commune.slug}`);
+  }
   return { error: null };
 }

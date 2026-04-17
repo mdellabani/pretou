@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { Trash2, Plus } from "lucide-react";
 import { updateAssociationsAction } from "@/app/admin/dashboard/commune-actions";
+import { queryKeys } from "@rural-community-platform/shared";
 
 interface Association {
   name: string;
@@ -13,11 +15,13 @@ interface Association {
 }
 
 interface AssociationsManagerProps {
+  communeId: string;
   associations: Association[];
 }
 
-export function AssociationsManager({ associations: initial }: AssociationsManagerProps) {
+export function AssociationsManager({ communeId, associations: initial }: AssociationsManagerProps) {
   const router = useRouter();
+  const qc = useQueryClient();
   const [associations, setAssociations] = useState<Association[]>(initial);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
@@ -43,7 +47,10 @@ export function AssociationsManager({ associations: initial }: AssociationsManag
     const result = await updateAssociationsAction(filtered);
     setSaving(false);
     setStatus(result.error ? "error" : "success");
-    if (!result.error) { setAssociations(filtered); router.refresh(); }
+    if (!result.error) {
+      setAssociations(filtered);
+      qc.invalidateQueries({ queryKey: queryKeys.commune(communeId) });
+    }
   }
 
   return (

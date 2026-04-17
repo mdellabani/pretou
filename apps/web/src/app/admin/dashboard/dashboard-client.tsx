@@ -106,12 +106,13 @@ export function DashboardClient({ communeId }: { communeId: string }) {
         communeContent={
           <>
             <CommuneInfoForm
+              communeId={communeId}
               address={commune?.address ?? null}
               phone={commune?.phone ?? null}
               email={commune?.email ?? null}
               openingHours={(commune?.opening_hours as Record<string, string>) ?? {}}
             />
-            <AssociationsManager associations={(commune?.associations as any[]) ?? []} />
+            <AssociationsManager communeId={communeId} associations={(commune?.associations as any[]) ?? []} />
             <InviteCodeManager currentCode={commune?.invite_code ?? ""} />
           </>
         }

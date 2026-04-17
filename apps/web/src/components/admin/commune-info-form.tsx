@@ -2,19 +2,23 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { updateCommuneInfoAction } from "@/app/admin/dashboard/commune-actions";
+import { queryKeys } from "@rural-community-platform/shared";
 
 const DAYS = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"] as const;
 
 interface CommuneInfoFormProps {
+  communeId: string;
   address: string | null;
   phone: string | null;
   email: string | null;
   openingHours: Record<string, string>;
 }
 
-export function CommuneInfoForm({ address, phone, email, openingHours }: CommuneInfoFormProps) {
+export function CommuneInfoForm({ communeId, address, phone, email, openingHours }: CommuneInfoFormProps) {
   const router = useRouter();
+  const qc = useQueryClient();
   const [form, setForm] = useState({
     address: address ?? "",
     phone: phone ?? "",
@@ -39,7 +43,9 @@ export function CommuneInfoForm({ address, phone, email, openingHours }: Commune
     });
     setSaving(false);
     setStatus(result.error ? "error" : "success");
-    if (!result.error) router.refresh();
+    if (!result.error) {
+      qc.invalidateQueries({ queryKey: queryKeys.commune(communeId) });
+    }
   }
 
   return (
