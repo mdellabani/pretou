@@ -20,6 +20,7 @@ type ProfileWithCommune = Profile & {
 
 type ProfileState = {
   profile: ProfileWithCommune | null;
+  userEmail: string | null;
   loading: boolean;
   isAdmin: boolean;
   isModerator: boolean;
@@ -27,6 +28,7 @@ type ProfileState = {
 
 const ProfileContext = createContext<ProfileState>({
   profile: null,
+  userEmail: null,
   loading: true,
   isAdmin: false,
   isModerator: false,
@@ -106,6 +108,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
     <ProfileContext.Provider
       value={{
         profile,
+        userEmail,
         loading,
         isAdmin: profile?.role === "admin",
         isModerator: profile?.role === "moderator" || profile?.role === "admin",

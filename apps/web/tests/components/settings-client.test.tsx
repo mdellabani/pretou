@@ -6,21 +6,27 @@ import { SettingsClient } from "@/app/app/settings/settings-client";
 
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
 
+vi.mock("@/hooks/use-profile", () => ({
+  useProfile: () => ({
+    profile: {
+      id: "u-1",
+      commune_id: "c-1",
+      role: "admin",
+      status: "active",
+      display_name: "Marie",
+      avatar_url: null,
+    },
+    userEmail: "marie@example.fr",
+    loading: false,
+    isAdmin: true,
+    isModerator: true,
+  }),
+}));
+
 describe("SettingsClient", () => {
   it("displays email, commune name, and role from hydrated cache", () => {
-    renderWithQuery(<SettingsClient userId="u-1" userEmail="marie@example.fr" />, {
+    renderWithQuery(<SettingsClient />, {
       cache: [
-        {
-          key: queryKeys.profile("u-1"),
-          data: {
-            id: "u-1",
-            commune_id: "c-1",
-            role: "admin",
-            status: "active",
-            display_name: "Marie",
-            avatar_url: null,
-          },
-        },
         { key: queryKeys.commune("c-1"), data: { id: "c-1", name: "Saint-Martin" } },
       ],
     });

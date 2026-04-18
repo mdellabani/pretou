@@ -1,11 +1,11 @@
 "use client";
 
-import { useProfile } from "@/hooks/queries/use-profile";
+import { useProfile } from "@/hooks/use-profile";
 import { useCommune } from "@/hooks/queries/use-commune";
 import { SettingsForm } from "./settings-form";
 
-export function SettingsClient({ userId, userEmail }: { userId: string; userEmail: string }) {
-  const { data: profile } = useProfile(userId);
+export function SettingsClient() {
+  const { profile, userEmail } = useProfile();
   const { data: commune } = useCommune(profile?.commune_id ?? "");
 
   if (!profile) return null;
@@ -26,7 +26,7 @@ export function SettingsClient({ userId, userEmail }: { userId: string; userEmai
         <dl className="space-y-3">
           <div className="flex items-center gap-3">
             <dt className="w-32 text-sm text-[var(--muted-foreground)]">E-mail</dt>
-            <dd className="text-sm font-medium text-[var(--foreground)]">{userEmail}</dd>
+            <dd className="text-sm font-medium text-[var(--foreground)]">{userEmail ?? ""}</dd>
           </div>
           <div className="flex items-center gap-3">
             <dt className="w-32 text-sm text-[var(--muted-foreground)]">Commune</dt>
