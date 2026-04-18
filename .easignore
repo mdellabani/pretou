@@ -1,0 +1,28 @@
+.worktrees
+node_modules/
+dist/
+.next/
+.expo/
+.turbo/
+.env
+.env.local
+*.tgz
+web-build/
+.firecrawl/
+.playwright-mcp/
+.superpowers/
+supabase/.branches/
+supabase/.temp/
+db-backups/
+.serena/
+
+# Web app — not needed in mobile builds
+apps/web/
+
+# Tests / docs / local tooling
+**/__tests__/
+**/*.test.ts
+**/*.test.tsx
+docs/
+tasks/
+.claude/
