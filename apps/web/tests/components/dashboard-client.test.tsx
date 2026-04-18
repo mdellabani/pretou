@@ -33,6 +33,16 @@ vi.mock("@/app/moderation/audit-log-view", () => ({ AuditLogView: () => <div>AUD
 vi.mock("@/components/theme-injector", () => ({ ThemeInjector: () => null }));
 vi.mock("next/navigation", () => ({ useSearchParams: () => new URLSearchParams() }));
 
+vi.mock("@/hooks/use-profile", () => ({
+  useProfile: () => ({
+    profile: { id: "u-1", commune_id: "c-1", role: "admin", status: "active", display_name: "Admin" },
+    userEmail: "admin@example.fr",
+    loading: false,
+    isAdmin: true,
+    isModerator: true,
+  }),
+}));
+
 describe("DashboardClient", () => {
   it("renders all 6 tabs from cached data", () => {
     const qc = new QueryClient({ defaultOptions: { queries: { staleTime: Infinity } } });
@@ -46,7 +56,7 @@ describe("DashboardClient", () => {
 
     render(
       <QueryClientProvider client={qc}>
-        <DashboardClient communeId="c-1" />
+        <DashboardClient />
       </QueryClientProvider>,
     );
 

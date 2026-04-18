@@ -6,7 +6,6 @@ import { PendingUsers } from "@/components/admin/pending-users";
 import { PendingProducers } from "@/components/admin/pending-producers";
 import { PostManagement } from "@/components/admin/post-management";
 import { SummaryCards } from "@/components/admin/summary-cards";
-import { ThemeInjector } from "@/components/theme-injector";
 import { FeedFilters } from "@/components/feed-filters";
 import { CreatePostDialog } from "@/components/create-post-dialog";
 import { CommuneMembers } from "@/components/admin/community-members";
@@ -26,6 +25,7 @@ import { useCommuneAdmin } from "@/hooks/queries/use-commune-admin";
 import { useCouncilDocs } from "@/hooks/queries/use-council-docs";
 import { usePostsThisWeek } from "@/hooks/queries/use-posts-this-week";
 import { useAdminPosts } from "@/hooks/queries/use-admin-posts";
+import { useProfile } from "@/hooks/use-profile";
 import type { AdminPostFilters } from "@rural-community-platform/shared";
 
 function parseCsv(value: string | null): string[] {
@@ -33,7 +33,9 @@ function parseCsv(value: string | null): string[] {
   return value.split(",").filter(Boolean);
 }
 
-export function DashboardClient({ communeId }: { communeId: string }) {
+export function DashboardClient() {
+  const { profile } = useProfile();
+  const communeId = profile?.commune_id ?? "";
   const params = useSearchParams();
   const pageParam = params.get("page") ?? "1";
   const perPageParam = params.get("perPage") ?? "10";
@@ -55,10 +57,10 @@ export function DashboardClient({ communeId }: { communeId: string }) {
   const adminPostFilters: AdminPostFilters = { types: selectedTypes, dateFilter: dateFilter as AdminPostFilters["dateFilter"], page, perPage };
   const { data: adminPostsData } = useAdminPosts(communeId, adminPostFilters);
 
+  if (!communeId) return null;
+
   return (
     <div>
-      <ThemeInjector theme={commune?.theme} customPrimaryColor={commune?.custom_primary_color} />
-
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-[var(--foreground)]">Administration</h1>
         <CreatePostDialog isAdmin={true} communeId={communeId} />
