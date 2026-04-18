@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { CalendarDays, MapPin } from "lucide-react";
 import { EventCalendar } from "@/components/event-calendar";
-import { useProfile } from "@/hooks/queries/use-profile";
+import { useProfile } from "@/hooks/use-profile";
 import { useEvents } from "@/hooks/queries/use-events";
 
 interface EventPost {
@@ -39,8 +39,8 @@ function firstOrSame<T>(v: T | T[] | null | undefined): T | null {
   return Array.isArray(v) ? (v[0] ?? null) : v;
 }
 
-export function EventsClient({ userId }: { userId: string }) {
-  const { data: profile } = useProfile(userId);
+export function EventsClient() {
+  const { profile } = useProfile();
   const { data: rawEvents } = useEvents(profile?.commune_id ?? "");
   const today = new Date();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);

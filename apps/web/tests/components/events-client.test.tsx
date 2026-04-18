@@ -18,13 +18,16 @@ const profile = {
   communes: { id: "c-1", name: "Saint-Martin" },
 };
 
+vi.mock("@/hooks/use-profile", () => ({
+  useProfile: () => ({ profile, loading: false, isAdmin: false, isModerator: false }),
+}));
+
 describe("EventsClient", () => {
   it("renders an event from hydrated cache in current month", () => {
     const today = new Date();
     const future = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 2, 18, 0).toISOString();
-    renderWithQuery(<EventsClient userId="u-1" />, {
+    renderWithQuery(<EventsClient />, {
       cache: [
-        { key: queryKeys.profile("u-1"), data: profile },
         {
           key: queryKeys.events("c-1"),
           data: [
@@ -47,9 +50,8 @@ describe("EventsClient", () => {
   });
 
   it("shows empty state when no events for the month", () => {
-    renderWithQuery(<EventsClient userId="u-1" />, {
+    renderWithQuery(<EventsClient />, {
       cache: [
-        { key: queryKeys.profile("u-1"), data: profile },
         { key: queryKeys.events("c-1"), data: [] },
       ],
     });
