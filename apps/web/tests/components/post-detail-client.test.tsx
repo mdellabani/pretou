@@ -10,6 +10,15 @@ vi.mock("@/components/poll-display", () => ({ PollDisplay: () => <div>POLL</div>
 vi.mock("@/components/comment-section", () => ({ CommentSection: () => <div>COMMENTS</div> }));
 vi.mock("@/components/delete-post-button", () => ({ DeletePostButton: () => <div>DELETE</div> }));
 
+vi.mock("@/hooks/use-profile", () => ({
+  useProfile: () => ({
+    profile: { id: "me", role: "resident", commune_id: "c-1", status: "active", display_name: "Me" },
+    loading: false,
+    isAdmin: false,
+    isModerator: false,
+  }),
+}));
+
 describe("PostDetailClient", () => {
   it("renders post from cache", () => {
     const qc = new QueryClient({ defaultOptions: { queries: { staleTime: Infinity } } });
@@ -26,7 +35,7 @@ describe("PostDetailClient", () => {
     });
     render(
       <QueryClientProvider client={qc}>
-        <PostDetailClient postId="p1" userId="me" userRole="resident" />
+        <PostDetailClient postId="p1" />
       </QueryClientProvider>,
     );
     expect(screen.getByText("Hello")).toBeInTheDocument();

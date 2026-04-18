@@ -10,14 +10,14 @@ import { DeletePostButton } from "@/components/delete-post-button";
 import { PollDisplay } from "@/components/poll-display";
 import { usePostDetail } from "@/hooks/queries/use-post-detail";
 import { useRealtimeComments } from "@/hooks/use-realtime-comments";
+import { useProfile } from "@/hooks/use-profile";
 
 interface PostDetailClientProps {
   postId: string;
-  userId: string;
-  userRole: string;
 }
 
-export function PostDetailClient({ postId, userId, userRole }: PostDetailClientProps) {
+export function PostDetailClient({ postId }: PostDetailClientProps) {
+  const { profile } = useProfile();
   const { data: post, isLoading } = usePostDetail(postId);
   useRealtimeComments(postId);
 
@@ -25,7 +25,10 @@ export function PostDetailClient({ postId, userId, userRole }: PostDetailClientP
   if (!post) {
     notFound();
   }
+  if (!profile) return null;
 
+  const userId = profile.id;
+  const userRole = profile.role;
   const isEvent = post.type === "evenement";
   const canDelete = post.author_id === userId || userRole === "admin";
   const images = (post.post_images ?? []) as { id: string; storage_path: string }[];
