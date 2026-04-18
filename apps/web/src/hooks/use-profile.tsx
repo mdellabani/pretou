@@ -1,7 +1,9 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { SUPER_ADMIN_EMAILS } from "@/lib/super-admin";
 import type { Profile } from "@rural-community-platform/shared";
 
 type ProfileWithCommune = Profile & {
@@ -32,6 +34,9 @@ const ProfileContext = createContext<ProfileState>({
 export function ProfileProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<ProfileWithCommune | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const supabase = createClient();
@@ -42,9 +47,11 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
       } = await supabase.auth.getUser();
       if (!user) {
         setProfile(null);
+        setUserEmail(null);
         setLoading(false);
         return;
       }
+      setUserEmail(user.email ?? null);
       const { data, error } = await supabase
         .from("profiles")
         .select("*, communes(name, slug, epci_id, code_postal, theme, motto)")
@@ -69,6 +76,30 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
     });
     return () => sub.subscription.unsubscribe();
   }, []);
+
+  // Redirect side-effects for authed routes. Middleware already redirects
+  // unauthed users to /auth/login, so here we only handle the "signed in
+  // but profile row missing or pending" cases that page.tsx used to cover.
+  useEffect(() => {
+    if (loading) return;
+    if (!pathname) return;
+    const inAuthedTree = pathname.startsWith("/app/") || pathname.startsWith("/admin/");
+    if (!inAuthedTree) return;
+    if (!userEmail) return;
+
+    if (!profile) {
+      if (SUPER_ADMIN_EMAILS.includes(userEmail)) {
+        router.replace("/super-admin");
+      } else {
+        router.replace("/auth/signup");
+      }
+      return;
+    }
+
+    if (profile.status === "pending") {
+      router.replace("/auth/pending");
+    }
+  }, [loading, profile, userEmail, pathname, router]);
 
   return (
     <ProfileContext.Provider
