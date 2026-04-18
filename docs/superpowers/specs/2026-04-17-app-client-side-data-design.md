@@ -1,8 +1,29 @@
 # `/app/*` Client-Side Data Architecture — Design
 
 **Date:** 2026-04-17
-**Status:** Draft — pending review
-**Scope:** Web app, logged-in `/app/*` and `/admin/*` routes only
+**Status:** P0–P5b shipped; P6 (optimistic updates) pending
+**Scope:** Web app, logged-in `/app/*` and `/admin/*` routes + public `/[commune-slug]/*`
+
+## Implementation summary
+
+The migration rests on **three pillars** rolled out across phases P0–P6.
+
+| Pillar | What it does | Where it lives |
+|---|---|---|
+| **1. Thin shell + React Query** for `/app/*` and `/admin/*` | First load prefetches on the server and dehydrates into a client cache; subsequent navigation reads from the cache instead of re-rendering the whole server tree. | `apps/web/src/components/providers/query-provider.tsx`, `apps/web/src/lib/query/prefetch.ts`, `apps/web/src/hooks/queries/*`, every `*-client.tsx` |
+| **2. `unstable_cache` + tags** for public commune pages | `/[commune-slug]/*` stays SSR but is cached per commune. Admin mutations bust the cache via `updateTag(commune:${slug})`. | `apps/web/src/lib/cached-fetchers/commune.ts`, every admin server action |
+| **3. Mutation pattern** | Drop `revalidatePath` (full server re-render). Replace with `qc.invalidateQueries(...)` on the client (for the calling user) + `updateTag()` (for the public site) + `refresh()` (to bust the calling client's router cache). | `apps/web/src/app/admin/**/*-actions.ts`, every mutation call site |
+
+| Phase | Scope | Pillar |
+|---|---|---|
+| P0 | React Query infra (`QueryProvider`, `prefetchAndDehydrate`, `query-keys.ts`) | 1 (foundation) |
+| P1 | Feed migration + realtime patches | 1 + 3 |
+| P2 | Identity/profile cache | 1 |
+| P3 | Events + producers | 1 |
+| P4 | Post detail (post + comments + RSVPs + poll) | 1 + 3 |
+| P5a | Admin reads + tag-based public commune cache | 1 + 2 (introduced) |
+| P5b | All admin mutations refactored | 3 (full sweep) |
+| P6 | Optimistic updates for high-frequency clicks (RSVP, comment, approve/reject, pin) | extension of 3 |
 
 ## Context
 
