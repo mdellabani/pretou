@@ -5,7 +5,7 @@ dist/
 .expo/
 .turbo/
 .env
-.env.local
+.env.*
 *.tgz
 web-build/
 .firecrawl/

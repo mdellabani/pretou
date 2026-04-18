@@ -7,7 +7,7 @@ import type { Post, PostListFilters } from "@rural-community-platform/shared";
 import { PostCard } from "@/components/post-card";
 import { FeedFilters } from "@/components/feed-filters";
 import { CreatePostDialog } from "@/components/create-post-dialog";
-import { useProfile } from "@/hooks/queries/use-profile";
+import { useProfile } from "@/hooks/use-profile";
 import { usePinnedPosts } from "@/hooks/queries/use-pinned-posts";
 import { usePosts } from "@/hooks/queries/use-posts";
 import { useEpciPosts } from "@/hooks/queries/use-epci-posts";
@@ -20,8 +20,8 @@ function parseCsv(value: string | null): string[] {
   return value.split(",").filter(Boolean);
 }
 
-export function FeedClient({ userId }: { userId: string }) {
-  const { data: profile } = useProfile(userId);
+export function FeedClient() {
+  const { profile } = useProfile();
   const params = useSearchParams();
   const scope = params.get("scope") === "epci" ? "epci" : "commune";
   const selectedTypes = parseCsv(params.get("types"));

@@ -14,6 +14,7 @@ type ProfileWithCommune = Profile & {
     code_postal: string | null;
     theme: string;
     motto: string | null;
+    custom_primary_color: string | null;
   };
 };
 
@@ -54,7 +55,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
       setUserEmail(user.email ?? null);
       const { data, error } = await supabase
         .from("profiles")
-        .select("*, communes(name, slug, epci_id, code_postal, theme, motto)")
+        .select("*, communes(name, slug, epci_id, code_postal, theme, motto, custom_primary_color)")
         .eq("id", user.id)
         .maybeSingle();
       if (error) {

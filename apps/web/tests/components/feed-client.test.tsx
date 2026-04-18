@@ -12,9 +12,19 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/lib/supabase/client", () => ({ createClient: () => ({}) }));
 vi.mock("@/hooks/use-realtime-posts", () => ({ useRealtimePosts: vi.fn() }));
 
+let mockProfile: { role: string; commune_id: string; communes?: unknown } | null = null;
+vi.mock("@/hooks/use-profile", () => ({
+  useProfile: () => ({
+    profile: mockProfile,
+    loading: false,
+    isAdmin: mockProfile?.role === "admin",
+    isModerator: mockProfile?.role === "moderator" || mockProfile?.role === "admin",
+  }),
+}));
+
 import { useRealtimePosts } from "@/hooks/use-realtime-posts";
 
-const profile = (role: "admin" | "resident") => ({
+const profileFor = (role: "admin" | "resident") => ({
   id: "u-1",
   commune_id: "c-1",
   role,
@@ -40,9 +50,9 @@ const post = (id: string, overrides: Record<string, unknown> = {}) => ({
 
 describe("FeedClient", () => {
   it("renders pinned posts before regular posts from hydrated cache (commune scope)", () => {
-    renderWithQuery(<FeedClient userId="u-1" />, {
+    mockProfile = profileFor("admin");
+    renderWithQuery(<FeedClient />, {
       cache: [
-        { key: queryKeys.profile("u-1"), data: profile("admin") },
         { key: queryKeys.posts.pinned("c-1"), data: [post("Pinned!", { is_pinned: true, type: "annonce" })] },
         {
           key: queryKeys.posts.list("c-1", { types: [], dateFilter: "" }),
@@ -58,9 +68,9 @@ describe("FeedClient", () => {
   });
 
   it("renders empty state when no posts are in cache", () => {
-    renderWithQuery(<FeedClient userId="u-1" />, {
+    mockProfile = profileFor("resident");
+    renderWithQuery(<FeedClient />, {
       cache: [
-        { key: queryKeys.profile("u-1"), data: profile("resident") },
         { key: queryKeys.posts.pinned("c-1"), data: [] },
         {
           key: queryKeys.posts.list("c-1", { types: [], dateFilter: "" }),
@@ -73,9 +83,9 @@ describe("FeedClient", () => {
   });
 
   it("subscribes to realtime with communeId and active filters in commune scope", () => {
-    renderWithQuery(<FeedClient userId="u-1" />, {
+    mockProfile = profileFor("resident");
+    renderWithQuery(<FeedClient />, {
       cache: [
-        { key: queryKeys.profile("u-1"), data: profile("resident") },
         { key: queryKeys.posts.pinned("c-1"), data: [] },
         {
           key: queryKeys.posts.list("c-1", { types: [], dateFilter: "" }),
@@ -91,9 +101,9 @@ describe("FeedClient", () => {
   });
 
   it("renders producers banner when producer count > 0", () => {
-    renderWithQuery(<FeedClient userId="u-1" />, {
+    mockProfile = profileFor("resident");
+    renderWithQuery(<FeedClient />, {
       cache: [
-        { key: queryKeys.profile("u-1"), data: profile("resident") },
         { key: queryKeys.posts.pinned("c-1"), data: [] },
         {
           key: queryKeys.posts.list("c-1", { types: [], dateFilter: "" }),
