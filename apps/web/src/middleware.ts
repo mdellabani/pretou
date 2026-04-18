@@ -70,6 +70,19 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(redirectUrl);
       }
     }
+
+    // Gate authed routes: unsigned users get sent to login with ?next=
+    const AUTHED_PREFIXES = ["/app/", "/admin/"];
+    if (AUTHED_PREFIXES.some((p) => pathname.startsWith(p))) {
+      const user = await getSessionUser(request);
+      if (!user) {
+        const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = "/auth/login";
+        redirectUrl.search = `?next=${encodeURIComponent(pathname)}`;
+        return NextResponse.redirect(redirectUrl);
+      }
+    }
+
     return NextResponse.next();
   }
 
