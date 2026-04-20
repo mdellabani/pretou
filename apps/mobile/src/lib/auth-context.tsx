@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { AppState, type AppStateStatus } from "react-native";
 import { supabase } from "./supabase";
 import { ThemeProvider } from "./theme-context";
 import type { Session } from "@supabase/supabase-js";
@@ -34,6 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<ProfileWithCommune | null>(null);
   const [loading, setLoading] = useState(true);
+  const appState = useRef<AppStateStatus>(AppState.currentState);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -53,7 +55,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     });
 
-    return () => subscription.unsubscribe();
+    const appStateSub = AppState.addEventListener("change", (next) => {
+      const wasBackground = appState.current.match(/inactive|background/);
+      appState.current = next;
+      if (wasBackground && next === "active") {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+          if (session?.user) loadProfile(session.user.id);
+        });
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+      appStateSub.remove();
+    };
   }, []);
 
   async function loadProfile(userId: string) {
