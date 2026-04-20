@@ -1,11 +1,15 @@
 import { unstable_cache } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import { getCommuneBySlug } from "@rural-community-platform/shared";
+
+// Next 16 forbids accessing dynamic data sources (cookies()) inside
+// unstable_cache. Public commune routes don't need auth — use the anon
+// client that skips cookies entirely.
 
 export async function getCommuneBySlugCached(slug: string) {
   const inner = unstable_cache(
     async () => {
-      const supabase = await createClient();
+      const supabase = createPublicClient();
       const { data } = await getCommuneBySlug(supabase, slug);
       return data;
     },
@@ -18,7 +22,7 @@ export async function getCommuneBySlugCached(slug: string) {
 export async function getHomepageSectionsBySlugCached(slug: string) {
   const inner = unstable_cache(
     async () => {
-      const supabase = await createClient();
+      const supabase = createPublicClient();
       const { data: commune } = await getCommuneBySlug(supabase, slug);
       if (!commune) return [];
       const { data } = await supabase
