@@ -2,6 +2,11 @@
 -- SEED DATA: Saint-Médard (64) demo
 -- ================================================
 
+-- pgcrypto lives in the `extensions` schema on Supabase Cloud, and
+-- the supabase CLI splits the seed into batches — search_path SETs
+-- don't persist across batches, so the gen_salt/crypt calls below
+-- are fully schema-qualified (`extensions.gen_salt`, etc).
+
 -- EPCI
 INSERT INTO epci (id, name) VALUES
   ('00000000-0000-0000-0000-000000000001', 'CC Lacq-Orthez');
@@ -95,7 +100,7 @@ VALUES
   '00000000-0000-0000-0000-000000000100',
   '00000000-0000-0000-0000-000000000000',
   'secretaire@saintmedard64.fr',
-  crypt('demo1234', gen_salt('bf')),
+  extensions.crypt('demo1234', extensions.gen_salt('bf')),
   now(), now(), now(),
   '{"provider":"email","providers":["email"]}', '{}',
   'authenticated', 'authenticated',
@@ -107,7 +112,7 @@ VALUES
   '00000000-0000-0000-0000-000000000101',
   '00000000-0000-0000-0000-000000000000',
   'pierre.m@email.fr',
-  crypt('demo1234', gen_salt('bf')),
+  extensions.crypt('demo1234', extensions.gen_salt('bf')),
   now(), now(), now(),
   '{"provider":"email","providers":["email"]}', '{}',
   'authenticated', 'authenticated',
@@ -119,7 +124,7 @@ VALUES
   '00000000-0000-0000-0000-000000000102',
   '00000000-0000-0000-0000-000000000000',
   'jeanne.l@email.fr',
-  crypt('demo1234', gen_salt('bf')),
+  extensions.crypt('demo1234', extensions.gen_salt('bf')),
   now(), now(), now(),
   '{"provider":"email","providers":["email"]}', '{}',
   'authenticated', 'authenticated',
@@ -132,7 +137,7 @@ VALUES
   '00000000-0000-0000-0000-000000000103',
   '00000000-0000-0000-0000-000000000000',
   'moderateur@saintmedard64.fr',
-  crypt('demo1234', gen_salt('bf')),
+  extensions.crypt('demo1234', extensions.gen_salt('bf')),
   now(), now(), now(),
   '{"provider":"email","providers":["email"]}', '{}',
   'authenticated', 'authenticated',
@@ -145,7 +150,7 @@ VALUES
   '00000000-0000-0000-0000-000000000200',
   '00000000-0000-0000-0000-000000000000',
   'mairie@arthez-de-bearn.fr',
-  crypt('demo1234', gen_salt('bf')),
+  extensions.crypt('demo1234', extensions.gen_salt('bf')),
   now(), now(), now(),
   '{"provider":"email","providers":["email"]}', '{}',
   'authenticated', 'authenticated',
@@ -157,7 +162,7 @@ VALUES
   '00000000-0000-0000-0000-000000000201',
   '00000000-0000-0000-0000-000000000000',
   'marie.d@email.fr',
-  crypt('demo1234', gen_salt('bf')),
+  extensions.crypt('demo1234', extensions.gen_salt('bf')),
   now(), now(), now(),
   '{"provider":"email","providers":["email"]}', '{}',
   'authenticated', 'authenticated',
@@ -169,7 +174,7 @@ VALUES
   '00000000-0000-0000-0000-000000000202',
   '00000000-0000-0000-0000-000000000000',
   'jean-paul.b@email.fr',
-  crypt('demo1234', gen_salt('bf')),
+  extensions.crypt('demo1234', extensions.gen_salt('bf')),
   now(), now(), now(),
   '{"provider":"email","providers":["email"]}', '{}',
   'authenticated', 'authenticated',
@@ -182,7 +187,7 @@ VALUES
   '00000000-0000-0000-0000-000000000300',
   '00000000-0000-0000-0000-000000000000',
   'mairie@morlanne.fr',
-  crypt('demo1234', gen_salt('bf')),
+  extensions.crypt('demo1234', extensions.gen_salt('bf')),
   now(), now(), now(),
   '{"provider":"email","providers":["email"]}', '{}',
   'authenticated', 'authenticated',
@@ -194,7 +199,7 @@ VALUES
   '00000000-0000-0000-0000-000000000301',
   '00000000-0000-0000-0000-000000000000',
   'claude.p@email.fr',
-  crypt('demo1234', gen_salt('bf')),
+  extensions.crypt('demo1234', extensions.gen_salt('bf')),
   now(), now(), now(),
   '{"provider":"email","providers":["email"]}', '{}',
   'authenticated', 'authenticated',
@@ -206,7 +211,7 @@ VALUES
   '00000000-0000-0000-0000-000000000302',
   '00000000-0000-0000-0000-000000000000',
   'martine.s@email.fr',
-  crypt('demo1234', gen_salt('bf')),
+  extensions.crypt('demo1234', extensions.gen_salt('bf')),
   now(), now(), now(),
   '{"provider":"email","providers":["email"]}', '{}',
   'authenticated', 'authenticated',
