@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useProfile } from "@/hooks/use-profile";
+import { InboxNavLink } from "@/components/inbox-nav-link";
 import { LogOut } from "lucide-react";
 
 export function NavBar() {
@@ -107,6 +108,7 @@ export function NavBar() {
         <Link href="/app/evenements" className={navLinkClass("/app/evenements")}>
           Événements
         </Link>
+        <InboxNavLink className={navLinkClass("/app/messages")} />
         <Link href="/app/mon-espace" className={navLinkClass("/app/mon-espace")}>
           Mon espace
         </Link>

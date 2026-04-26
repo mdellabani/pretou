@@ -11,6 +11,14 @@ vi.mock("@/lib/supabase/client", () => ({
   createClient: () => ({ auth: { signOut: vi.fn() } }),
 }));
 
+vi.mock("@/components/inbox-nav-link", () => ({
+  InboxNavLink: ({ className }: { className: string }) => (
+    <a href="/app/messages" className={className}>
+      Messages
+    </a>
+  ),
+}));
+
 const mockProfile = vi.hoisted(() => ({ value: null as unknown }));
 vi.mock("@/hooks/use-profile", () => ({
   useProfile: () => mockProfile.value,
