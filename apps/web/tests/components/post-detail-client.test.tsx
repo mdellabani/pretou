@@ -7,6 +7,10 @@ import { PostDetailClient } from "@/app/app/posts/[id]/post-detail-client";
 vi.mock("@/components/rsvp-buttons", () => ({ RsvpButtons: () => <div>RSVP</div> }));
 vi.mock("@/components/poll-display", () => ({ PollDisplay: () => <div>POLL</div> }));
 vi.mock("@/components/delete-post-button", () => ({ DeletePostButton: () => <div>DELETE</div> }));
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }) }));
+vi.mock("@/app/app/messages/actions", () => ({
+  startConversationAction: vi.fn(async () => ({ id: "c1", created: true })),
+}));
 
 vi.mock("@/hooks/use-profile", () => ({
   useProfile: () => ({

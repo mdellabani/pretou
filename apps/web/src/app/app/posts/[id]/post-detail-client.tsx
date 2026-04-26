@@ -7,8 +7,21 @@ import { PostTypeBadge } from "@/components/post-type-badge";
 import { RsvpButtons } from "@/components/rsvp-buttons";
 import { DeletePostButton } from "@/components/delete-post-button";
 import { PollDisplay } from "@/components/poll-display";
+import { ContacterButton } from "@/components/contacter-button";
+import { AnnonceContactBlock } from "@/components/annonce-contact-block";
 import { usePostDetail } from "@/hooks/queries/use-post-detail";
 import { useProfile } from "@/hooks/use-profile";
+
+function formatOpeningHours(value: unknown): string | null {
+  if (!value || typeof value !== "object") return null;
+  const entries = Object.entries(value as Record<string, string>).filter(
+    ([, v]) => typeof v === "string" && v.trim(),
+  );
+  if (entries.length === 0) return null;
+  return entries
+    .map(([day, time]) => `${day.charAt(0).toUpperCase() + day.slice(1)} : ${time}`)
+    .join(" · ");
+}
 
 interface PostDetailClientProps {
   postId: string;
@@ -105,6 +118,21 @@ export function PostDetailClient({ postId }: PostDetailClientProps) {
           )}
 
           <PollDisplay postId={postId} userId={userId} />
+
+          {post.type === "annonce" ? (
+            <AnnonceContactBlock
+              phone={post.communes?.phone ?? null}
+              email={post.communes?.email ?? null}
+              openingHours={formatOpeningHours(post.communes?.opening_hours)}
+            />
+          ) : (
+            <ContacterButton
+              postId={postId}
+              postType={post.type}
+              authorId={post.author_id}
+              viewerId={userId}
+            />
+          )}
         </CardContent>
       </Card>
     </div>

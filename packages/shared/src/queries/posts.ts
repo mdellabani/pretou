@@ -17,7 +17,9 @@ export async function getPosts(client: Client, communeId: string) {
 export async function getPostById(client: Client, postId: string) {
   return client
     .from("posts")
-    .select("*, profiles!author_id(display_name, avatar_url), post_images(id, storage_path)")
+    .select(
+      "*, profiles!author_id(display_name, avatar_url), post_images(id, storage_path), communes!commune_id(name, phone, email, opening_hours)",
+    )
     .eq("id", postId)
     .single();
 }
