@@ -10,3 +10,14 @@ export { getProducers, getPendingProducers, createProducer, approveProducer, rej
 export { getPollByPostId, createPoll, vote, removeVote } from "./polls";
 export { createReport, getPendingReports, getReportsByPost, dismissReport, actionReport, getReporterStats, hasUserReported } from "./reports";
 export { logAction, getAuditLog, getMyAuditLog } from "./audit";
+export {
+  getConversations,
+  getMessages,
+  getOrCreateConversation,
+  sendMessage,
+  markConversationRead,
+  blockUser,
+  unblockUser,
+  getMyBlocks,
+  reportConversation,
+} from "./messages";
