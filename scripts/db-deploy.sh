@@ -19,6 +19,7 @@
 #
 # Flags:
 #   --no-seed     skip seed.sql (default: seed only on demo)
+#   --skip-reset  only redeploy the function + GUCs (no schema reset)
 #   --yes         skip confirmation prompt (CI / scripted use)
 
 set -euo pipefail
@@ -27,10 +28,12 @@ ENV_NAME="${1:-}"
 shift || true
 
 NO_SEED=0
+SKIP_RESET=0
 ASSUME_YES=0
 for arg in "$@"; do
   case "$arg" in
     --no-seed) NO_SEED=1 ;;
+    --skip-reset) SKIP_RESET=1 ;;
     --yes|-y) ASSUME_YES=1 ;;
     *) echo "Unknown flag: $arg" >&2; exit 2 ;;
   esac
@@ -40,7 +43,7 @@ case "$ENV_NAME" in
   demo)        DEFAULT_SEED=1 ;;
   production)  DEFAULT_SEED=0 ;;
   ""|-h|--help)
-    sed -n '2,23p' "$0" | sed 's/^# \{0,1\}//'
+    sed -n '2,24p' "$0" | sed 's/^# \{0,1\}//'
     exit 0
     ;;
   *)
@@ -72,8 +75,9 @@ fi
 cat <<EOF
 About to deploy to: $ENV_NAME (project ref: $PROJECT_REF)
   supabase link        --project-ref $PROJECT_REF
-  supabase db reset    --linked $SEED_FLAG  (DROPS public schema)
+$([[ $SKIP_RESET -eq 0 ]] && echo "  supabase db reset    --linked $SEED_FLAG  (DROPS public schema)")
   supabase functions deploy notify_new_message
+  set GUCs via Management API
 EOF
 
 if [[ $ASSUME_YES -ne 1 ]]; then
@@ -89,9 +93,11 @@ cd "$REPO_ROOT"
 echo "==> Linking Supabase project"
 npx --yes supabase link --project-ref "$PROJECT_REF" >/dev/null
 
-echo "==> Resetting linked database from migrations"
-# shellcheck disable=SC2086
-npx --yes supabase db reset --linked --yes $SEED_FLAG
+if [[ $SKIP_RESET -eq 0 ]]; then
+  echo "==> Resetting linked database from migrations"
+  # shellcheck disable=SC2086
+  npx --yes supabase db reset --linked --yes $SEED_FLAG
+fi
 
 echo "==> Deploying edge function: notify_new_message"
 npx --yes supabase functions deploy notify_new_message --project-ref "$PROJECT_REF" --no-verify-jwt
