@@ -38,4 +38,15 @@ export const queryKeys = {
     homepageSections: (communeId: string) => ["admin", "homepage-sections", communeId] as const,
   },
   councilDocs: (communeId: string) => ["council-docs", communeId] as const,
+  conversations: {
+    all: ["conversations"] as const,
+    list: (cursor?: string) => ["conversations", "list", cursor ?? null] as const,
+    detail: (id: string) => ["conversations", "detail", id] as const,
+    messages: (id: string, cursor?: string) =>
+      ["conversations", id, "messages", cursor ?? null] as const,
+    unreadCount: ["conversations", "unread-count"] as const,
+  },
+  blocks: {
+    mine: ["blocks", "mine"] as const,
+  },
 } as const;

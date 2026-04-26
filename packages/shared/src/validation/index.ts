@@ -4,3 +4,13 @@ export { updateProfileSchema, signupSchema } from "./profile.schema";
 export type { UpdateProfileFormData, SignupFormData } from "./profile.schema";
 export { registerCommuneSchema } from "./commune.schema";
 export type { RegisterCommuneFormData } from "./commune.schema";
+export {
+  sendMessageSchema,
+  startConversationSchema,
+  reportConversationSchema,
+} from "./message.schema";
+export type {
+  SendMessageInput,
+  StartConversationInput,
+  ReportConversationInput,
+} from "./message.schema";
