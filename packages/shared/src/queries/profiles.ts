@@ -22,15 +22,7 @@ export async function updateProfile(client: Client, userId: string, data: { disp
 export async function getMyPosts(client: Client, userId: string) {
   return client
     .from("posts")
-    .select("id, title, type, created_at, is_pinned, comments(count)")
-    .eq("author_id", userId)
-    .order("created_at", { ascending: false });
-}
-
-export async function getMyComments(client: Client, userId: string) {
-  return client
-    .from("comments")
-    .select("id, body, created_at, posts!post_id(id, title, type)")
+    .select("id, title, type, created_at, is_pinned")
     .eq("author_id", userId)
     .order("created_at", { ascending: false });
 }
