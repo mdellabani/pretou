@@ -4,11 +4,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { queryKeys } from "@rural-community-platform/shared";
 import { PostDetailClient } from "@/app/app/posts/[id]/post-detail-client";
 
-vi.mock("@/hooks/use-realtime-comments", () => ({ useRealtimeComments: () => undefined }));
 vi.mock("@/components/rsvp-buttons", () => ({ RsvpButtons: () => <div>RSVP</div> }));
 vi.mock("@/components/poll-display", () => ({ PollDisplay: () => <div>POLL</div> }));
-vi.mock("@/components/comment-section", () => ({ CommentSection: () => <div>COMMENTS</div> }));
 vi.mock("@/components/delete-post-button", () => ({ DeletePostButton: () => <div>DELETE</div> }));
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }) }));
+vi.mock("@/app/app/messages/actions", () => ({
+  startConversationAction: vi.fn(async () => ({ id: "c1", created: true })),
+}));
 
 vi.mock("@/hooks/use-profile", () => ({
   useProfile: () => ({
@@ -40,6 +42,5 @@ describe("PostDetailClient", () => {
     );
     expect(screen.getByText("Hello")).toBeInTheDocument();
     expect(screen.getByText("Body text")).toBeInTheDocument();
-    expect(screen.getByText("COMMENTS")).toBeInTheDocument();
   });
 });

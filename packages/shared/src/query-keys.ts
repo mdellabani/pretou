@@ -19,12 +19,10 @@ export const queryKeys = {
   profile: (userId: string) => ["profile", userId] as const,
   me: {
     posts: (userId: string) => ["me", userId, "posts"] as const,
-    comments: (userId: string) => ["me", userId, "comments"] as const,
     rsvps: (userId: string) => ["me", userId, "rsvps"] as const,
   },
   commune: (communeId: string) => ["commune", communeId] as const,
   events: (communeId: string) => ["events", communeId] as const,
-  comments: (postId: string) => ["comments", postId] as const,
   rsvps: (postId: string) => ["rsvps", postId] as const,
   poll: (postId: string) => ["poll", postId] as const,
   producers: (communeId: string) => ["producers", communeId] as const,
@@ -40,4 +38,15 @@ export const queryKeys = {
     homepageSections: (communeId: string) => ["admin", "homepage-sections", communeId] as const,
   },
   councilDocs: (communeId: string) => ["council-docs", communeId] as const,
+  conversations: {
+    all: ["conversations"] as const,
+    list: (cursor?: string) => ["conversations", "list", cursor ?? null] as const,
+    detail: (id: string) => ["conversations", "detail", id] as const,
+    messages: (id: string, cursor?: string) =>
+      ["conversations", id, "messages", cursor ?? null] as const,
+    unreadCount: ["conversations", "unread-count"] as const,
+  },
+  blocks: {
+    mine: ["blocks", "mine"] as const,
+  },
 } as const;

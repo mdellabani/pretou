@@ -6,3 +6,12 @@ export type { Producer, ProducerStatus, CreateProducerInput } from "./producer";
 export type { Poll, PollOption, PollType, CreatePollInput } from "./poll";
 export type { Report, ReportCategory, ReportStatus } from "./report";
 export type { AuditLog, AuditAction } from "./audit";
+export type {
+  ConversationRow,
+  ConversationInsert,
+  MessageRow,
+  MessageInsert,
+  UserBlockRow,
+  ConversationReportRow,
+  InboxConversation,
+} from "./message";

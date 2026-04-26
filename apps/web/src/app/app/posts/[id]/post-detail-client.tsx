@@ -4,13 +4,24 @@ import { notFound } from "next/navigation";
 import type { PostType } from "@rural-community-platform/shared";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { PostTypeBadge } from "@/components/post-type-badge";
-import { CommentSection } from "@/components/comment-section";
 import { RsvpButtons } from "@/components/rsvp-buttons";
 import { DeletePostButton } from "@/components/delete-post-button";
 import { PollDisplay } from "@/components/poll-display";
+import { ContacterButton } from "@/components/contacter-button";
+import { AnnonceContactBlock } from "@/components/annonce-contact-block";
 import { usePostDetail } from "@/hooks/queries/use-post-detail";
-import { useRealtimeComments } from "@/hooks/use-realtime-comments";
 import { useProfile } from "@/hooks/use-profile";
+
+function formatOpeningHours(value: unknown): string | null {
+  if (!value || typeof value !== "object") return null;
+  const entries = Object.entries(value as Record<string, string>).filter(
+    ([, v]) => typeof v === "string" && v.trim(),
+  );
+  if (entries.length === 0) return null;
+  return entries
+    .map(([day, time]) => `${day.charAt(0).toUpperCase() + day.slice(1)} : ${time}`)
+    .join(" · ");
+}
 
 interface PostDetailClientProps {
   postId: string;
@@ -19,7 +30,6 @@ interface PostDetailClientProps {
 export function PostDetailClient({ postId }: PostDetailClientProps) {
   const { profile } = useProfile();
   const { data: post, isLoading } = usePostDetail(postId);
-  useRealtimeComments(postId);
 
   if (isLoading && !post) return null;
   if (!post) {
@@ -108,14 +118,23 @@ export function PostDetailClient({ postId }: PostDetailClientProps) {
           )}
 
           <PollDisplay postId={postId} userId={userId} />
+
+          {post.type === "annonce" ? (
+            <AnnonceContactBlock
+              phone={post.communes?.phone ?? null}
+              email={post.communes?.email ?? null}
+              openingHours={formatOpeningHours(post.communes?.opening_hours)}
+            />
+          ) : (
+            <ContacterButton
+              postId={postId}
+              postType={post.type}
+              authorId={post.author_id}
+              viewerId={userId}
+            />
+          )}
         </CardContent>
       </Card>
-
-      <CommentSection
-        postId={postId}
-        currentUserId={userId}
-        isAdmin={userRole === "admin"}
-      />
     </div>
   );
 }

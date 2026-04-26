@@ -11,6 +11,14 @@ vi.mock("@/lib/supabase/client", () => ({
   createClient: () => ({ auth: { signOut: vi.fn() } }),
 }));
 
+vi.mock("@/components/inbox-nav-link", () => ({
+  InboxNavLink: ({ className }: { className: string }) => (
+    <a href="/app/messages" className={className}>
+      Messages
+    </a>
+  ),
+}));
+
 const mockProfile = vi.hoisted(() => ({ value: null as unknown }));
 vi.mock("@/hooks/use-profile", () => ({
   useProfile: () => mockProfile.value,
@@ -62,17 +70,10 @@ describe("NavBar", () => {
     expect(screen.getByText("Admin")).toBeInTheDocument();
   });
 
-  it("shows Modération link for moderator (not admin)", () => {
+  it("never shows a Modération link (moderator role removed)", () => {
     setProfile({ isAdmin: false, isModerator: true });
     render(<NavBar />);
-    expect(screen.getByText("Modération")).toBeInTheDocument();
-    expect(screen.queryByText("Admin")).not.toBeInTheDocument();
-  });
-
-  it("prefers Admin over Modération when user is both", () => {
-    setProfile({ isAdmin: true, isModerator: true });
-    render(<NavBar />);
-    expect(screen.getByText("Admin")).toBeInTheDocument();
     expect(screen.queryByText("Modération")).not.toBeInTheDocument();
+    expect(screen.queryByText("Admin")).not.toBeInTheDocument();
   });
 });
