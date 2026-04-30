@@ -1,41 +1,69 @@
 import { useCallback, useEffect, useState } from "react";
 import {
-  FlatList,
   RefreshControl,
+  ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useFocusEffect } from "expo-router";
+import { getMyPosts, getMyRsvps, type PostType } from "@pretou/shared";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
-import {
-  getConversations,
-  type InboxConversation,
-} from "@pretou/shared";
+import { MyPostsPanel } from "@/components/my-posts-panel";
+import { MyRsvpsPanel } from "@/components/my-rsvps-panel";
 
-export default function ExchangesScreen() {
-  const { session } = useAuth();
+type PostRow = {
+  id: string;
+  title: string;
+  type: PostType;
+  created_at: string;
+  is_pinned: boolean;
+};
+type RsvpRow = {
+  status: string;
+  posts:
+    | {
+        id: string;
+        title: string;
+        type: PostType;
+        event_date: string | null;
+        event_location: string | null;
+      }
+    | null;
+};
+
+export default function MonEspaceScreen() {
+  const { profile } = useAuth();
   const theme = useTheme();
-  const router = useRouter();
-  const [rows, setRows] = useState<InboxConversation[]>([]);
+  const [posts, setPosts] = useState<PostRow[]>([]);
+  const [rsvps, setRsvps] = useState<RsvpRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  const userId = session?.user?.id;
+  const userId = profile?.id;
 
   const load = useCallback(async () => {
     if (!userId) return;
-    const { rows } = await getConversations(supabase);
-    setRows(rows);
+    const [postsRes, rsvpsRes] = await Promise.all([
+      getMyPosts(supabase, userId),
+      getMyRsvps(supabase, userId),
+    ]);
+    setPosts((postsRes.data ?? []) as PostRow[]);
+    setRsvps((rsvpsRes.data ?? []) as RsvpRow[]);
   }, [userId]);
 
   useEffect(() => {
     setLoading(true);
     load().finally(() => setLoading(false));
   }, [load]);
+
+  useFocusEffect(
+    useCallback(() => {
+      void load();
+    }, [load]),
+  );
 
   async function onRefresh() {
     setRefreshing(true);
@@ -51,92 +79,40 @@ export default function ExchangesScreen() {
     );
   }
 
-  if (rows.length === 0) {
-    return (
-      <View style={[styles.center, { backgroundColor: theme.background }]}>
-        <Text style={[styles.muted, { color: theme.muted }]}>
-          Aucun message pour le moment.
-        </Text>
-      </View>
-    );
-  }
-
   return (
-    <View style={[styles.root, { backgroundColor: theme.background }]}>
-      <FlatList
-        data={rows}
-        keyExtractor={(r) => r.id}
-        contentContainerStyle={styles.list}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.row}
-            onPress={() => router.push(`/messages/${item.id}`)}
-            activeOpacity={0.7}
-          >
-            {item.unread ? (
-              <View style={[styles.dot, { backgroundColor: theme.primary }]} />
-            ) : (
-              <View style={styles.dotPlaceholder} />
-            )}
-            <View style={{ flex: 1 }}>
-              <View style={styles.headerRow}>
-                <Text style={styles.name}>
-                  {item.counterpart.display_name}
-                </Text>
-                <Text style={[styles.time, { color: theme.muted }]}>
-                  {new Date(item.last_message_at).toLocaleDateString("fr-FR", {
-                    day: "numeric",
-                    month: "short",
-                  })}
-                </Text>
-              </View>
-              <Text style={[styles.sub, { color: theme.muted }]} numberOfLines={1}>
-                à propos de : {item.post.title}
-              </Text>
-              {item.last_message_preview ? (
-                <Text style={styles.preview} numberOfLines={1}>
-                  {item.last_message_preview}
-                </Text>
-              ) : null}
-            </View>
-          </TouchableOpacity>
-        )}
-        ItemSeparatorComponent={() => <View style={styles.sep} />}
-      />
-    </View>
+    <ScrollView
+      style={[styles.root, { backgroundColor: theme.background }]}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      <Text style={styles.sectionTitle}>Mes publications</Text>
+      <MyPostsPanel rows={posts} />
+
+      <Text style={[styles.sectionTitle, styles.sectionTitleSpaced]}>
+        Mes participations
+      </Text>
+      <MyRsvpsPanel rows={rsvps} />
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  list: { padding: 16 },
-  center: { flex: 1, alignItems: "center", justifyContent: "center" },
-  muted: { fontFamily: "DMSans_400Regular", fontSize: 14 },
-  row: { flexDirection: "row", alignItems: "flex-start", paddingVertical: 12 },
-  headerRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  center: {
+    flex: 1,
     alignItems: "center",
+    justifyContent: "center",
+    padding: 24,
   },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginTop: 8,
-    marginRight: 8,
+  muted: { fontFamily: "DMSans_400Regular", fontSize: 14 },
+  sectionTitle: {
+    fontFamily: "DMSans_600SemiBold",
+    fontSize: 16,
+    color: "#2a1a14",
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 8,
   },
-  dotPlaceholder: { width: 8, marginRight: 8 },
-  name: { fontFamily: "DMSans_600SemiBold", fontSize: 14, color: "#2a1a14" },
-  sub: { fontFamily: "DMSans_400Regular", fontSize: 12, marginTop: 2 },
-  preview: {
-    fontFamily: "DMSans_400Regular",
-    fontSize: 13,
-    color: "#5a4030",
-    marginTop: 4,
-  },
-  time: { fontFamily: "DMSans_400Regular", fontSize: 11 },
-  sep: { height: StyleSheet.hairlineWidth, backgroundColor: "#f0e0d0" },
+  sectionTitleSpaced: { paddingTop: 24 },
 });
