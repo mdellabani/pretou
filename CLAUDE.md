@@ -32,10 +32,11 @@ Feature scope and business context: `design.md`
 
 ```bash
 pnpm install                                        # install all dependencies
-npx supabase start                                   # start local Supabase (Docker)
+pnpm dev:all                                         # one-shot: supabase + web + mobile in parallel (Ctrl+C stops web+mobile, Supabase keeps running)
+npx supabase start                                   # start local Supabase only (Docker)
 npx supabase db reset                                # apply migrations + seed (idempotent)
-pnpm --filter @pretou/web dev      # web app → http://localhost:3000
-cd apps/mobile && npx expo start --clear             # mobile app (Expo Go)
+pnpm --filter @pretou/web dev      # web app only → http://localhost:3000
+pnpm --filter @pretou/mobile dev                     # mobile app only (Expo Go)
 npx supabase stop                                    # stop local Supabase
 ```
 
@@ -106,6 +107,10 @@ Phase 1 shipped — see `docs/superpowers/specs/2026-04-17-web-test-suite-phase1
 
 - **Phase 2 — Mobile tests** (`apps/mobile`). Stack: `@testing-library/react-native` (already a dep) for screen tests, `vitest` or `jest` runner, mocked Supabase client. Priority targets: welcome screen, login/signup flows, feed screen role-based visibility, push-notification token registration, image-picker upload happy path. Probably needs Detox or Maestro added later for true device E2E — defer that decision until pure-component tests are in place.
 - **Phase 3 — End-to-end browser tests** (Playwright). Critical user journeys only, not exhaustive: commune registration → super-admin approval → admin login → publish annonce → resident sees it. Runs against local Supabase + a real Next.js dev build. Slow (minutes); CI runs on master pushes only, not every PR.
+
+## Manual Testing
+
+- `docs/testing-notifications.md` — two-user end-to-end scenario for mobile push (annonce, evenement, direct message) and web realtime unread badge. Covers prerequisites (dev build, edge functions, runtime_config) and what to inspect when each surface fails.
 
 ## Design Specs & Plans
 

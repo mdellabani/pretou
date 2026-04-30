@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "turbo dev",
+    "dev:all": "bash scripts/dev-all.sh",
     "build": "turbo build",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
