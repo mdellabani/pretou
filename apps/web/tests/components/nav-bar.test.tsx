@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { NavBar } from "@/components/nav-bar";
 
@@ -17,6 +17,10 @@ vi.mock("@/components/inbox-nav-link", () => ({
       Messages
     </a>
   ),
+}));
+
+vi.mock("@/components/feedback-form", () => ({
+  FeedbackForm: () => <div>feedback-form-stub</div>,
 }));
 
 const mockProfile = vi.hoisted(() => ({ value: null as unknown }));
@@ -75,5 +79,20 @@ describe("NavBar", () => {
     render(<NavBar />);
     expect(screen.queryByText("Modération")).not.toBeInTheDocument();
     expect(screen.queryByText("Admin")).not.toBeInTheDocument();
+  });
+
+  it("renders the feedback icon button", () => {
+    setProfile({});
+    render(<NavBar />);
+    expect(
+      screen.getByRole("button", { name: /envoyer un retour/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("opens the feedback dialog when the icon is clicked", () => {
+    setProfile({});
+    render(<NavBar />);
+    fireEvent.click(screen.getByRole("button", { name: /envoyer un retour/i }));
+    expect(screen.getByText("Votre retour")).toBeInTheDocument();
   });
 });
