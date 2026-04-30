@@ -1,6 +1,7 @@
 import { Stack, useSegments, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useEffect } from "react";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
 import { useNotifications } from "@/hooks/use-notifications";
@@ -55,9 +56,10 @@ export default function RootLayout() {
   if (!fontsLoaded) return null;
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <AuthGate>
+    <SafeAreaProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <AuthGate>
           <Stack
             screenOptions={{
               headerStyle: {
@@ -77,11 +79,13 @@ export default function RootLayout() {
             <Stack.Screen name="auth/login" options={{ title: "Connexion", headerShown: false }} />
             <Stack.Screen name="auth/signup" options={{ title: "Inscription", headerShown: false }} />
             <Stack.Screen name="post/[id]" options={{ title: "Publication" }} />
+            <Stack.Screen name="messages/index" options={{ title: "Messages" }} />
             <Stack.Screen name="admin" options={{ headerShown: false }} />
           </Stack>
           <StatusBar style="auto" />
         </AuthGate>
-      </AuthProvider>
-    </QueryClientProvider>
+        </AuthProvider>
+      </QueryClientProvider>
+    </SafeAreaProvider>
   );
 }
