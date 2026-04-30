@@ -2,16 +2,23 @@ import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { ShieldCheck, MessageCircle } from "lucide-react-native";
+import {
+  ShieldCheck,
+  MessageCircle,
+  MessageCircleQuestion,
+} from "lucide-react-native";
 import { useTheme } from "@/lib/theme-context";
 import { useAuth } from "@/lib/auth-context";
+import { useUnreadCount } from "@/hooks/use-unread-count";
 import { FeedbackSheet } from "@/components/feedback-sheet";
 
 export function FeedHeader() {
   const theme = useTheme();
-  const { profile, isAdmin } = useAuth();
+  const { profile, session, isAdmin } = useAuth();
   const router = useRouter();
   const [showFeedback, setShowFeedback] = useState(false);
+  const { data: unread } = useUnreadCount(!!session?.user?.id);
+  const hasUnread = (unread ?? 0) > 0;
 
   const communeName = profile?.communes?.name ?? "Ma Commune";
   const codePostal = profile?.communes?.code_postal;
@@ -26,7 +33,6 @@ export function FeedHeader() {
         end={{ x: 1, y: 1 }}
         style={styles.container}
       >
-        {/* Decorative circles */}
         <View style={[styles.circle, styles.circleTopRight]} />
         <View style={[styles.circle, styles.circleBottomLeft]} />
 
@@ -43,10 +49,24 @@ export function FeedHeader() {
             <View style={styles.rightIcons}>
               <TouchableOpacity
                 style={styles.iconButton}
-                onPress={() => setShowFeedback(true)}
+                onPress={() => router.push("/messages")}
                 activeOpacity={0.8}
+                accessibilityLabel="Messages"
               >
                 <MessageCircle size={17} color="#FFFFFF" />
+                {hasUnread && (
+                  <View
+                    style={[styles.dot, { backgroundColor: theme.primary }]}
+                  />
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.iconButton}
+                onPress={() => setShowFeedback(true)}
+                activeOpacity={0.8}
+                accessibilityLabel="Envoyer un retour"
+              >
+                <MessageCircleQuestion size={17} color="#FFFFFF" />
               </TouchableOpacity>
               {isAdmin && (
                 <TouchableOpacity
@@ -88,18 +108,13 @@ const styles = StyleSheet.create({
     position: "relative",
     overflow: "hidden",
   },
-  content: {
-    zIndex: 1,
-  },
+  content: { zIndex: 1 },
   headerRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
   },
-  textArea: {
-    flex: 1,
-    marginRight: 12,
-  },
+  textArea: { flex: 1, marginRight: 12 },
   communeName: {
     fontFamily: "DMSans_600SemiBold",
     fontSize: 21,
@@ -123,6 +138,17 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     justifyContent: "center",
     alignItems: "center",
+    position: "relative",
+  },
+  dot: {
+    position: "absolute",
+    top: 6,
+    right: 6,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    borderWidth: 1.5,
+    borderColor: "#FFFFFF",
   },
   avatar: {
     width: 40,
@@ -156,16 +182,6 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     backgroundColor: "rgba(255, 255, 255, 0.08)",
   },
-  circleTopRight: {
-    width: 120,
-    height: 120,
-    top: -30,
-    right: -20,
-  },
-  circleBottomLeft: {
-    width: 80,
-    height: 80,
-    bottom: -20,
-    left: -10,
-  },
+  circleTopRight: { width: 120, height: 120, top: -30, right: -20 },
+  circleBottomLeft: { width: 80, height: 80, bottom: -20, left: -10 },
 });
