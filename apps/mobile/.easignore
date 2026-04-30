@@ -4,6 +4,8 @@ dist/
 .next/
 .expo/
 .turbo/
+android/
+ios/
 .env
 .env.*
 *.tgz
