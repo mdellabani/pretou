@@ -77,6 +77,7 @@ About to deploy to: $ENV_NAME (project ref: $PROJECT_REF)
   supabase link        --project-ref $PROJECT_REF
 $([[ $SKIP_RESET -eq 0 ]] && echo "  supabase db reset    --linked $SEED_FLAG  (DROPS public schema)")
   supabase functions deploy notify_new_message
+  supabase functions deploy push-notification
   upsert runtime_config (via PostgREST)
 EOF
 
@@ -101,6 +102,13 @@ fi
 
 echo "==> Deploying edge function: notify_new_message"
 npx --yes supabase functions deploy notify_new_message --project-ref "$PROJECT_REF" --no-verify-jwt
+
+echo "==> Deploying edge function: push-notification"
+# --no-verify-jwt because the function is invoked by the posts INSERT
+# trigger via pg_net, which only carries the new-style sb_secret_* key
+# (not a JWT). With JWT verification on, every trigger call is rejected
+# with UNAUTHORIZED_INVALID_JWT_FORMAT and posts never fan out.
+npx --yes supabase functions deploy push-notification --project-ref "$PROJECT_REF" --no-verify-jwt
 
 echo "==> Writing runtime_config (functions_url, service_role_key)"
 FUNCTIONS_URL="https://${PROJECT_REF}.functions.supabase.co"
