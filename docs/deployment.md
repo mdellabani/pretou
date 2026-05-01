@@ -277,6 +277,45 @@ To configure the database webhook in Supabase dashboard:
 - URL: `https://<project-ref>.supabase.co/functions/v1/push-notification`
 - Headers: `Authorization: Bearer <service_role_key>`
 
+#### 3.6.1 FCM credentials (Android)
+
+Since Expo SDK 53, Android push notifications use **FCM v1**, which requires a Firebase project. Without it, `getExpoPushTokenAsync` throws *"Default FirebaseApp is not initialized"* on Android.
+
+One Firebase project, two Android apps (one per build variant):
+
+1. **Create the Firebase project** at [console.firebase.google.com](https://console.firebase.google.com) (or reuse one).
+2. **Add an Android app** for each package:
+   - `com.pretou.app.demo` (demo profile)
+   - `com.pretou.app` (production profile)
+3. **Download `google-services.json`** for each — Firebase generates one per Android app.
+4. **Upload as EAS file env vars** (gitignored locally), one per environment:
+   ```bash
+   # demo build profile uses the "preview" environment
+   eas env:create \
+     --name GOOGLE_SERVICES_JSON \
+     --type file \
+     --value ./google-services.demo.json \
+     --environment preview \
+     --visibility secret
+
+   # production build profile uses the "production" environment
+   eas env:create \
+     --name GOOGLE_SERVICES_JSON \
+     --type file \
+     --value ./google-services.production.json \
+     --environment production \
+     --visibility secret
+   ```
+   `app.config.ts` reads `process.env.GOOGLE_SERVICES_JSON` so the correct file is wired automatically per build profile.
+5. **Upload the FCM v1 service account** to EAS so the Expo push service can deliver to FCM:
+   - Firebase Console → Project Settings → Service accounts → **Generate new private key** → download JSON.
+   - `eas credentials` → Android → push notifications → upload the JSON. Repeat for each variant if you keep separate Firebase projects (single project is fine; same JSON for both).
+6. **Rebuild** the demo APK: `eas build --profile demo --platform android`.
+
+For local dev builds (`eas build --profile development` or `expo run:android`), drop the JSON files at `apps/mobile/google-services.demo.json` / `google-services.production.json` (gitignored) — `app.config.ts` falls back to those paths when `GOOGLE_SERVICES_JSON` is unset.
+
+iOS does not need this — APNs is configured via `eas credentials` (Apple Push key).
+
 ---
 
 ## Step 4: Monitoring & Feedback

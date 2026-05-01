@@ -32,6 +32,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     package: IS_DEMO
       ? "com.pretou.app.demo"
       : "com.pretou.app",
+    googleServicesFile:
+      process.env.GOOGLE_SERVICES_JSON ??
+      (IS_DEMO
+        ? "./google-services.demo.json"
+        : "./google-services.production.json"),
   },
   web: {
     bundler: "metro",
